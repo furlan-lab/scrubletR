@@ -1,0 +1,77 @@
+---
+title: "ScrubletR"
+output: html_document
+date: "2024-02-02"
+always_allow_html: true
+editor_options: 
+  
+  chunk_output_type: console
+---
+
+## Installing scrubletR
+
+You will need to have the devtools package installed...
+
+```{r, eval=F}
+devtools::install_github("furlan-lab/scrubletR")
+```
+
+
+## Load data
+
+```{r, dpi=300, fig.height=4, fig.width = 6, warning=F, message=F}
+
+suppressPackageStartupMessages({
+  library(viewmastRust)
+  library(Seurat)
+  library(scCustomize)
+})
+
+if(grepl("^gizmo", Sys.info()["nodename"])){
+  ROOT_DIR2<-"/fh/fast/furlan_s/grp/data/ddata/BM_data"
+} else {
+  ROOT_DIR2<-"/Users/sfurlan/Library/CloudStorage/OneDrive-SharedLibraries-FredHutchinsonCancerCenter/Furlan_Lab - General/experiments/patient_marrows/aggr/cds/indy"
+}
+
+#query dataset
+seuP<-readRDS(file.path(ROOT_DIR2, "220831_WC1.RDS"))
+DimPlot_scCustom(seuP)
+
+counts_matrix<-t(seuP@assays$RNA@counts[,1:2000])
+counts_matrix<-t(seuP@assays$RNA@counts)
+```
+
+## Check Python Scrublet doublet scores
+
+```{python}
+import scrublet as scr
+scrub = scr.Scrublet(r.counts_matrix)
+doublet_scores, predicted_doublets = scrub.scrub_doublets()
+r.ds = doublet_scores
+```
+
+## Check scrubletR
+
+```{r}
+scr<-Scrublet$new(counts_matrix = counts_matrix)
+#debug(scr$pipeline_pca)
+#debug(scr$scrub_doublets)
+ds<-scr$scrub_doublets()
+
+seuP$ds<-ds$doublet_scores_obs_
+
+seuP$dsP<-ds
+
+FeaturePlot_scCustom(seuP, features = "ds")
+FeaturePlot_scCustom(seuP, features = "dsP")
+
+ggplot(data.frame(ds = seuP$dsP), aes(x=ds))+geom_density()
+
+```
+
+
+## Appendix
+```{r Appendix}
+sessionInfo()
+getwd()
+```
