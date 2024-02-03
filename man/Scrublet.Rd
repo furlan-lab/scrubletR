@@ -126,7 +126,7 @@ Identify highly variable genes expressed above a minimum level
 \if{latex}{\out{\hypertarget{method-Scrublet-call_doublets}{}}}
 \subsection{Method \code{call_doublets()}}{
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{Scrublet$call_doublets(self, threshold = NULL, verbose = TRUE)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{Scrublet$call_doublets(threshold = NULL, verbose = TRUE)}\if{html}{\out{</div>}}
 }
 
 }

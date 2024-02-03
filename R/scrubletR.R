@@ -310,16 +310,16 @@ Scrublet <- R6::R6Class("Scrublet",
       )
     },
 
-    call_doublets = function(self, threshold = NULL, verbose = TRUE) {
+    call_doublets = function(threshold = NULL, verbose = TRUE) {
       if (is.null(threshold)) {
         # Automatic threshold detection
         tryCatch({
           threshold <- threshold_minimum(self$doublet_scores_sim_)
-          cat_optional(paste0("Automatically set threshold at doublet score =", threshold, "\n"), verbose)
+          cat_optional(paste0("Automatically set threshold at doublet score =", threshold), verbose)
         }, error = function(e) {
-          self$predicted_doublets_ <- NULL
-          cat_optional(paste0("Warning: failed to automatically identify doublet score threshold. Run `call_doublets` with a user-specified threshold.\n"))
-          return(self$predicted_doublets_)
+          self$predicted_doublets <- NULL
+          cat_optional(paste0("Warning: failed to automatically identify doublet score threshold. Run `call_doublets` with a user-specified threshold."), verbose)
+          return(self$predicted_doublets)
         })
       }
       Ld_obs <- self$doublet_scores_obs_
@@ -332,11 +332,11 @@ Scrublet <- R6::R6Class("Scrublet",
       self$detected_doublet_rate_ <- sum(Ld_obs > threshold) / length(Ld_obs)
       self$detectable_doublet_fraction_ <- sum(Ld_sim > threshold) / length(Ld_sim)
       self$overall_doublet_rate_ <- self$detected_doublet_rate_ / self$detectable_doublet_fraction_
-      cat_optional(paste0('Detected doublet rate =', 100 * self$detected_doublet_rate_, "%\n"), verbose)
-      cat_optional(paste0('Estimated detectable doublet fraction =', 100 * self$detectable_doublet_fraction_, "%\n"), verbose)
-      cat_optional(paste0('Overall doublet rate:\n'), verbose)
-      cat_optional(paste0('\tExpected   =', 100 * self$expected_doublet_rate, "%\n"), verbose)
-      cat_optional(paste0('\tEstimated  =', 100 * self$overall_doublet_rate_, "%\n"), verbose)
+      cat_optional(paste0('Detected doublet rate =', 100 * self$detected_doublet_rate_, "%"), verbose)
+      cat_optional(paste0('Estimated detectable doublet fraction =', 100 * self$detectable_doublet_fraction_, "%"), verbose)
+      cat_optional(paste0('Overall doublet rate:'), verbose)
+      cat_optional(paste0('\tExpected   =', 100 * self$expected_doublet_rate, "%"), verbose)
+      cat_optional(paste0('\tEstimated  =', 100 * self$overall_doublet_rate_, "%"), verbose)
     },
 
     #' Nearest Neighbor Classifier

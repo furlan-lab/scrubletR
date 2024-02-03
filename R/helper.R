@@ -46,7 +46,7 @@ tot_counts_norm <- function(E, total_counts = NULL, exclude_dominant_frac = 1, i
 #' @export
 cat_optional <- function(message, verbose) {
   if (verbose) {
-    message(paste0(message, "\n"))
+    message(paste0(message))
   }
 }
 

@@ -47,7 +47,8 @@ counts_matrix<-t(seuP@assays$RNA@counts)
 import scrublet as scr
 scrub = scr.Scrublet(r.counts_matrix)
 doublet_scores, predicted_doublets = scrub.scrub_doublets()
-r.ds = doublet_scores
+r.dsP = doublet_scores
+r.dsPr = predicted_doublets
 ```
 
 ## Check scrubletR
@@ -58,13 +59,14 @@ scr<-Scrublet$new(counts_matrix = counts_matrix)
 #debug(scr$scrub_doublets)
 ds<-scr$scrub_doublets()
 
-seuP$ds<-ds$doublet_scores_obs_
+seuP$ds<-ds$doublet_scores
 
-seuP$dsP<-ds
+seuP$dsP <- dsP
+seuP$dsPr <- dsPr
 
 FeaturePlot_scCustom(seuP, features = "ds")
 FeaturePlot_scCustom(seuP, features = "dsP")
-
+DimPlot(seuP, group.by = "dsPr")
 ggplot(data.frame(ds = seuP$dsP), aes(x=ds))+geom_density()
 
 ```
