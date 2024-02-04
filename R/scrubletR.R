@@ -96,7 +96,6 @@
 #' @importFrom R6 R6Class
 #' @import Matrix
 #' @export
-
 Scrublet <- R6::R6Class("Scrublet",
                     public = list(
                       E_obs = NULL,

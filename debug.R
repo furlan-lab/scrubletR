@@ -28,7 +28,7 @@ counts_matrix<-t(seuP@assays$RNA@counts)
 
 scr<-Scrublet$new(counts_matrix = counts_matrix)
 #debug(scr$pipeline_pca)
-#debug(scr$scrub_doublets)
+debug(scr$scrub_doublets)
 ds<-scr$scrub_doublets()
 
 seuP$ds<-ds$doublet_scores_obs_

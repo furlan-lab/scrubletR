@@ -288,6 +288,7 @@ runningquantile <- function(x, y, p, nBins) {
 #' @importFrom grDevices rgb
 #' @importFrom graphics points
 #' @importFrom graphics lines
+#' @import ggplot2
 
 filter_genes <- function(E, base_ix = NULL, min_vscore_pctl = 85, min_counts = 3, min_cells = 3,
                          show_vscore_plot = FALSE, sample_name = '') {
@@ -314,15 +315,34 @@ filter_genes <- function(E, base_ix = NULL, min_vscore_pctl = 85, min_counts = 3
   ix <- ((colSums(E[, gene_ix] >= min_counts) >= min_cells) & (Vscores >= min_vscore))
 
   if (show_vscore_plot) {
+    # x_min <- 0.5 * min(mu_gene)
+    # x_max <- 2 * max(mu_gene)
+    # xTh <- x_min * exp(log(x_max / x_min) * seq(0, 1, length.out = 100))
+    # yTh <- (1 + a) * (1 + b) + b * xTh
+    #
+    # plot(log10(mu_gene), log10(FF_gene), col = rgb(0.8, 0.8, 0.8, alpha = 0.3),
+    #      pch = 16, main = sample_name, xlab = 'log10(mean)', ylab = 'log10(Fano factor)')
+    # points(log10(mu_gene)[ix], log10(FF_gene)[ix], col = 'black', pch = 16, alpha = 0.3)
+    # lines(log10(xTh), log10(yTh))
+
     x_min <- 0.5 * min(mu_gene)
     x_max <- 2 * max(mu_gene)
     xTh <- x_min * exp(log(x_max / x_min) * seq(0, 1, length.out = 100))
     yTh <- (1 + a) * (1 + b) + b * xTh
 
-    plot(log10(mu_gene), log10(FF_gene), col = rgb(0.8, 0.8, 0.8, alpha = 0.3),
-         pch = 16, main = sample_name, xlab = 'log10(mean)', ylab = 'log10(Fano factor)')
-    points(log10(mu_gene)[ix], log10(FF_gene)[ix], col = 'black', pch = 16, alpha = 0.3)
-    lines(log10(xTh), log10(yTh))
+    # Create a data frame for the line
+    line_data <- data.frame(log10_xTh = log10(xTh), log10_yTh = log10(yTh))
+
+    # Create a data frame for points
+    points_data <- data.frame(log10_mu_gene = log10(mu_gene)[ix], log10_FF_gene = log10(FF_gene)[ix])
+
+    # Create the ggplot
+    g<-ggplot() +
+      geom_point(data = points_data, aes(x = log10_mu_gene, y = log10_FF_gene), col = 'black', alpha = 0.8) +
+      geom_line(data = line_data, aes(x = log10_xTh, y = log10_yTh), color = "blue") +
+      geom_point(aes(x = log10(mu_gene), y = log10(FF_gene)), col = rgb(0.8, 0.8, 0.8, alpha = 0.3)) +
+      labs(title = sample_name, x = 'log10(mean)', y = 'log10(Fano factor)')+theme_bw()
+    print(g)
   }
 
   return(gene_ix[ix])
