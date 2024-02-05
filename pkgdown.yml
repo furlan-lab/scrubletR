@@ -2,9 +2,9 @@ pandoc: 3.1.11.1
 pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
-  HowTo: HowTo.html
   ImplementationHassles: ImplementationHassles.html
-last_built: 2024-02-05T19:53Z
+  QuickStart: QuickStart.html
+last_built: 2024-02-05T21:03Z
 urls:
   reference: https://furlan-lab.github.io/scrubletR/reference
   article: https://furlan-lab.github.io/scrubletR/articles

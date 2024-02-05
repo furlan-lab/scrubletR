@@ -7,10 +7,10 @@
     <loc>https://furlan-lab.github.io/scrubletR/LICENSE-text.html</loc>
   </url>
   <url>
-    <loc>https://furlan-lab.github.io/scrubletR/articles/HowTo.html</loc>
+    <loc>https://furlan-lab.github.io/scrubletR/articles/ImplementationHassles.html</loc>
   </url>
   <url>
-    <loc>https://furlan-lab.github.io/scrubletR/articles/ImplementationHassles.html</loc>
+    <loc>https://furlan-lab.github.io/scrubletR/articles/QuickStart.html</loc>
   </url>
   <url>
     <loc>https://furlan-lab.github.io/scrubletR/articles/index.html</loc>
@@ -25,7 +25,7 @@
     <loc>https://furlan-lab.github.io/scrubletR/news/index.html</loc>
   </url>
   <url>
-    <loc>https://furlan-lab.github.io/scrubletR/reference/Scrublet.html</loc>
+    <loc>https://furlan-lab.github.io/scrubletR/reference/ScrubletR.html</loc>
   </url>
   <url>
     <loc>https://furlan-lab.github.io/scrubletR/reference/build_adj_mat.html</loc>
@@ -47,6 +47,9 @@
   </url>
   <url>
     <loc>https://furlan-lab.github.io/scrubletR/reference/runningquantile.html</loc>
+  </url>
+  <url>
+    <loc>https://furlan-lab.github.io/scrubletR/reference/scrublet.html</loc>
   </url>
   <url>
     <loc>https://furlan-lab.github.io/scrubletR/reference/sparse_multiply.html</loc>
