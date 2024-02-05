@@ -1,0 +1,12 @@
+bibentry(
+    bibtype = "Article",
+    title = "Computational Identification of Cell Doublets in Single-Cell Transcriptomic Data",
+    year = "2019",
+    journal = "Cell Systems",
+    author = "Wolock SL, Lopez R, Klein AM.",
+    volume = "8",
+    number = "4",
+    pages = "281-291.e9",
+    doi = "10.1016/j.cels.2018.11.005",
+    url = "https://www.sciencedirect.com/science/article/pii/S2405471218304745",
+  )
