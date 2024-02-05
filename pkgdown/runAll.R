@@ -14,6 +14,7 @@ pkgdown::init_site(pkg = ".")
 pkgdown::build_home(preview = TRUE)
 pkgdown::build_news(preview = TRUE)
 
+
 # reference ---------------------------------------------------------------
 # source("pkgdown/02-pkgdown-add-to-yalm-reference.R")
 pkgdown::build_reference_index()

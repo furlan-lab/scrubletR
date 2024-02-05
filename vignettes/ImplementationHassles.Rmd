@@ -69,6 +69,8 @@ suppressPackageStartupMessages({
   library(Seurat)
   library(scCustomize)
   library(Matrix)
+  library(ggplot2)
+  library(scrubletR)
 })
 
 if(grepl("^gizmo", Sys.info()["nodename"])){
@@ -79,7 +81,7 @@ if(grepl("^gizmo", Sys.info()["nodename"])){
 
 #query dataset
 seuP<-readRDS(file.path(ROOT_DIR2, "220831_WC1.RDS"))
-DimPlot_scCustom(seuP)
+DimPlot_scCustom(seuP, label = F)
 
 #counts_matrix<-t(seuP@assays$RNA@counts[,1:2000])
 counts_matrix<-t(seuP@assays$RNA@counts)
@@ -149,7 +151,7 @@ verbose = TRUE
 
 
 #instantiate object
-scr<-Scrublet$new(counts_matrix = counts_matrix)
+scr<-ScrubletR$new(counts_matrix = counts_matrix)
 
 scr$pipeline_normalize()
 
@@ -261,7 +263,7 @@ import copy
 scrub_preZ = copy.deepcopy(scrub)
 ```
 
-#Let's umap 
+# Let's umap 
 
 Here we will brind the pseudo doublets with the original count matrix and visualize using UMAP across the two implemnetations.  They look similar.
 ```{r, message=F, warning=F}
@@ -304,7 +306,7 @@ py_zscored = scr.sparse_multiply((scrub._E_obs_norm - gene_means).T, 1/gene_stde
 
 ## step by step
 
-####Step 1 calculate gene mean and stdev - look pretty similar
+#### Step 1 calculate gene mean and stdev - look pretty similar
 ```{r}
 gene_mean = as.numeric(colMeans(scr$E_obs_norm)) #######changed to column - IS CORRECT
 gene_stdev = as.numeric(sqrt(scrubletR:::sparse_var(scr$E_obs_norm, axis = 2)))
@@ -318,7 +320,7 @@ ggplot(data.frame(mean=log(c(gene_mean, py$gene_means[1,])), stdev=log(c(gene_st
 #(same as py)
 ```
 
-####Step 2 subtract gene means
+#### Step 2 subtract gene means
 ```{python}
 preZ_Eobs_norm = scrub_preZ._E_obs_norm
 step2 = preZ_Eobs_norm - preZ_Eobs_norm.mean(0) # this step is easy in python
@@ -336,7 +338,7 @@ py$step2[1:10,1:10]
 
 ```
 
-#### turns out R has some peculiarities and for subtracting a vector element-wise from the column values of matrix we must first create a matrix duplicating the desired subtracted values down all the rows. Simply subtracting the vector (in this case of gene means from each column (gene) of the matrix cannot be done using simply matrix - vector) In python, the subtraction using numpy is much easier...
+Turns out R has some peculiarities and for subtracting a vector element-wise from the column values of matrix we must first create a matrix duplicating the desired subtracted values down all the rows. Simply subtracting the vector (in this case of gene means from each column (gene) of the matrix cannot be done using simply matrix - vector) In python, the subtraction using numpy is much easier...
 ```{r}
 sm<-matrix(rep(colMeans(scr$E_obs_norm), each = dim(scr$E_obs_norm)[1]), nrow=dim(scr$E_obs_norm)[1])
 
@@ -387,7 +389,7 @@ pts = pca.transform(X_sim)
 
 X_obs <- as.matrix(scr$E_obs_norm)
 X_sim <- as.matrix(scr$E_sim_norm)
-pca <- prcomp_irlba(X_obs, n = n_prin_comps, center = TRUE, scale. = FALSE)
+pca <- irlba::prcomp_irlba(X_obs, n = n_prin_comps, center = TRUE, scale. = FALSE)
 
 
 ix<-sample(1:nrow(X_obs), 2000)

@@ -3,12 +3,17 @@ Type: Package
 Title: Native R implementatioin of the popular python Scrublet package for multiplet removal in single cell genomic data
 Version: 0.1.1
 Authors@R: 
+    c(person(
+      "Original", "Authors of Scrublet and Publication",
+      comment = c(DOI = "10.1016/j.cels.2018.11.005")
+    ),
     person("Scott", "Furlan", , "scottfurlan@gmail.com", role = c("aut", "cre"),
-           comment = c(ORCID = "0000-0003-3007-9840"))
+           comment = c(ORCID = "0000-0003-3007-9840", role = "R implementation")))
 Description: You can read more about Scrublet in the original paper: Wolock SL, Lopez R, Klein AM. Scrublet: Computational Identification of Cell Doublets in Single-Cell Transcriptomic Data. Cell Syst. 2019 Apr 24;8(4):281-291.e9. doi: 10.1016/j.cels.2018.11.005. Epub 2019 Apr 3. PMID: 30954476; PMCID: PMC6625319. https://www.sciencedirect.com/science/article/pii/S2405471218304745
-Depends: R (>= 4.1.0), Matrix, R6, RcppAnnoy, irlba, methods, ggplot2, pbmcapply
+Depends: R (>= 4.1.0)
+Imports: Matrix, R6, RcppAnnoy, irlba, methods, ggplot2, pbmcapply, SummarizedExperiment, Seurat
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.1
 URL: https://furlan-lab.github.io/scrubletR/

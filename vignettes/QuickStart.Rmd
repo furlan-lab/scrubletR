@@ -1,5 +1,5 @@
 ---
-title: "How to ScrubletR"
+title: "Quick Start to ScrubletR"
 output: html_document
 date: "2024-02-02"
 always_allow_html: true
@@ -36,7 +36,7 @@ if(grepl("^gizmo", Sys.info()["nodename"])){
 
 #query dataset
 seuP<-readRDS(file.path(ROOT_DIR2, "220831_WC1.RDS"))
-DimPlot_scCustom(seuP)
+DimPlot_scCustom(seuP, label = F)
 
 
 ```
@@ -52,7 +52,7 @@ seuP$doublets<-seuP$doublet_scores > 0.15   #(You pick this)
 DimPlot(seuP, group.by = "doublets", cols=c("goldenrod", "navy"))
 ```
 
-## you can then remove them from your object and re-embed!
+**You can then remove them from your object and re-embed!**
 
 ## Appendix
 ```{r Appendix}

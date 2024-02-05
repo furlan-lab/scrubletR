@@ -12,6 +12,10 @@
 #' @param seed, seed aka random state
 #' @return The input CellDataSet or Seurat object with an additional column added to pData with both the doublet_score output from scrublet,
 #' @importFrom pbmcapply pbmclapply
+#' @importFrom SummarizedExperiment colData
+#' @importFrom SummarizedExperiment colData<-
+#' @importFrom methods as
+#' @importFrom Seurat GetAssayData
 #' @export
 scrublet<-function (object, split_by=NULL,
                     return_results_only = FALSE, min_counts = 3, min_cells = 3,
@@ -21,7 +25,7 @@ scrublet<-function (object, split_by=NULL,
   if(class(object)=="Seurat"){
     meta <- object@meta.data
   }else{
-    meta <- colData(cds)
+    meta <- colData(object)
   }
   if(is.null(split_by)){
     n=1
@@ -43,13 +47,13 @@ scrublet<-function (object, split_by=NULL,
   }else{
     dat<-lapply(levels(splitvec), function(split) {
       splitind<-which( splitvec %in% split)
-      Xsub <- as(t(exprs(cds)[,splitind]), "TsparseMatrix")
+      Xsub <- as(t(exprs(object)[,splitind]), "TsparseMatrix")
       list(ind=splitind, X=Xsub)
     })
   }
 
   fdata<-pbmclapply(dat, FUN = function(data){
-    scr<-Scrublet$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
+    scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
     scrublet_res<-scr$scrub_doublets(
                     min_counts = min_counts,
                     min_cells = min_cells,
@@ -74,8 +78,8 @@ scrublet<-function (object, split_by=NULL,
       object@meta.data[["predicted_doublets"]] <- final_res$predicted_doublets
       object
     }else{
-      pData(object)[["doublet_scores"]] <- final_res$doublet_scores
-      pData(object)[["predicted_doublets"]] <- final_res$predicted_doublets
+      colData(object)[["doublet_scores"]] <- final_res$doublet_scores
+      colData(object)[["predicted_doublets"]] <- final_res$predicted_doublets
       object
     }
   }
@@ -146,7 +150,7 @@ scrublet<-function (object, split_by=NULL,
 #' @export
 #' @keywords internal
 
-Scrublet <- R6::R6Class("Scrublet",
+ScrubletR <- R6::R6Class("Scrublet",
                     public = list(
                       E_obs = NULL,
                       E_sim = NULL,
