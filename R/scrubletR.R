@@ -1,101 +1,67 @@
-# Initialize Scrublet object with counts matrix and doublet prediction parameters
-#
-#         Parameters
-#         ----------
-#         counts_matrix : scipy sparse matrix or ndarray, shape (n_cells, n_genes)
-#             Matrix containing raw (unnormalized) UMI-based transcript counts.
-#             Converted into a scipy.sparse.csc_matrix.
-#
-#         total_counts : ndarray, shape (n_cells,), optional (default: None)
-#             Array of total UMI counts per cell. If `None`, this is calculated
-#             as the row sums of `counts_matrix`.
-#
-#         sim_doublet_ratio : float, optional (default: 2.0)
-#             Number of doublets to simulate relative to the number of observed
-#             transcriptomes.
-#
-#         n_neighbors : int, optional (default: None)
-#             Number of neighbors used to construct the KNN graph of observed
-#             transcriptomes and simulated doublets. If `None`, this is
-#             set to round(0.5 * sqrt(n_cells))
-#
-#         expected_doublet_rate : float, optional (default: 0.1)
-#             The estimated doublet rate for the experiment.
-#
-#         stdev_doublet_rate : float, optional (default: 0.02)
-#             Uncertainty in the expected doublet rate.
-#
-#         random_state : int, optional (default: 0)
-#             Random state for doublet simulation, approximate
-#             nearest neighbor search, and PCA/TruncatedSVD.
-#
-#         Attributes
-#         ----------
-#         predicted_doublets_ : ndarray, shape (n_cells,)
-#             Boolean mask of predicted doublets in the observed
-#             transcriptomes.
-#
-#         doublet_scores_obs_ : ndarray, shape (n_cells,)
-#             Doublet scores for observed transcriptomes.
-#
-#         doublet_scores_sim_ : ndarray, shape (n_doublets,)
-#             Doublet scores for simulated doublets.
-#
-#         doublet_errors_obs_ : ndarray, shape (n_cells,)
-#             Standard error in the doublet scores for observed
-#             transcriptomes.
-#
-#         doublet_errors_sim_ : ndarray, shape (n_doublets,)
-#             Standard error in the doublet scores for simulated
-#             doublets.
-#
-#         threshold_: float
-#             Doublet score threshold for calling a transcriptome
-#             a doublet.
-#
-#         z_scores_ : ndarray, shape (n_cells,)
-#             Z-score conveying confidence in doublet calls.
-#             Z = `(doublet_score_obs_ - threhsold_) / doublet_errors_obs_`
-#
-#         detected_doublet_rate_: float
-#             Fraction of observed transcriptomes that have been called
-#             doublets.
-#
-#         detectable_doublet_fraction_: float
-#             Estimated fraction of doublets that are detectable, i.e.,
-#             fraction of simulated doublets with doublet scores above
-#             `threshold_`
-#
-#         overall_doublet_rate_: float
-#             Estimated overall doublet rate,
-#             `detected_doublet_rate_ / detectable_doublet_fraction_`.
-#             Should agree (roughly) with `expected_doublet_rate`.
-#
-#         manifold_obs_: ndarray, shape (n_cells, n_features)
-#             The single-cell "manifold" coordinates (e.g., PCA coordinates)
-#             for observed transcriptomes. Nearest neighbors are found using
-#             the union of `manifold_obs_` and `manifold_sim_` (see below).
-#
-#         manifold_sim_: ndarray, shape (n_doublets, n_features)
-#             The single-cell "manifold" coordinates (e.g., PCA coordinates)
-#             for simulated doublets. Nearest neighbors are found using
-#             the union of `manifold_obs_` (see above) and `manifold_sim_`.
-#
-#         doublet_parents : ndarray, shape (n_doublets, 2)
-#             Indices of the observed transcriptomes used to generate the
-#             simulated doublets.
-#
-#         doublet_neighbor_parents_ : list, length n_cells
-#             A list of arrays of the indices of the doublet neighbors of
-#             each observed transcriptome (the ith entry is an array of
-#             the doublet neighbors of transcriptome i).
-
-
-#' Scrublet R6 Class
+#' @title Scrublet R6 Class
+#'
+#' @description
+#' The Scrublet R6 class represents a single-cell RNA-seq scrubbing tool.
+#'
+#' @section Public Fields:
+#' \itemize{
+#'   \item \code{E_obs}: Observed expression matrix.
+#'   \item \code{E_sim}: Simulated expression matrix.
+#'   \item \code{E_obs_norm}: Normalized observed expression matrix.
+#'   \item \code{E_sim_norm}: Normalized simulated expression matrix.
+#'   \item \code{gene_filter}: Filter for highly variable genes.
+#'   \item \code{embeddings}: List of embeddings.
+#'   \item \code{total_counts_obs}: Total counts for observed cells.
+#'   \item \code{total_counts_sim}: Total counts for simulated cells.
+#'   \item \code{sim_doublet_ratio}: Ratio of simulated doublets to observed cells.
+#'   \item \code{n_neighbors}: Number of neighbors for calculations.
+#'   \item \code{expected_doublet_rate}: Expected doublet rate.
+#'   \item \code{stdev_doublet_rate}: Standard deviation of doublet rate.
+#'   \item \code{random_state}: Seed for reproducibility.
+#'   \item \code{doublet_parents}: Matrix of doublet parents.
+#'   \item \code{manifold_obs_}: Observed manifold data.
+#'   \item \code{manifold_sim_}: Simulated manifold data.
+#'   \item \code{doublet_scores_obs_}: Doublet scores for observed cells.
+#'   \item \code{doublet_scores_sim_}: Doublet scores for simulated cells.
+#'   \item \code{doublet_errors_obs_}: Doublet errors for observed cells.
+#'   \item \code{doublet_errors_sim_}: Doublet errors for simulated cells.
+#'   \item \code{doublet_neighbor_parents_}: Parents of doublet neighbors.
+#'   \item \code{predicted_doublets}: Predicted doublets.
+#'   \item \code{z_scores_}: Z-scores for doublet predictions.
+#'   \item \code{threshold_}: Threshold for doublet predictions.
+#'   \item \code{detected_doublet_rate_}: Detected doublet rate.
+#'   \item \code{detectable_doublet_fraction_}: Detectable doublet fraction.
+#'   \item \code{overall_doublet_rate_}: Overall doublet rate.
+#' }
+#'
+#' @section Public Methods:
+#' \itemize{
+#'   \item \code{get_dims}: Display dimensions of expression matrices.
+#'   \item \code{scrub_doublets}: Perform scrubbing to identify and remove doublets.
+#'   \item \code{simulate_doublets}: Simulate doublets based on observed data.
+#'   \item \code{set_manifold}: Set manifold data.
+#'   \item \code{calculate_doublet_scores}: Calculate doublet scores using nearest neighbors.
+#'   \item \code{call_doublets}: Identify doublets based on scores and threshold.
+#'   \item \code{nearest_neighbor_classifier}: Nearest neighbor classification for doublet scores.
+#'   \item \code{plot_histogram}: Plot histogram of doublet scores.
+#'   \item \code{set_embedding}: Set embedding data.
+#'   \item \code{plot_embedding}: Plot embeddings.
+#'   \item \code{pipeline_normalize}: Normalize total counts.
+#'   \item \code{pipeline_get_gene_filter}: Identify highly variable genes.
+#'   \item \code{pipeline_apply_gene_filter}: Apply gene filter to expression matrices.
+#'   \item \code{pipeline_mean_center}: Mean center expression matrix.
+#'   \item \code{pipeline_normalize_variance}: Variance normalization of expression matrices.
+#'   \item \code{pipeline_zscore}: Z-score normalization of expression matrices.
+#'   \item \code{pipeline_log_transform}: Log transform expression matrices.
+#'   \item \code{pipeline_truncated_svd}: Truncated Singular Value Decomposition.
+#'   \item \code{pipeline_pca}: Principal Component Analysis.
+#' }
 #'
 #' @importFrom R6 R6Class
 #' @import Matrix
+#' @importFrom irlba prcomp_irlba
 #' @export
+
 Scrublet <- R6::R6Class("Scrublet",
                     public = list(
                       E_obs = NULL,
@@ -286,7 +252,6 @@ Scrublet <- R6::R6Class("Scrublet",
       }
 
       self$doublet_parents <- pair_ix
-      return(NULL)
     },
 
     set_manifold = function(manifold_obs, manifold_sim) {
@@ -338,18 +303,6 @@ Scrublet <- R6::R6Class("Scrublet",
       cat_optional(paste0('\tEstimated  =', 100 * self$overall_doublet_rate_, "%"), verbose)
     },
 
-    #' Nearest Neighbor Classifier
-    #'
-    #' This method performs nearest neighbor classification to calculate doublet scores.
-    #'
-    #' @param k Number of nearest neighbors.
-    #' @param use_approx_nn Whether to use approximate nearest neighbors.
-    #' @param distance_metric Distance metric for finding neighbors.
-    #' @param exp_doub_rate Expected doublet rate.
-    #' @param stdev_doub_rate Standard deviation of doublet rate.
-    #' @param get_neighbor_parents Whether to get parents of doublet neighbors.
-    #'
-    #' @return NULL (modifies the R6 object in place)
     nearest_neighbor_classifier = function(
                                           k = 40,
                                           use_approx_nn = TRUE,
@@ -445,21 +398,7 @@ Scrublet <- R6::R6Class("Scrublet",
       # Plot embedding code here
     },
 
-    #' Total Counts Normalization
-    #'
-    #' This function performs total counts normalization on the observed and simulated expression matrices.
-    #'
-    #' @param postnorm_total Target total count after normalization. If not provided, the mean of observed total counts will be used.
-    #'
-    #' @return NULL (modifies the R6 object in place)
-    #'
-    #' @details
-    #' Total counts normalization is a step in the preprocessing of single-cell RNA-seq data. It aims to scale the total counts of each cell so that they have a consistent value, making them comparable across cells. This is useful for downstream analyses, such as dimensionality reduction and clustering.
-    #'
-    #' The function updates the normalized observed expression matrix (`E_obs_norm`) based on the specified target total count. If a simulated expression matrix (`E_sim`) is present in the R6 object, it also normalizes the simulated matrix (`E_sim_norm`).
-    #'
-    #' @seealso
-    #' \code{\link{tot_counts_norm}}
+
 
     pipeline_normalize = function(postnorm_total = NULL) {
         # Total counts normalization
@@ -473,32 +412,21 @@ Scrublet <- R6::R6Class("Scrublet",
           self$E_sim_norm <- tot_counts_norm(self$E_sim, target_total = postnorm_total, total_counts = self$total_counts_sim)
         }
       },
-    #' Identify highly variable genes expressed above a minimum level
-    #' @param min_counts Minimum counts for a gene to be considered highly variable
-    #' @param min_cells Minimum cells for a gene to be considered highly variable
-    #' @param min_vscore_pctl Minimum percentile of variance score for a gene to be considered highly variable
-    #' @return NULL (modifies the R6 object in place)
+
     pipeline_get_gene_filter = function(
                                         min_counts = 3,
                                         min_cells = 3,
-                                        min_gene_variability_pctl = 85
+                                        min_gene_variability_pctl = 85, plot=T
                                         ) {
-      # counts <- Matrix::rowSums(self$E_obs_norm)
-      # cells <- Matrix::colSums(self$E_obs_norm > 0)
-      # vscores <- get_vscores(self$E_obs_norm)
-      #
-      # highly_variable <- counts >= min_counts & cells >= min_cells & vscores >= quantile(vscores, min_vscore_pctl / 100)
-      # return(highly_variable)
       self$gene_filter = filter_genes(self$E_obs_norm,
                                        min_counts=min_counts,
                                        min_cells=min_cells,
-                                       min_vscore_pctl=min_gene_variability_pctl)
+                                       min_vscore_pctl=min_gene_variability_pctl, plot = plot)
     },
 
 
 
-    #' Apply gene filter to expression matrices
-    #' @return NULL (modifies the R6 object in place)
+
     pipeline_apply_gene_filter = function() {
       self$E_obs <- self$E_obs[, self$gene_filter, drop = FALSE]
       self$E_obs_norm <- self$E_obs_norm[, self$gene_filter, drop = FALSE]
@@ -506,8 +434,7 @@ Scrublet <- R6::R6Class("Scrublet",
       self$E_sim_norm <- self$E_sim_norm[, self$gene_filter, drop = FALSE]
     },
 
-    #' Mean center expression matrix
-    #' @return NULL (modifies the R6 object in place)
+
     pipeline_mean_center = function() {
       gene_means <- colMeans(self$E_obs_norm, na.rm = TRUE)
       self$E_obs_norm <- sweep(self$E_obs_norm, 2, gene_means, "-")
@@ -516,18 +443,6 @@ Scrublet <- R6::R6Class("Scrublet",
       }
     },
 
-    #' Variance Normalization of Expression Matrices
-    #'
-    #' This function performs variance normalization on the observed and simulated expression matrices.
-    #'
-    #' @return NULL (modifies the R6 object in place)
-    #'
-    #' @details
-    #' Variance normalization is a step that scales the expression values of each gene across cells based on their standard deviation. It helps to make gene expression distributions comparable between genes.
-    #'
-    #' The function calculates gene standard deviations from the observed expression matrix (`E_obs_norm`). It then scales the observed and simulated matrices based on these standard deviations.
-
-
     pipeline_normalize_variance = function() {
       gene_stdevs <- sqrt(sparse_var(self$E_obs_norm))
       self$E_obs_norm <- t(t(self$E_obs_norm) / gene_stdevs)
@@ -535,17 +450,6 @@ Scrublet <- R6::R6Class("Scrublet",
         self$E_sim_norm <- t(t(self$E_sim_norm) / gene_stdevs)
       }
     },
-
-    #' Z-Score Normalization of Expression Matrices
-    #'
-    #' This function performs z-score normalization on the observed and simulated expression matrices.
-    #'
-    #' @return NULL (modifies the R6 object in place)
-    #' @importFrom Matrix rowMeans
-    #' @details
-    #' Z-score normalization standardizes the expression values of each gene across cells by subtracting the mean and dividing by the standard deviation. It helps to make gene expression distributions comparable between genes.
-    #'
-    #' The function calculates gene means and standard deviations from the observed expression matrix (`E_obs_norm`). It then applies z-score normalization to the observed and simulated matrices.
 
     pipeline_zscore = function() {
       gene_means = colMeans(self$E_obs_norm) #######changed to column??? SCOTT
@@ -556,13 +460,6 @@ Scrublet <- R6::R6Class("Scrublet",
       }
     },
 
-    #' Log Transform Expression Matrices
-    #'
-    #' This method performs log transformation on the observed and simulated expression matrices.
-    #'
-    #' @param pseudocount The pseudocount added to expression values before taking the logarithm.
-    #'
-    #' @return NULL (modifies the R6 object in place)
 
     pipeline_log_transform = function(pseudocount = 1) {
       self$E_obs_norm <- log_normalize(self$E_obs_norm, pseudocount)
@@ -574,30 +471,11 @@ Scrublet <- R6::R6Class("Scrublet",
       invisible(NULL)
     },
 
-    #' Truncated Singular Value Decomposition (SVD) for Expression Matrices
-    #'
-    #' This method performs truncated SVD on the observed expression matrix and sets the resulting manifold.
-    #'
-    #' @param n_prin_comps Number of principal components to keep.
-    #' @param random_state Seed for reproducibility.
-    #' @param algorithm Algorithm to use for SVD.
-    #'
-    #' @return NULL (modifies the R6 object in place)
     pipeline_truncated_svd = function(n_prin_comps = 30, random_state = 0, algorithm = 'arpack') {
       svd <- svd(self$E_obs_norm, nu = n_prin_comps, nv = 0)
       ####### not sure about this next line SCOTT
       #self$set_manifold(predict(svd, newdata = self$E_obs_norm), predict(svd, newdata = self$E_sim_norm))
     },
-
-    #' Principal Component Analysis (PCA) for Expression Matrices
-    #'
-    #' This method performs PCA on the observed expression matrix and sets the resulting manifold.
-    #'
-    #' @param n_prin_comps Number of principal components to keep.
-    #' @param random_state Seed for reproducibility.
-    #' @param svd_solver Algorithm to use for SVD.
-    #' @importFrom irlba prcomp_irlba
-    #' @return NULL (modifies the R6 object in place)
 
     pipeline_pca = function(n_prin_comps = 50, random_state = 0, svd_solver = 'arpack') {
       X_obs <- as.matrix(self$E_obs_norm)
@@ -609,7 +487,7 @@ Scrublet <- R6::R6Class("Scrublet",
       }
       pca <- prcomp_irlba(X_obs, n = n_prin_comps, center = TRUE, scale. = FALSE)
       # pca <- prcomp(X_obs, center = TRUE, scale. = FALSE)
-      self$set_manifold(pca$x[, 1:n_prin_comps], pca$rotation[, 1:n_prin_comps])
+      self$set_manifold(predict(pca, X_obs)[, 1:n_prin_comps], predict(pca, X_sim)[, 1:n_prin_comps])
 
     }
                     )

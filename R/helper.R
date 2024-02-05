@@ -165,11 +165,10 @@ build_adj_mat <- function(edges, n_nodes) {
 #' @seealso \code{\link{runningquantile}}, \code{\link{optimize}}
 #'
 #' @importFrom graphics hist
-#' @importFrom stats optim
+#' @importFrom stats optimise
 #' @export
 get_vscores <- function(E, min_mean = 0, nBins = 50, fit_percentile = 0.1, error_wt = 1) {
   ncell <- nrow(E)
-
   mu_gene <- colMeans(E)
   gene_ix <- which(mu_gene > min_mean)
   mu_gene <- mu_gene[gene_ix]
@@ -177,6 +176,7 @@ get_vscores <- function(E, min_mean = 0, nBins = 50, fit_percentile = 0.1, error
   tmp <- E[, gene_ix]
   tmp <- tmp^2
   var_gene <- colMeans(tmp) - mu_gene^2
+  rm(tmp)
   FF_gene <- var_gene / mu_gene
 
   data_x <- log(mu_gene)
@@ -202,13 +202,8 @@ get_vscores <- function(E, min_mean = 0, nBins = 50, fit_percentile = 0.1, error
 
 
   b0 <- 0.1
-  # Define the optimization function
-  suppressWarnings({
-    optimize_result <- optim(par = b0, fn = errFun, control = list(fnscale = -1), method = "SANN", hessian = F)
-  })
-  # Extract the optimized value of b
-  b <- optimize_result$par
-  # b <- b_optimized$minimum
+  ###CHANGED THIS SCOTT
+  b<- optimise(errFun, c(b0, 1e30*b0))$minimum
   a <- c / (1 + b) - 1
 
   v_scores <- FF_gene / ((1 + a) * (1 + b) + b * mu_gene)
@@ -243,6 +238,7 @@ get_vscores <- function(E, min_mean = 0, nBins = 50, fit_percentile = 0.1, error
 #'     \item \code{yOut}: y-axis values representing the running quantiles.
 #'   }
 #' @importFrom stats quantile
+#' @export
 runningquantile <- function(x, y, p, nBins) {
   ind <- order(x)
   x <- x[ind]
@@ -291,7 +287,7 @@ runningquantile <- function(x, y, p, nBins) {
 #' @import ggplot2
 
 filter_genes <- function(E, base_ix = NULL, min_vscore_pctl = 85, min_counts = 3, min_cells = 3,
-                         show_vscore_plot = FALSE, sample_name = '') {
+                         plot = FALSE, sample_name = '') {
   if (is.null(base_ix)) {
     base_ix <- seq_len(nrow(E))
   }
@@ -314,16 +310,7 @@ filter_genes <- function(E, base_ix = NULL, min_vscore_pctl = 85, min_counts = 3
 
   ix <- ((colSums(E[, gene_ix] >= min_counts) >= min_cells) & (Vscores >= min_vscore))
 
-  if (show_vscore_plot) {
-    # x_min <- 0.5 * min(mu_gene)
-    # x_max <- 2 * max(mu_gene)
-    # xTh <- x_min * exp(log(x_max / x_min) * seq(0, 1, length.out = 100))
-    # yTh <- (1 + a) * (1 + b) + b * xTh
-    #
-    # plot(log10(mu_gene), log10(FF_gene), col = rgb(0.8, 0.8, 0.8, alpha = 0.3),
-    #      pch = 16, main = sample_name, xlab = 'log10(mean)', ylab = 'log10(Fano factor)')
-    # points(log10(mu_gene)[ix], log10(FF_gene)[ix], col = 'black', pch = 16, alpha = 0.3)
-    # lines(log10(xTh), log10(yTh))
+  if (plot) {
 
     x_min <- 0.5 * min(mu_gene)
     x_max <- 2 * max(mu_gene)
@@ -338,11 +325,12 @@ filter_genes <- function(E, base_ix = NULL, min_vscore_pctl = 85, min_counts = 3
 
     # Create the ggplot
     g<-ggplot() +
+      geom_point(aes(x = log10(mu_gene), y = log10(FF_gene)), col = rgb(0.8, 0.8, 0.8, alpha = 0.3)) +
       geom_point(data = points_data, aes(x = log10_mu_gene, y = log10_FF_gene), col = 'black', alpha = 0.8) +
       geom_line(data = line_data, aes(x = log10_xTh, y = log10_yTh), color = "blue") +
-      geom_point(aes(x = log10(mu_gene), y = log10(FF_gene)), col = rgb(0.8, 0.8, 0.8, alpha = 0.3)) +
       labs(title = sample_name, x = 'log10(mean)', y = 'log10(Fano factor)')+theme_bw()
     print(g)
+
   }
 
   return(gene_ix[ix])
@@ -371,6 +359,13 @@ sparse_var <- function(E, axis = 1) {
     return(colMeans(tmp, sparse = TRUE) - mean_gene^2)
   }
 }
+# sparse_var <- function(E, axis = 1) {
+#   mean_gene <- apply(E, axis, mean)
+#   tmp <- E
+#   tmp@x <- tmp@x^2
+#   squared_mean <- apply(tmp, axis, mean)
+#   return(squared_mean - mean_gene^2)
+# }
 
 #' Multiply each row of a sparse matrix by a scalar
 #'
@@ -404,7 +399,8 @@ sparse_zscore <- function(E, gene_mean = NULL, gene_stdev = NULL) {
   if (is.null(gene_stdev)) {
     gene_stdev <- sqrt(sparse_var(E, axis = 2))
   }
-  return(t(sparse_multiply(t(E - gene_mean), 1 / gene_stdev))) ## added an extra transpose SCOTT
+  sm<-matrix(rep(colMeans(E), each = dim(E)[1]), nrow=dim(E)[1])
+  return(t(sparse_multiply(t(E - sm), 1 / gene_stdev)))
 }
 
 #' Subsample counts in a sparse matrix
@@ -460,10 +456,6 @@ subsample_counts <- function(E, rate, original_totals, random_seed = 0) {
 #' @return threshold float
 #'     Upper threshold value. All pixels with an intensity higher than
 #'     this value are assumed to be foreground.
-#'
-#' @raise RuntimeError
-#'     If unable to find two local maxima in the histogram or if the
-#'     smoothing takes more than 1e4 iterations.
 #' @importFrom stats filter
 #' @references
 #'     C. A. Glasbey, "An analysis of histogram-based thresholding
@@ -560,3 +552,7 @@ validate_image_histogram <- function(image, hist, nbins) {
   return(list(counts = counts, bin_centers = bin_centers))
 }
 
+#' @export
+print_py<-function(values){
+  paste0(paste0(head(values, n =3), collapse=", "), " ... ", paste0(tail(values, n = 3), collapse = " , "))
+}

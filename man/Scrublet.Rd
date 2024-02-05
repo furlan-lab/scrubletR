@@ -4,14 +4,66 @@
 \alias{Scrublet}
 \title{Scrublet R6 Class}
 \description{
-Scrublet R6 Class
+The Scrublet R6 class represents a single-cell RNA-seq scrubbing tool.
+}
+\section{Public Fields}{
 
-Scrublet R6 Class
+\itemize{
+  \item \code{E_obs}: Observed expression matrix.
+  \item \code{E_sim}: Simulated expression matrix.
+  \item \code{E_obs_norm}: Normalized observed expression matrix.
+  \item \code{E_sim_norm}: Normalized simulated expression matrix.
+  \item \code{gene_filter}: Filter for highly variable genes.
+  \item \code{embeddings}: List of embeddings.
+  \item \code{total_counts_obs}: Total counts for observed cells.
+  \item \code{total_counts_sim}: Total counts for simulated cells.
+  \item \code{sim_doublet_ratio}: Ratio of simulated doublets to observed cells.
+  \item \code{n_neighbors}: Number of neighbors for calculations.
+  \item \code{expected_doublet_rate}: Expected doublet rate.
+  \item \code{stdev_doublet_rate}: Standard deviation of doublet rate.
+  \item \code{random_state}: Seed for reproducibility.
+  \item \code{doublet_parents}: Matrix of doublet parents.
+  \item \code{manifold_obs_}: Observed manifold data.
+  \item \code{manifold_sim_}: Simulated manifold data.
+  \item \code{doublet_scores_obs_}: Doublet scores for observed cells.
+  \item \code{doublet_scores_sim_}: Doublet scores for simulated cells.
+  \item \code{doublet_errors_obs_}: Doublet errors for observed cells.
+  \item \code{doublet_errors_sim_}: Doublet errors for simulated cells.
+  \item \code{doublet_neighbor_parents_}: Parents of doublet neighbors.
+  \item \code{predicted_doublets}: Predicted doublets.
+  \item \code{z_scores_}: Z-scores for doublet predictions.
+  \item \code{threshold_}: Threshold for doublet predictions.
+  \item \code{detected_doublet_rate_}: Detected doublet rate.
+  \item \code{detectable_doublet_fraction_}: Detectable doublet fraction.
+  \item \code{overall_doublet_rate_}: Overall doublet rate.
 }
-\seealso{
-\code{\link{tot_counts_norm}}
-Identify highly variable genes expressed above a minimum level
 }
+
+\section{Public Methods}{
+
+\itemize{
+  \item \code{get_dims}: Display dimensions of expression matrices.
+  \item \code{scrub_doublets}: Perform scrubbing to identify and remove doublets.
+  \item \code{simulate_doublets}: Simulate doublets based on observed data.
+  \item \code{set_manifold}: Set manifold data.
+  \item \code{calculate_doublet_scores}: Calculate doublet scores using nearest neighbors.
+  \item \code{call_doublets}: Identify doublets based on scores and threshold.
+  \item \code{nearest_neighbor_classifier}: Nearest neighbor classification for doublet scores.
+  \item \code{plot_histogram}: Plot histogram of doublet scores.
+  \item \code{set_embedding}: Set embedding data.
+  \item \code{plot_embedding}: Plot embeddings.
+  \item \code{pipeline_normalize}: Normalize total counts.
+  \item \code{pipeline_get_gene_filter}: Identify highly variable genes.
+  \item \code{pipeline_apply_gene_filter}: Apply gene filter to expression matrices.
+  \item \code{pipeline_mean_center}: Mean center expression matrix.
+  \item \code{pipeline_normalize_variance}: Variance normalization of expression matrices.
+  \item \code{pipeline_zscore}: Z-score normalization of expression matrices.
+  \item \code{pipeline_log_transform}: Log transform expression matrices.
+  \item \code{pipeline_truncated_svd}: Truncated Singular Value Decomposition.
+  \item \code{pipeline_pca}: Principal Component Analysis.
+}
+}
+
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -145,29 +197,6 @@ Identify highly variable genes expressed above a minimum level
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{k}}{Number of nearest neighbors.}
-
-\item{\code{use_approx_nn}}{Whether to use approximate nearest neighbors.}
-
-\item{\code{distance_metric}}{Distance metric for finding neighbors.}
-
-\item{\code{exp_doub_rate}}{Expected doublet rate.}
-
-\item{\code{stdev_doub_rate}}{Standard deviation of doublet rate.}
-
-\item{\code{get_neighbor_parents}}{Whether to get parents of doublet neighbors.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-Total Counts Normalization
-
-This function performs total counts normalization on the observed and simulated expression matrices.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-plot_histogram"></a>}}
@@ -215,22 +244,6 @@ This function performs total counts normalization on the observed and simulated 
 \if{html}{\out{<div class="r">}}\preformatted{Scrublet$pipeline_normalize(postnorm_total = NULL)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{postnorm_total}}{Target total count after normalization. If not provided, the mean of observed total counts will be used.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Details}{
-Total counts normalization is a step in the preprocessing of single-cell RNA-seq data. It aims to scale the total counts of each cell so that they have a consistent value, making them comparable across cells. This is useful for downstream analyses, such as dimensionality reduction and clustering.
-
-The function updates the normalized observed expression matrix (`E_obs_norm`) based on the specified target total count. If a simulated expression matrix (`E_sim`) is present in the R6 object, it also normalizes the simulated matrix (`E_sim_norm`).
-}
-
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-pipeline_get_gene_filter"></a>}}
@@ -240,25 +253,11 @@ NULL (modifies the R6 object in place)
 \if{html}{\out{<div class="r">}}\preformatted{Scrublet$pipeline_get_gene_filter(
   min_counts = 3,
   min_cells = 3,
-  min_gene_variability_pctl = 85
+  min_gene_variability_pctl = 85,
+  plot = T
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{min_counts}}{Minimum counts for a gene to be considered highly variable}
-
-\item{\code{min_cells}}{Minimum cells for a gene to be considered highly variable}
-
-\item{\code{min_vscore_pctl}}{Minimum percentile of variance score for a gene to be considered highly variable}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-Apply gene filter to expression matrices
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-pipeline_apply_gene_filter"></a>}}
@@ -268,10 +267,6 @@ Apply gene filter to expression matrices
 \if{html}{\out{<div class="r">}}\preformatted{Scrublet$pipeline_apply_gene_filter()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-Mean center expression matrix
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-pipeline_mean_center"></a>}}
@@ -281,12 +276,6 @@ Mean center expression matrix
 \if{html}{\out{<div class="r">}}\preformatted{Scrublet$pipeline_mean_center()}\if{html}{\out{</div>}}
 }
 
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-Variance Normalization of Expression Matrices
-
-This function performs variance normalization on the observed and simulated expression matrices.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-pipeline_normalize_variance"></a>}}
@@ -296,18 +285,6 @@ This function performs variance normalization on the observed and simulated expr
 \if{html}{\out{<div class="r">}}\preformatted{Scrublet$pipeline_normalize_variance()}\if{html}{\out{</div>}}
 }
 
-\subsection{Details}{
-Variance normalization is a step that scales the expression values of each gene across cells based on their standard deviation. It helps to make gene expression distributions comparable between genes.
-
-The function calculates gene standard deviations from the observed expression matrix (`E_obs_norm`). It then scales the observed and simulated matrices based on these standard deviations.
-Z-Score Normalization of Expression Matrices
-
-This function performs z-score normalization on the observed and simulated expression matrices.
-}
-
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-pipeline_zscore"></a>}}
@@ -317,18 +294,6 @@ NULL (modifies the R6 object in place)
 \if{html}{\out{<div class="r">}}\preformatted{Scrublet$pipeline_zscore()}\if{html}{\out{</div>}}
 }
 
-\subsection{Details}{
-Z-score normalization standardizes the expression values of each gene across cells by subtracting the mean and dividing by the standard deviation. It helps to make gene expression distributions comparable between genes.
-
-The function calculates gene means and standard deviations from the observed expression matrix (`E_obs_norm`). It then applies z-score normalization to the observed and simulated matrices.
-Log Transform Expression Matrices
-
-This method performs log transformation on the observed and simulated expression matrices.
-}
-
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-pipeline_log_transform"></a>}}
@@ -338,19 +303,6 @@ NULL (modifies the R6 object in place)
 \if{html}{\out{<div class="r">}}\preformatted{Scrublet$pipeline_log_transform(pseudocount = 1)}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{pseudocount}}{The pseudocount added to expression values before taking the logarithm.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-Truncated Singular Value Decomposition (SVD) for Expression Matrices
-
-This method performs truncated SVD on the observed expression matrix and sets the resulting manifold.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-pipeline_truncated_svd"></a>}}
@@ -364,23 +316,6 @@ This method performs truncated SVD on the observed expression matrix and sets th
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n_prin_comps}}{Number of principal components to keep.}
-
-\item{\code{random_state}}{Seed for reproducibility.}
-
-\item{\code{algorithm}}{Algorithm to use for SVD.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-Principal Component Analysis (PCA) for Expression Matrices
-
-This method performs PCA on the observed expression matrix and sets the resulting manifold.
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-pipeline_pca"></a>}}
@@ -394,20 +329,6 @@ This method performs PCA on the observed expression matrix and sets the resultin
 )}\if{html}{\out{</div>}}
 }
 
-\subsection{Arguments}{
-\if{html}{\out{<div class="arguments">}}
-\describe{
-\item{\code{n_prin_comps}}{Number of principal components to keep.}
-
-\item{\code{random_state}}{Seed for reproducibility.}
-
-\item{\code{svd_solver}}{Algorithm to use for SVD.}
-}
-\if{html}{\out{</div>}}
-}
-\subsection{Returns}{
-NULL (modifies the R6 object in place)
-}
 }
 \if{html}{\out{<hr>}}
 \if{html}{\out{<a id="method-Scrublet-clone"></a>}}

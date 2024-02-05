@@ -28,9 +28,12 @@ counts_matrix<-t(seuP@assays$RNA@counts)
 
 scr<-Scrublet$new(counts_matrix = counts_matrix)
 #debug(scr$pipeline_pca)
-debug(scr$scrub_doublets)
+#debug(scr$scrub_doublets)
+#debug(scr$simulate_doublets)
 ds<-scr$scrub_doublets()
+ds$predicted_doublets
 
+undebug(filter_genes)
 seuP$ds<-ds$doublet_scores_obs_
 
 FeaturePlot_scCustom(seuP, features = "ds")
@@ -39,7 +42,7 @@ FeaturePlot_scCustom(seuP, features = "ds")
 undebug(get_knn_graph)
 
 undebug(sparse_multiply)
-debug(filter_genes)
+debug(scrubletR:::filter_genes)
 debug(scr$pipeline_pca)
 debug(get_vscores)
 debug(scr$scrub_doublets)

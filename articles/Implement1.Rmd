@@ -22,6 +22,7 @@ devtools::install_github("furlan-lab/scrubletR")
 
 
 ```{r, include=F}
+rm(list=ls())
 library(reticulate)
 library(scrubletR)
 # reticulate::use_condaenv("reticulate")
@@ -174,13 +175,19 @@ FF_gene = FF_gene[ix2]
 min_vscore = np.percentile(v_scores, min_vscore_pctl)
 final_ix = (((scrub._E_obs_norm[:,gene_ix] >= min_counts).sum(0).A.squeeze() >= min_cells) & (v_scores >= min_vscore))
     
+#import inspect
+#lines = inspect.getsource(scr.filter_genes)
+#print(lines)
+
 ```
 
 
 ## Problem #1
 
-V-scores are different between R and python
+V-scores are slightly different between R and python.  This likely won't affect performance too much
 ```{r}
+#scr$pipeline_get_gene_filter()
+
 
 vscores_result<-get_vscores(scr$E_obs_norm)
 Vscores <- as.numeric(vscores_result$v_scores)
@@ -191,7 +198,7 @@ df<-data.frame(vscore_R=log(Vscores), vscore_py = log(py_vscores), indices_py=1:
 df$selected_cat<-factor(with(df, 2*indices_py + indices_R + 1))
 levels(df$selected_cat)<-c("neither", "both")
 
-ggplot(df, aes(x=vscore_R, y=vscore_py, color = selected_cat))+geom_point(size = 0.01)+theme_bw()
+#ggplot(df, aes(x=vscore_R, y=vscore_py, color = selected_cat))+geom_point(size = 0.01)+theme_bw()
 
 gene_ix <- vscores_result$gene_ix
 mu_gene <- vscores_result$mu_gene
@@ -209,14 +216,14 @@ min_vscore_pctl=min_gene_variability_pctl
 min_vscore <- quantile(Vscores, prob = min_vscore_pctl / 100)
 
 ix <- ((colSums(scr$E_obs_norm[, gene_ix] >= min_counts) >= min_cells) & (Vscores >= min_vscore))
-table(ix)
 
 df$selected_R<-ix
 df$selected_py<-py$final_ix
 df$selected_cat<-factor(with(df, 2*selected_py + selected_R + 1))
-levels(df$selected_cat)<-c("neither", "py_only", "both")
+levels(df$selected_cat)<-c("neither", "r_only", "py_only", "both")
 ggplot(df, aes(x=vscore_R, y=vscore_py, color = selected_cat))+geom_point(size = 1)+theme_bw()
 
+table(df$selected_cat)
 ```
 
 

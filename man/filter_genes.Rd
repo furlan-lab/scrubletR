@@ -10,7 +10,7 @@ filter_genes(
   min_vscore_pctl = 85,
   min_counts = 3,
   min_cells = 3,
-  show_vscore_plot = FALSE,
+  plot = FALSE,
   sample_name = ""
 )
 }
@@ -25,9 +25,9 @@ filter_genes(
 
 \item{min_cells}{Minimum number of cells expressing a gene for it to be considered.}
 
-\item{show_vscore_plot}{Logical indicating whether to show a v-score plot.}
-
 \item{sample_name}{Character string specifying the name of the sample for the plot title.}
+
+\item{show_vscore_plot}{Logical indicating whether to show a v-score plot.}
 }
 \value{
 A numeric vector containing the indices of filtered genes.

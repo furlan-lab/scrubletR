@@ -1,0 +1,441 @@
+---
+title: "Implementing Scrublet in R"
+output: html_document
+date: "2024-02-02"
+always_allow_html: true
+editor_options: 
+  
+  chunk_output_type: console
+---
+
+# Installation of packages
+
+Note that this notebook was run using Rstudio enabling both R and Python environments to be maintained throughout.
+
+### Installing scrubletR
+
+You will need to have the devtools package installed...
+
+```{r, eval=F}
+devtools::install_github("furlan-lab/scrubletR")
+```
+
+
+```{r, include=F}
+rm(list=ls())
+library(reticulate)
+library(scrubletR)
+# reticulate::use_condaenv("reticulate")
+```
+### Loading reticulate
+
+Not for the faint of heart...  You can read about getting python working from within R [here] (https://rstudio.github.io/reticulate/).  You can either activate your reticulate environment and use 'pip install scrublet' to install scrublet or try from R as below.  I use conda (reluctantly) and could not get it to install from in R
+```{r, eval=F}
+library(reticulate)
+py_config()
+py_install("scrublet")
+
+```
+
+I had to do this in the terminal after creating a new conda environment called 'reticulate'.
+
+```{bash, eval=F}
+conda activate reticulate
+pip install scrublet
+```
+
+Regardless of how you do it, you can check that it is installed using this from R.  If you are successful, you will get no output.
+```{r}
+py_run_string("import scrublet")
+```
+
+Failure will look something like this
+```{r, eval=F}
+py_run_string("import scrubletoops")
+```
+
+
+# Comparing Implementations
+
+Ok with working R and python versions of Scrublet, let's go over the differences.  First let's load data
+
+
+### Load data
+
+```{r, dpi=300, fig.height=4, fig.width = 6, warning=F, message=F}
+
+suppressPackageStartupMessages({
+  library(viewmastRust)
+  library(Seurat)
+  library(scCustomize)
+  library(Matrix)
+})
+
+if(grepl("^gizmo", Sys.info()["nodename"])){
+  ROOT_DIR2<-"/fh/fast/furlan_s/grp/data/ddata/BM_data"
+} else {
+  ROOT_DIR2<-"/Users/sfurlan/Library/CloudStorage/OneDrive-SharedLibraries-FredHutchinsonCancerCenter/Furlan_Lab - General/experiments/patient_marrows/aggr/cds/indy"
+}
+
+#query dataset
+seuP<-readRDS(file.path(ROOT_DIR2, "220831_WC1.RDS"))
+DimPlot_scCustom(seuP)
+
+#counts_matrix<-t(seuP@assays$RNA@counts[,1:2000])
+counts_matrix<-t(seuP@assays$RNA@counts)
+```
+
+## First step
+
+The first step in scrublet data processing is size factor normalization.  Let's see how the normalized counts compare across the two implementations.  In the next block, I have run the scrublet pipeline through normalization and saved the counts in the R environment as "py_E_obs_norm"
+
+```{python}
+
+import numpy as np
+import scrublet as scr
+scrub = scr.Scrublet(r.counts_matrix)
+
+##set params
+synthetic_doublet_umi_subsampling=1.0
+use_approx_neighbors=True
+distance_metric='euclidean'
+get_doublet_neighbor_parents=False
+min_counts=3
+min_cells=3
+min_gene_variability_pctl=85
+log_transform=False
+mean_center=True,
+normalize_variance=True
+n_prin_comps=30
+svd_solver='arpack'
+verbose=True
+random_state = 0
+
+#clear data in object
+scrub._E_sim = None
+scrub._E_obs_norm = None
+scrub._E_sim_norm = None
+scrub._gene_filter = np.arange(scrub._E_obs.shape[1])
+
+#run normalize
+scr.pipeline_normalize(scrub)
+
+#capture size factor normalized counts
+r.py_E_obs_norm = scrub._E_obs_norm.data
+
+
+```
+
+### Run scrubletR size factor normalization
+
+To see how the sets of counts compare, we can similarly run scrubletR normalization and correlate a sample (n=5000) of the log transformed counts using ggplot.  Unsurprisingly they are not different.
+
+```{r}
+
+#In R
+#set params
+synthetic_doublet_umi_subsampling = 1.0
+use_approx_neighbors = TRUE
+distance_metric = 'euclidean'
+get_doublet_neighbor_parents = FALSE
+min_counts = 3
+min_cells = 3
+min_gene_variability_pctl = 85
+log_transform = FALSE
+mean_center = T
+normalize_variance = T
+n_prin_comps = 30
+verbose = TRUE
+
+
+#instantiate object
+scr<-Scrublet$new(counts_matrix = counts_matrix)
+
+scr$pipeline_normalize()
+
+ix<-sample(1:length(scr$E_obs_norm@x), 5000)
+ggplot(data.frame(x=log(scr$E_obs_norm@x[ix]), y = log(py_E_obs_norm[ix])), aes(x=x, y=y))+geom_point(size = 0.01)+xlab("scrubletR size-factor normalized counts")+ylab("scrublet (python) size-factor normalized counts")+theme_bw()
+```
+
+## Second step
+
+Next in the pipeline is to select a subset of features with the highest variable expression.  The default is set to find the set of features that exhibit expression variance in the above the 85th percentile as measured using the v-statistic.
+
+```{python}
+genefilter = scr.filter_genes(scrub._E_obs_norm,
+                                        min_counts=min_counts,
+                                        min_cells=min_cells,
+                                        min_vscore_pctl=min_gene_variability_pctl, show_vscore_plot=True)
+v_scores, CV_eff, CV_input, gene_ix, mu_gene, FF_gene, a, b = scr.get_vscores(scrub._E_obs_norm)
+r.py_vscores = v_scores
+min_vscore_pctl=min_gene_variability_pctl
+ix2 = v_scores>0
+v_scores = v_scores[ix2]
+gene_ix = gene_ix[ix2]
+mu_gene = mu_gene[ix2]
+FF_gene = FF_gene[ix2]
+min_vscore = np.percentile(v_scores, min_vscore_pctl)
+final_ix = (((scrub._E_obs_norm[:,gene_ix] >= min_counts).sum(0).A.squeeze() >= min_cells) & (v_scores >= min_vscore))
+    
+#import inspect
+#lines = inspect.getsource(scr.filter_genes)
+#print(lines)
+
+```
+
+
+## Problem #1
+
+V-scores are slightly different between R and python.  The correlation is pretty good howewever and this likely won't affect performance too much
+```{r}
+#scr$pipeline_get_gene_filter()
+
+
+vscores_result<-get_vscores(scr$E_obs_norm)
+Vscores <- as.numeric(vscores_result$v_scores)
+# ggplot(data.frame(x=log(Vscores), y = log(py_vscores)), aes(x=x, y=y))+geom_point(size = 0.01)+xlab("scrubletR vscores")+ylab("scrublet (python) vscores")+theme_bw()
+
+df<-data.frame(vscore_R=log(Vscores), vscore_py = log(py_vscores), indices_py=1:length(Vscores) %in% (py$gene_ix+1), indices_R=1:length(Vscores) %in% vscores_result$gene_ix)
+
+df$selected_cat<-factor(with(df, 2*indices_py + indices_R + 1))
+levels(df$selected_cat)<-c("neither", "both")
+
+#ggplot(df, aes(x=vscore_R, y=vscore_py, color = selected_cat))+geom_point(size = 0.01)+theme_bw()
+
+gene_ix <- vscores_result$gene_ix
+mu_gene <- vscores_result$mu_gene
+FF_gene <- vscores_result$FF_gene
+a <- vscores_result$a
+b <- vscores_result$b
+
+ix2 <- Vscores > 0
+Vscores <- Vscores[ix2]
+gene_ix <- gene_ix[ix2]
+mu_gene <- mu_gene[ix2]
+FF_gene <- FF_gene[ix2]
+
+min_vscore_pctl=min_gene_variability_pctl
+min_vscore <- quantile(Vscores, prob = min_vscore_pctl / 100)
+
+ix <- ((colSums(scr$E_obs_norm[, gene_ix] >= min_counts) >= min_cells) & (Vscores >= min_vscore))
+
+df$selected_R<-ix
+df$selected_py<-py$final_ix
+df$selected_cat<-factor(with(df, 2*selected_py + selected_R + 1))
+levels(df$selected_cat)<-c("neither", "r_only", "py_only", "both")
+ggplot(df, aes(x=vscore_R, y=vscore_py, color = selected_cat))+geom_point(size = 0.2)+theme_bw()
+
+table(df$selected_cat)
+```
+
+### Highly variant features using R method
+```{r}
+
+scr$pipeline_get_gene_filter(plot = TRUE)
+scr$pipeline_apply_gene_filter()
+```
+
+### Simulating doublets
+
+```{r}
+sim_doublet_ratio = 2.0
+synthetic_doublet_umi_subsampling = 1.0
+
+scr$simulate_doublets(sim_doublet_ratio=sim_doublet_ratio, synthetic_doublet_umi_subsampling=synthetic_doublet_umi_subsampling)
+
+scr$pipeline_normalize(postnorm_total=1e6)
+
+
+```
+
+```{python}
+scr.pipeline_get_gene_filter(scrub)
+scr.pipeline_apply_gene_filter(scrub)
+scrub.simulate_doublets(sim_doublet_ratio=scrub.sim_doublet_ratio, synthetic_doublet_umi_subsampling=synthetic_doublet_umi_subsampling)
+scr.pipeline_normalize(scrub, postnorm_total=1e6)
+r.py_Esimnorm = scrub._E_sim_norm
+gene_filter = scrub._gene_filter
+r.py_E_obs_norm = scrub._E_obs_norm
+import copy
+
+scrub_preZ = copy.deepcopy(scrub)
+```
+
+#Let's umap 
+
+Here we will brind the pseudo doublets with the original count matrix and visualize using UMAP across the two implemnetations.  They look similar.
+```{r, message=F, warning=F}
+library(magrittr)
+rcounts<-t(rbind(scr$E_obs_norm, scr$E_sim_norm))
+rownames(rcounts)<-rownames(seuP)[scr$gene_filter]
+colnames(rcounts)<-1:dim(rcounts)[2]
+seuR<-CreateSeuratObject(rcounts, meta.data = data.frame(celltype=c(as.character(seuP$celltype), rep("pseudodoublet", length(seuP$celltype)*2)), row.names = colnames(rcounts)))
+seuR <-NormalizeData(seuR) %>% FindVariableFeatures(nfeatures = 1000) %>% ScaleData() %>% RunPCA(npcs = 50)
+ElbowPlot(seuR, 50) 
+seuR<- FindNeighbors(seuR, dims = 1:30) %>% FindClusters() %>% RunUMAP(dims = 1:30)
+DimPlot(seuR, group.by = "celltype", cols = as.character(pals::polychrome(20))[c(1,3:16,2)], alpha = 0.1)+ggtitle("scrubletR")
+
+
+pycounts<-t(rbind(py_E_obs_norm, py_Esimnorm))
+rownames(pycounts)<-rownames(seuP)[py$gene_filter]
+colnames(pycounts)<-1:dim(pycounts)[2]
+seuPy<-CreateSeuratObject(pycounts, meta.data = data.frame(celltype=c(as.character(seuP$celltype), rep("pseudodoublet", length(seuP$celltype)*2)), row.names = colnames(pycounts)))
+seuPy <-NormalizeData(seuPy) %>% FindVariableFeatures(nfeatures = 1000) %>% ScaleData() %>% RunPCA(npcs = 50)
+ElbowPlot(seuPy, 50) 
+seuPy<- FindNeighbors(seuPy, dims = 1:40) %>% FindClusters() %>% RunUMAP(dims = 1:40)
+DimPlot(seuPy, group.by = "celltype", cols = as.character(pals::polychrome(20))[c(1,3:16,2)], alpha = 0.1)+ggtitle("Scrublet (python)")
+
+```
+
+## Z-scoring
+
+The default scrublet pathway then performs a z-scaling procedure across the data
+```{python}
+scrub_preZ._E_obs_norm.shape
+gene_means = scrub._E_obs_norm.mean(0)
+gene_stdevs = np.sqrt(scr.sparse_var(scrub._E_obs_norm))
+
+py_zscored = scr.sparse_multiply((scrub._E_obs_norm - gene_means).T, 1/gene_stdevs).T
+
+
+```
+
+
+
+## step by step
+
+####Step 1 calculate gene mean and stdev - look pretty similar
+```{r}
+gene_mean = as.numeric(colMeans(scr$E_obs_norm)) #######changed to column - IS CORRECT
+gene_stdev = as.numeric(sqrt(scrubletR:::sparse_var(scr$E_obs_norm, axis = 2)))
+# print_py(gene_mean)
+# print_py(gene_stdev)
+# print_py(py$gene_means[1,])
+# print_py(py$gene_stdevs)
+
+ggplot(data.frame(mean=log(c(gene_mean, py$gene_means[1,])), stdev=log(c(gene_stdev, py$gene_stdevs)), impl=c(rep("R", length(gene_mean)), rep("Py", length(py$gene_means)))), aes(x=mean, fill=impl))+geom_density()
+ggplot(data.frame(mean=log(c(gene_mean, py$gene_means[1,])), stdev=log(c(gene_stdev, py$gene_stdevs)), impl=c(rep("R", length(gene_mean)), rep("Py", length(py$gene_means)))), aes(x=stdev, fill=impl))+geom_density()
+#(same as py)
+```
+
+####Step 2 subtract gene means
+```{python}
+preZ_Eobs_norm = scrub_preZ._E_obs_norm
+step2 = preZ_Eobs_norm - preZ_Eobs_norm.mean(0) # this step is easy in python
+
+```
+
+Here's what you get in R with similarly structured code
+```{r}
+
+step2 = scr$E_obs_norm - colMeans(scr$E_obs_norm) # this doesn't work as intended in R
+colnames(step2)<-NULL
+
+step2[1:10,1:10]
+py$step2[1:10,1:10]
+
+```
+
+#### turns out R has some peculiarities and for subtracting a vector element-wise from the column values of matrix we must first create a matrix duplicating the desired subtracted values down all the rows. Simply subtracting the vector (in this case of gene means from each column (gene) of the matrix cannot be done using simply matrix - vector) In python, the subtraction using numpy is much easier...
+```{r}
+sm<-matrix(rep(colMeans(scr$E_obs_norm), each = dim(scr$E_obs_norm)[1]), nrow=dim(scr$E_obs_norm)[1])
+
+step2 = scr$E_obs_norm - sm
+colnames(step2)<-NULL
+
+step2[1:10,1:10]
+py$step2[1:10,1:10]
+
+```
+
+
+## Step 3 complete zscoring
+
+Looks good
+
+```{python}
+step3 = scr.sparse_multiply((step2).T, 1/gene_stdevs).T
+
+scr.pipeline_zscore(scrub)
+```
+
+```{r}
+step3<-t(scrubletR:::sparse_multiply(t(step2), 1 / gene_stdev))
+
+step3[1:10,1:10]
+py$step3[1:10,1:10]
+
+scr$pipeline_zscore()
+```
+
+## Step 4 PCA
+
+```{python}
+import scipy
+from sklearn.decomposition import PCA
+X_obs = scrub._E_obs_norm
+X_sim = scrub._E_sim_norm
+
+pca = PCA(n_components=n_prin_comps, random_state=random_state, svd_solver=svd_solver).fit(X_obs)
+
+pto = pca.transform(X_obs)
+pts = pca.transform(X_sim)
+```
+
+
+```{r}
+
+X_obs <- as.matrix(scr$E_obs_norm)
+X_sim <- as.matrix(scr$E_sim_norm)
+pca <- prcomp_irlba(X_obs, n = n_prin_comps, center = TRUE, scale. = FALSE)
+
+
+ix<-sample(1:nrow(X_obs), 2000)
+
+
+ggplot(data.frame(py = abs(py$pto[ix,1]), R = abs(predict(pca, X_obs)[ix,1])), aes(x=R, y=py))+geom_point()+theme_bw()+ggtitle("Correlation of R and Python PC values")
+
+```
+
+
+```{r}
+
+scr$pipeline_pca()
+scr$calculate_doublet_scores()
+scr$call_doublets()
+
+
+```
+
+
+```{python}
+
+
+
+scr.pipeline_pca(scrub)
+scrub.calculate_doublet_scores(
+            use_approx_neighbors=use_approx_neighbors,
+            distance_metric=distance_metric,
+            get_doublet_neighbor_parents=get_doublet_neighbor_parents
+            )
+scrub.call_doublets(verbose=verbose)
+final_doublet = scrub.doublet_scores_obs_
+
+```
+
+
+Interesting that the tumor shows less correlation across the two implementations than other celltypes
+
+```{r}
+
+ggplot(data.frame(py = log(py$final_doublet), R = log(scr$doublet_scores_obs_), celltype = seuP$celltype), aes(x=R, y=py, color = celltype))+geom_point(size = 0.3)+theme_bw()+ggtitle("Correlation of R and Python doublet scores (log transformed)")+scale_color_manual(values = as.character(pals::polychrome()))
+
+
+ggplot(data.frame(py = log(py$final_doublet), R = log(scr$doublet_scores_obs_), genotype = seuP$geno), aes(x=R, y=py, color = genotype))+geom_point(size = 0.3, alpha = 0.3)+theme_bw()+ggtitle("Correlation of R and Python doublet scores (log transformed)")
+```
+
+## Appendix
+```{r Appendix}
+sessionInfo()
+getwd()
+```
