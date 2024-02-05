@@ -17,3 +17,4 @@ A numeric vector containing the variance values.
 \description{
 This function computes the variance across the specified axis for a sparse matrix.
 }
+\keyword{internal}

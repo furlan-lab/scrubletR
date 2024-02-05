@@ -1,0 +1,61 @@
+---
+title: "How to ScrubletR"
+output: html_document
+date: "2024-02-02"
+always_allow_html: true
+editor_options: 
+  
+  chunk_output_type: console
+---
+
+## Installing scrubletR
+
+You will need to have the devtools package installed...
+
+```{r, eval=F}
+devtools::install_github("furlan-lab/scrubletR")
+```
+
+
+## Load data
+
+```{r, dpi=300, fig.height=4, fig.width = 6, warning=F, message=F}
+
+suppressPackageStartupMessages({
+  library(viewmastRust)
+  library(Seurat)
+  library(scCustomize)
+  library(scrubletR)
+})
+
+if(grepl("^gizmo", Sys.info()["nodename"])){
+  ROOT_DIR2<-"/fh/fast/furlan_s/grp/data/ddata/BM_data"
+} else {
+  ROOT_DIR2<-"/Users/sfurlan/Library/CloudStorage/OneDrive-SharedLibraries-FredHutchinsonCancerCenter/Furlan_Lab - General/experiments/patient_marrows/aggr/cds/indy"
+}
+
+#query dataset
+seuP<-readRDS(file.path(ROOT_DIR2, "220831_WC1.RDS"))
+DimPlot_scCustom(seuP)
+
+
+```
+
+
+## Run scrubletR the easy way (compatible with Seurat and monocle3 objects)
+
+```{r}
+seuP<-scrublet(seuP)
+
+FeaturePlot_scCustom(seuP, features = "doublet_scores")
+seuP$doublets<-seuP$doublet_scores > 0.15   #(You pick this)
+DimPlot(seuP, group.by = "doublets", cols=c("goldenrod", "navy"))
+```
+
+## you can then remove them from your object and re-embed!
+
+## Appendix
+```{r Appendix}
+sessionInfo()
+getwd()
+```

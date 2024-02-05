@@ -44,3 +44,4 @@ C. A. Glasbey, "An analysis of histogram-based thresholding
     images", Annals of the New York Academy of Sciences 128: 1035-1053
     :DOI:`10.1111/j.1749-6632.1965.tb11715.x`
 }
+\keyword{internal}

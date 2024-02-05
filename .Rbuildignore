@@ -2,3 +2,7 @@
 ^\.Rproj\.user$
 debug.R
 debug.Rmd
+^_pkgdown\.yml$
+^docs$
+^pkgdown$
+^\.github$

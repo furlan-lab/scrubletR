@@ -38,3 +38,4 @@ that helps assess the variability of gene expression levels.
 \seealso{
 \code{\link{runningquantile}}, \code{\link{optimize}}
 }
+\keyword{internal}

@@ -32,3 +32,4 @@ If \code{return_edges} is \code{TRUE}, a list containing edge list and nearest n
 \description{
 Build k-nearest-neighbor graph and return edge list and nearest neighbor matrix.
 }
+\keyword{internal}

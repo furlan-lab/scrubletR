@@ -5,6 +5,7 @@
 #' @param included Indices of genes to include in normalization (if empty, all genes are considered)
 #' @param target_total Target total for normalization (if NULL, the mean of total counts is used)
 #' @return List containing normalized counts matrix (Enorm), average total counts, and vector of included genes
+#' @keywords internal
 tot_counts_norm <- function(E, total_counts = NULL, exclude_dominant_frac = 1, included = integer(0), target_total = NULL) {
   ncell <- nrow(E)
   # E <- as(E, "Matrix")
@@ -44,6 +45,7 @@ tot_counts_norm <- function(E, total_counts = NULL, exclude_dominant_frac = 1, i
 #' @param verbose verbosity (bool)
 #' @return NULL
 #' @export
+#' @keywords internal
 cat_optional <- function(message, verbose) {
   if (verbose) {
     message(paste0(message))
@@ -65,6 +67,7 @@ cat_optional <- function(message, verbose) {
 #' @importFrom methods new
 #' @return If \code{return_edges} is \code{TRUE}, a list containing edge list and nearest neighbor matrix; otherwise, the nearest neighbor matrix.
 #' @export
+#' @keywords internal
 get_knn_graph <- function(X, k = 5, dist_metric = c('euclidean', 'angular', 'manhattan', 'hamming'), approx = FALSE, return_edges = TRUE, random_seed = 0) {
   t0 <- Sys.time()
   dist_metric <- match.arg(dist_metric)
@@ -131,6 +134,7 @@ get_knn_graph <- function(X, k = 5, dist_metric = c('euclidean', 'angular', 'man
 #' @return Adjacency matrix.
 #' @importFrom Matrix sparseMatrix
 #' @export
+#' @keywords internal
 build_adj_mat <- function(edges, n_nodes) {
   A <- sparseMatrix(i = sapply(edges, function(e) e[1] - 1), j = sapply(edges, function(e) e[2] - 1), x = rep(1, length(edges)), dims = c(n_nodes, n_nodes))
   return(A)
@@ -167,6 +171,7 @@ build_adj_mat <- function(edges, n_nodes) {
 #' @importFrom graphics hist
 #' @importFrom stats optimise
 #' @export
+#' @keywords internal
 get_vscores <- function(E, min_mean = 0, nBins = 50, fit_percentile = 0.1, error_wt = 1) {
   ncell <- nrow(E)
   mu_gene <- colMeans(E)
@@ -239,6 +244,7 @@ get_vscores <- function(E, min_mean = 0, nBins = 50, fit_percentile = 0.1, error
 #'   }
 #' @importFrom stats quantile
 #' @export
+#' @keywords internal
 runningquantile <- function(x, y, p, nBins) {
   ind <- order(x)
   x <- x[ind]
@@ -285,6 +291,7 @@ runningquantile <- function(x, y, p, nBins) {
 #' @importFrom graphics points
 #' @importFrom graphics lines
 #' @import ggplot2
+#' @keywords internal
 
 filter_genes <- function(E, base_ix = NULL, min_vscore_pctl = 85, min_counts = 3, min_cells = 3,
                          plot = FALSE, sample_name = '') {
@@ -345,6 +352,7 @@ filter_genes <- function(E, base_ix = NULL, min_vscore_pctl = 85, min_counts = 3
 #'
 #' @return A numeric vector containing the variance values.
 #' @importFrom Matrix rowMeans
+#' @keywords internal
 sparse_var <- function(E, axis = 1) {
   if(axis == 1){
     mean_gene <- rowMeans(E, sparse = TRUE)
@@ -376,6 +384,7 @@ sparse_var <- function(E, axis = 1) {
 #'
 #' @return A sparse matrix with each row multiplied by the scalar value.
 #' @import Matrix
+#' @keywords internal
 sparse_multiply <- function(E, a) {
   nrow <- nrow(E)
   w <- sparseMatrix(i = 1:nrow, j = 1:nrow, x = a)
@@ -392,6 +401,7 @@ sparse_multiply <- function(E, a) {
 #'
 #' @return A z-score normalized sparse matrix.
 #' @import Matrix
+#' @keywords internal
 sparse_zscore <- function(E, gene_mean = NULL, gene_stdev = NULL) {
   if (is.null(gene_mean)) {
     gene_mean <- colMeans(E, sparse = TRUE)
@@ -415,6 +425,7 @@ sparse_zscore <- function(E, gene_mean = NULL, gene_stdev = NULL) {
 #' @return A list containing the subsampled sparse matrix (E) and the final downsampling totals.
 #' @importFrom Matrix rowSums
 #' @importFrom stats rbinom
+#' @keywords internal
 subsample_counts <- function(E, rate, original_totals, random_seed = 0) {
   if (rate < 1) {
     set.seed(random_seed)
@@ -464,6 +475,7 @@ subsample_counts <- function(E, rate, original_totals, random_seed = 0) {
 #'     Prewitt, JMS & Mendelsohn, ML (1966), "The analysis of cell
 #'     images", Annals of the New York Academy of Sciences 128: 1035-1053
 #'     :DOI:`10.1111/j.1749-6632.1965.tb11715.x`
+#' @keywords internal
 
 
 threshold_minimum <- function(image = NULL, nbins = 256, max_num_iter = 10000, hist = NULL) {
@@ -553,6 +565,7 @@ validate_image_histogram <- function(image, hist, nbins) {
 }
 
 #' @export
+#' @keywords internal
 print_py<-function(values){
   paste0(paste0(head(values, n =3), collapse=", "), " ... ", paste0(tail(values, n = 3), collapse = " , "))
 }

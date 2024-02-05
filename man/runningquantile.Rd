@@ -25,3 +25,4 @@ A list containing the following components:
 \description{
 This function calculates running quantiles for given x and y data points.
 }
+\keyword{internal}

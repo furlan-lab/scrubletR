@@ -19,3 +19,4 @@ A z-score normalized sparse matrix.
 \description{
 This function z-score normalizes each column of a sparse matrix.
 }
+\keyword{internal}

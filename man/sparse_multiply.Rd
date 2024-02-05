@@ -17,3 +17,4 @@ A sparse matrix with each row multiplied by the scalar value.
 \description{
 This function multiplies each row of a sparse matrix by a scalar value.
 }
+\keyword{internal}

@@ -56,3 +56,5 @@ debug(scr$pipeline_normalize_variance)
 
 roxygen2::roxygenise()
 devtools::check()
+
+usethis::use_pkgdown_github_pages()

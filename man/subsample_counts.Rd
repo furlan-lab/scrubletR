@@ -21,3 +21,4 @@ A list containing the subsampled sparse matrix (E) and the final downsampling to
 \description{
 This function subsamples counts in a sparse matrix based on a given rate.
 }
+\keyword{internal}

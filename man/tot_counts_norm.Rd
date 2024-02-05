@@ -29,3 +29,4 @@ List containing normalized counts matrix (Enorm), average total counts, and vect
 \description{
 Total Counts Normalization
 }
+\keyword{internal}

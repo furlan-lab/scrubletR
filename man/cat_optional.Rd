@@ -14,3 +14,4 @@ cat_optional(message, verbose)
 \description{
 Custom messaging
 }
+\keyword{internal}

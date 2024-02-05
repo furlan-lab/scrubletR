@@ -38,3 +38,4 @@ This function filters genes based on expression level and variability using v-sc
 \seealso{
 \code{\link{get_vscores}}
 }
+\keyword{internal}

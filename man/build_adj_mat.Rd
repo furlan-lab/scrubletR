@@ -17,3 +17,4 @@ Adjacency matrix.
 \description{
 Build an adjacency matrix from the provided edge list.
 }
+\keyword{internal}

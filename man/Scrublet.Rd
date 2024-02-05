@@ -64,6 +64,7 @@ The Scrublet R6 class represents a single-cell RNA-seq scrubbing tool.
 }
 }
 
+\keyword{internal}
 \section{Methods}{
 \subsection{Public methods}{
 \itemize{
@@ -133,7 +134,6 @@ The Scrublet R6 class represents a single-cell RNA-seq scrubbing tool.
   mean_center = T,
   normalize_variance = T,
   n_prin_comps = 30,
-  svd_solver = "arpack",
   verbose = TRUE
 )}\if{html}{\out{</div>}}
 }
