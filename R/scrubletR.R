@@ -4,12 +4,14 @@
 #' @param split_by the column in the meta data to split the object by before running scrublet
 #' @param cores Number of cores (only helps when splitting and object)
 #' @param return_results_only bool (optional, default False)
+#' @param expected_doublet_rate = float (default 0.1); doesn't affect doublet score calculation only prediction.
 #' @param min_counts, int (optional, default=2), See scrublet reference
 #' @param min_cells, int (optional, default=3), See scrublet reference
 #' @param min_gene_variability_pctl, int (optional, default=85), See scrublet reference
 #' @param n_prin_comps, int (optional, default=30), See scrublet reference  (Number of principal components to use)
 #' @param sim_doublet_ratio, int (optional, default=2),  the number of doublets to simulate, relative to the number of observed transcriptomes. This should be high enough that all doublet states are well-represented by simulated doublets. Setting it too high is computationally expensive. The default value is 2, though values as low as 0.5 give very similar results for the datasets that have been tested.
 #' @param seed, seed aka random state
+#' @param show_gene_filter_plot, show the mean x FF plot with selected features
 #' @return The input CellDataSet or Seurat object with an additional column added to pData with both the doublet_score output from scrublet,
 #' @importFrom pbmcapply pbmclapply
 #' @importFrom SummarizedExperiment colData
@@ -19,8 +21,8 @@
 #' @export
 scrublet<-function (object, split_by=NULL,
                     return_results_only = FALSE, min_counts = 3, min_cells = 3,
-                    min_gene_variability_pctl = 85, seed = 2024,
-                    n_prin_comps = 30, sim_doublet_ratio = 2, assay="RNA", cores=1)
+                    min_gene_variability_pctl = 85, seed = 2024, expected_doublet_rate = 0.1,
+                    n_prin_comps = 30, sim_doublet_ratio = 2, assay="RNA", cores=1, show_gene_filter_plot=F)
 {
   if(class(object)=="Seurat"){
     meta <- object@meta.data
@@ -34,8 +36,9 @@ scrublet<-function (object, split_by=NULL,
     n = length(levels(factor(meta[[split_by]])))
     splitvec<-factor(meta[[split_by]])
   }
-
-  message("Splitting object into ", n, " smaller objects prior to performing scrublet")
+  if(n>1){
+    message("Splitting object into ", n, " smaller objects prior to performing scrublet")
+  }
   indices<-vector()
   if(class(object)=="Seurat"){
     dat<-lapply(levels(splitvec), function(split) {
@@ -52,22 +55,37 @@ scrublet<-function (object, split_by=NULL,
     })
   }
 
-  fdata<-pbmclapply(dat, FUN = function(data){
-    scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
+  if(cores>1 & n==1){
+    warning("More than 1 core specified but not splitting object.  Scrublet leverages parallel processing for each split of the object.  Running with 1 core")
+    cores<-1
+  }
+
+  if(cores==1){
+    scr<-ScrubletR$new(counts_matrix = dat[[1]]$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed, show_gene_filter_plot = show_gene_filter_plot)
     scrublet_res<-scr$scrub_doublets(
-                    min_counts = min_counts,
-                    min_cells = min_cells,
-                    min_gene_variability_pctl = min_gene_variability_pctl,
-                    n_prin_comps = n_prin_comps)
-    list(res=scrublet_res, data$ind)
-  }, mc.cores=cores)
-  res<-lapply(fdata, "[[", 1)
-  ind<-unlist(sapply(fdata, "[[", 2))
+      min_counts = min_counts,
+      min_cells = min_cells,
+      min_gene_variability_pctl = min_gene_variability_pctl,
+      n_prin_comps = n_prin_comps)
+    final_res<-data.frame(doublet_scores=scrublet_res$doublet_scores, predicted_doublets=scrublet_res$predicted_doublets)
 
-  ds<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "doublet_scores"))[order(ind)]
-  pd<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "predicted_doublets"))[order(ind)]
+  } else {
+    fdata<-pbmclapply(dat, FUN = function(data){
+      scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
+      scrublet_res<-scr$scrub_doublets(
+                      min_counts = min_counts,
+                      min_cells = min_cells,
+                      min_gene_variability_pctl = min_gene_variability_pctl,
+                      n_prin_comps = n_prin_comps)
+      list(res=scrublet_res, data$ind)
+    }, mc.cores=cores)
+    res<-lapply(fdata, "[[", 1)
+    ind<-unlist(sapply(fdata, "[[", 2))
+    ds<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "doublet_scores"))[order(ind)]
+    pd<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "predicted_doublets"))[order(ind)]
+    final_res<-data.frame(doublet_scores=ds, predicted_doublets=pd)
+  }
 
-  final_res<-data.frame(doublet_scores=ds, predicted_doublets=pd)
 
   if (return_results_only) {
     return(final_res)
@@ -156,6 +174,7 @@ ScrubletR <- R6::R6Class("Scrublet",
                       E_sim = NULL,
                       E_obs_norm = NULL,
                       E_sim_norm = NULL,
+                      show_gene_filter_plot= NULL,
                       gene_filter = NULL,
                       embeddings = NULL,
                       total_counts_obs = NULL,
@@ -192,7 +211,8 @@ ScrubletR <- R6::R6Class("Scrublet",
                                             n_neighbors = NULL,
                                             expected_doublet_rate = 0.1,
                                             stdev_doublet_rate = 0.02,
-                                            random_state = 0
+                                            random_state = 0,
+                                            show_gene_filter_plot=TRUE
                       ) {
                         # Convert counts_matrix to a sparse matrix if not already
                         # if (!is.sparse(counts_matrix)) {
@@ -226,6 +246,7 @@ ScrubletR <- R6::R6Class("Scrublet",
                         self$expected_doublet_rate = expected_doublet_rate
                         self$stdev_doublet_rate = stdev_doublet_rate
                         self$random_state = random_state
+                        self$show_gene_filter_plot = show_gene_filter_plot
                         # Set n_neighbors if NULL
                         if (is.null(self$n_neighbors)) {
                           self$n_neighbors <- round(0.5 * sqrt(nrow(self$E_obs)))
@@ -255,7 +276,7 @@ ScrubletR <- R6::R6Class("Scrublet",
 
       cat_optional('Preprocessing...', verbose)
       self$pipeline_normalize()
-      self$pipeline_get_gene_filter(min_counts=min_counts, min_cells=min_cells, min_gene_variability_pctl=min_gene_variability_pctl)
+      self$pipeline_get_gene_filter(min_counts=min_counts, min_cells=min_cells, min_gene_variability_pctl=min_gene_variability_pctl, plot=self$show_gene_filter_plot)
       self$pipeline_apply_gene_filter()
 
       cat_optional('Simulating doublets...', verbose)
@@ -286,7 +307,7 @@ ScrubletR <- R6::R6Class("Scrublet",
       self$calculate_doublet_scores(use_approx_neighbors=use_approx_neighbors,
                                distance_metric=distance_metric,
                                get_doublet_neighbor_parents=get_doublet_neighbor_parents)
-      self$call_doublets(verbose=verbose)
+      self$call_doublets(verbose=verbose, threshold = self$expected_doublet_rate)
 
       t1 <- Sys.time()
       cat_optional(sprintf('Elapsed time: %.1f seconds', as.numeric(difftime(t1, t0, units = "secs"))), verbose)
@@ -368,9 +389,8 @@ ScrubletR <- R6::R6Class("Scrublet",
           threshold <- threshold_minimum(self$doublet_scores_sim_)
           cat_optional(paste0("Automatically set threshold at doublet score =", threshold), verbose)
         }, error = function(e) {
-          self$predicted_doublets <- NULL
+          self$predicted_doublets <- rep("Error", length(doublet_scores_obs_))
           cat_optional(paste0("Warning: failed to automatically identify doublet score threshold. Run `call_doublets` with a user-specified threshold."), verbose)
-          return(self$predicted_doublets)
         })
       }
       Ld_obs <- self$doublet_scores_obs_
