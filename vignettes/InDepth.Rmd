@@ -64,8 +64,7 @@ table(seu$geno_from2)/dim(seu)[2]
 
 ```{r}
 
-seu<-scrublet(seu)
-seu@meta.data
+seu<-scrublet(seu, min_gene_variability_pctl = 95)
 seu$log_ds<-log(seu$doublet_scores)
 
 VlnPlot_scCustom(seu, features = "log_ds", group.by = "geno_from2", pt.size = 0)
@@ -99,7 +98,9 @@ seu<- FindNeighbors(seu, dims = 1:30) %>% FindClusters() %>% RunUMAP(dims = 1:30
 DimPlot(seu)
 FeaturePlot_scCustom(seu, features = "CD4")
 FeaturePlot_scCustom(seu, features = "CD8A")
-FeaturePlot(seu, features = "doublet_score")
+FeaturePlot_scCustom(seu, features = "doublet_scores")
+FeaturePlot(seu, features = "log_ds")
+DimPlot(seu, group.by = "predicted_doublets")
 DimPlot(seu, group.by = "SFdoublet")
 DimPlot(seu, group.by = "geno_from2")
 
