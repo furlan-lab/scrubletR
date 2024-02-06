@@ -3,8 +3,9 @@ pkgdown: 2.0.7
 pkgdown_sha: ~
 articles:
   ImplementationHassles: ImplementationHassles.html
+  InDepth: InDepth.html
   QuickStart: QuickStart.html
-last_built: 2024-02-05T21:03Z
+last_built: 2024-02-06T00:21Z
 urls:
   reference: https://furlan-lab.github.io/scrubletR/reference
   article: https://furlan-lab.github.io/scrubletR/articles
