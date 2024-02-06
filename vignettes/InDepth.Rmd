@@ -75,7 +75,7 @@ VlnPlot_scCustom(seu, features = "log_ds", group.by = "geno_from2", pt.size = 0)
 This looks okay.  The genetic multiplets have ~ 2 fold increase in scrublet doublet score than cells from each genotype.  This is of course not the whole story as we would expect that more than one cell from the same donor could end up in the same droplet.  Therefore > 6 percent of the cells in '0' and '1' genotypes above will also be multiplets.  Let's set a threshold and see how the percents fall out.
 
 ```{r}
-thresh<-(-1.6)
+thresh<-(-2.3) #set by eye
 seu$SFdoublet<-seu$log_ds>(thresh)
 table(seu$SFdoublet, seu$geno_from2)
 
@@ -89,7 +89,7 @@ DimPlot(seu, group.by = "SFdoublet", dims = c(2,3), pt.size = 0.4)
 
 ## Visualize
 
-Let's visualize, subset, and re-embed.  But first we need to remove the geno assay (seurat 5 is broken)
+Let's visualize, subset, and re-embed.  But we need to fix subsetting in Seurat (seurat 5 is broken)
 ```{r}
 DefaultAssay(seu)<-"RNA"
 seu <-NormalizeData(seu) %>% FindVariableFeatures(nfeatures = 3000) %>% ScaleData() %>% RunPCA(npcs = 50)
@@ -99,10 +99,12 @@ DimPlot(seu)
 FeaturePlot_scCustom(seu, features = "CD4")
 FeaturePlot_scCustom(seu, features = "CD8A")
 FeaturePlot_scCustom(seu, features = "doublet_scores")
-FeaturePlot(seu, features = "log_ds")
+FeaturePlot_scCustom(seu, features = "log_ds")
 DimPlot(seu, group.by = "predicted_doublets")
 DimPlot(seu, group.by = "SFdoublet")
 DimPlot(seu, group.by = "geno_from2")
+
+confusion_matrix(factor(seu$SFdoublet), factor(seu$predicted_doublets)) #pretty good!!
 
 seu$cell_bool<-!seu$SFdoublet & seu$geno_from2 != "Multiplet"
 table(seu$cell_bool)
@@ -142,12 +144,19 @@ seu<-scrublet(seu)
 FeaturePlot_scCustom(seu, features = "doublet_scores")
 DimPlot(seu)
 FeaturePlot_scCustom(seu, features = "CD4")
+FeaturePlot_scCustom(seu, features = "MKI67")
 FeaturePlot_scCustom(seu, features = "CD8A")
+FeaturePlot_scCustom(seu, features = "CAR")
+FeaturePlot_scCustom(seu, features = "FOXP3")
+DimPlot_scCustom(seu, group.by = "geno_from2")
 
+m<-FindAllMarkers(seu)
+m[m$cluster==2,]
+FeaturePlot_scCustom(seu, features = "CD3E")
 
-cm<-GetAssayData(seu, assay = "RNA")
-
-
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = seu), value = TRUE)
+seu$percent.mito <- Matrix::colSums(GetAssayData(seu[mito.genes, ]))/Matrix::colSums(GetAssayData(seu))
+FeaturePlot_scCustom(seu, features = "percent.mito")
 ```
 
 **Much better**. We see the data is more simple and we have more readily distinguishable clusters.

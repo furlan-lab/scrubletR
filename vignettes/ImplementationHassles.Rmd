@@ -54,6 +54,12 @@ Failure will look something like this
 py_run_string("import scrubletoops")
 ```
 
+```{bash, eval=F}
+Error in py_run_string_impl(code, local, convert) : 
+  ModuleNotFoundError: No module named 'scrubletoops'
+Run `reticulate::py_last_error()` for details.
+
+```
 
 # Comparing Implementations
 
@@ -70,7 +76,6 @@ suppressPackageStartupMessages({
   library(scCustomize)
   library(Matrix)
   library(ggplot2)
-  library(scrubletR)
 })
 
 if(grepl("^gizmo", Sys.info()["nodename"])){
@@ -178,10 +183,6 @@ mu_gene = mu_gene[ix2]
 FF_gene = FF_gene[ix2]
 min_vscore = np.percentile(v_scores, min_vscore_pctl)
 final_ix = (((scrub._E_obs_norm[:,gene_ix] >= min_counts).sum(0).A.squeeze() >= min_cells) & (v_scores >= min_vscore))
-    
-#import inspect
-#lines = inspect.getsource(scr.filter_genes)
-#print(lines)
 
 ```
 
@@ -190,19 +191,15 @@ final_ix = (((scrub._E_obs_norm[:,gene_ix] >= min_counts).sum(0).A.squeeze() >= 
 
 V-scores are slightly different between R and python.  The correlation is pretty good howewever and this likely won't affect performance too much
 ```{r}
-#scr$pipeline_get_gene_filter()
-
-
 vscores_result<-get_vscores(scr$E_obs_norm)
 Vscores <- as.numeric(vscores_result$v_scores)
-# ggplot(data.frame(x=log(Vscores), y = log(py_vscores)), aes(x=x, y=y))+geom_point(size = 0.01)+xlab("scrubletR vscores")+ylab("scrublet (python) vscores")+theme_bw()
+
 
 df<-data.frame(vscore_R=log(Vscores), vscore_py = log(py_vscores), indices_py=1:length(Vscores) %in% (py$gene_ix+1), indices_R=1:length(Vscores) %in% vscores_result$gene_ix)
 
 df$selected_cat<-factor(with(df, 2*indices_py + indices_R + 1))
 levels(df$selected_cat)<-c("neither", "both")
 
-#ggplot(df, aes(x=vscore_R, y=vscore_py, color = selected_cat))+geom_point(size = 0.01)+theme_bw()
 
 gene_ix <- vscores_result$gene_ix
 mu_gene <- vscores_result$mu_gene
@@ -219,7 +216,7 @@ FF_gene <- FF_gene[ix2]
 min_vscore_pctl=min_gene_variability_pctl
 min_vscore <- quantile(Vscores, prob = min_vscore_pctl / 100)
 
-ix <- ((colSums(scr$E_obs_norm[, gene_ix] >= min_counts) >= min_cells) & (Vscores >= min_vscore))
+ix <- (colSums(scr$E_obs_norm[, gene_ix] >= min_counts) >= min_cells) & (Vscores >= min_vscore)
 
 df$selected_R<-ix
 df$selected_py<-py$final_ix
@@ -293,7 +290,6 @@ DimPlot(seuPy, group.by = "celltype", cols = as.character(pals::polychrome(20))[
 
 The default scrublet pathway then performs a z-scaling procedure across the data
 ```{python}
-scrub_preZ._E_obs_norm.shape
 gene_means = scrub._E_obs_norm.mean(0)
 gene_stdevs = np.sqrt(scr.sparse_var(scrub._E_obs_norm))
 
@@ -306,7 +302,9 @@ py_zscored = scr.sparse_multiply((scrub._E_obs_norm - gene_means).T, 1/gene_stde
 
 ## step by step
 
-#### Step 1 calculate gene mean and stdev - look pretty similar
+#### Step 1 calculate gene mean and stdev
+
+These look pretty similar
 ```{r}
 gene_mean = as.numeric(colMeans(scr$E_obs_norm)) #######changed to column - IS CORRECT
 gene_stdev = as.numeric(sqrt(scrubletR:::sparse_var(scr$E_obs_norm, axis = 2)))
@@ -315,8 +313,8 @@ gene_stdev = as.numeric(sqrt(scrubletR:::sparse_var(scr$E_obs_norm, axis = 2)))
 # print_py(py$gene_means[1,])
 # print_py(py$gene_stdevs)
 
-ggplot(data.frame(mean=log(c(gene_mean, py$gene_means[1,])), stdev=log(c(gene_stdev, py$gene_stdevs)), impl=c(rep("R", length(gene_mean)), rep("Py", length(py$gene_means)))), aes(x=mean, fill=impl))+geom_density()
-ggplot(data.frame(mean=log(c(gene_mean, py$gene_means[1,])), stdev=log(c(gene_stdev, py$gene_stdevs)), impl=c(rep("R", length(gene_mean)), rep("Py", length(py$gene_means)))), aes(x=stdev, fill=impl))+geom_density()
+ggplot(data.frame(mean=log(c(gene_mean, py$gene_means[1,])), stdev=log(c(gene_stdev, py$gene_stdevs)), impl=c(rep("R", length(gene_mean)), rep("Py", length(py$gene_means)))), aes(x=mean, fill=impl))+geom_density()+theme_bw()
+ggplot(data.frame(mean=log(c(gene_mean, py$gene_means[1,])), stdev=log(c(gene_stdev, py$gene_stdevs)), impl=c(rep("R", length(gene_mean)), rep("Py", length(py$gene_means)))), aes(x=stdev, fill=impl))+geom_density()+theme_bw()
 #(same as py)
 ```
 
@@ -333,8 +331,8 @@ Here's what you get in R with similarly structured code
 step2 = scr$E_obs_norm - colMeans(scr$E_obs_norm) # this doesn't work as intended in R
 colnames(step2)<-NULL
 
-step2[1:10,1:10]
-py$step2[1:10,1:10]
+step2[1:5,1:5]
+py$step2[1:5,1:5]
 
 ```
 
@@ -345,8 +343,8 @@ sm<-matrix(rep(colMeans(scr$E_obs_norm), each = dim(scr$E_obs_norm)[1]), nrow=di
 step2 = scr$E_obs_norm - sm
 colnames(step2)<-NULL
 
-step2[1:10,1:10]
-py$step2[1:10,1:10]
+step2[1:5,1:5]
+py$step2[1:5,1:5]
 
 ```
 
@@ -364,8 +362,7 @@ scr.pipeline_zscore(scrub)
 ```{r}
 step3<-t(scrubletR:::sparse_multiply(t(step2), 1 / gene_stdev))
 
-step3[1:10,1:10]
-py$step3[1:10,1:10]
+ggplot(data.frame(x=rowMeans(step3), y=rowMeans(py$step3)), aes(x=x, y=y))+geom_point()+theme_bw()+xlab("R rowMeans of Step3")+ylab("Python rowMeans of Step3")
 
 scr$pipeline_zscore()
 ```
@@ -395,17 +392,22 @@ pca <- irlba::prcomp_irlba(X_obs, n = n_prin_comps, center = TRUE, scale. = FALS
 ix<-sample(1:nrow(X_obs), 2000)
 
 
-ggplot(data.frame(py = abs(py$pto[ix,1]), R = abs(predict(pca, X_obs)[ix,1])), aes(x=R, y=py))+geom_point()+theme_bw()+ggtitle("Correlation of R and Python PC values")
+ggplot(data.frame(py = abs(py$pto[ix,1]), R = abs(predict(pca, X_obs)[ix,1])), aes(x=R, y=py))+geom_point()+theme_bw()+ggtitle("Correlation of R and Python PC1 values (Obs)")
+ggplot(data.frame(py = abs(py$pto[ix,2]), R = abs(predict(pca, X_obs)[ix,2])), aes(x=R, y=py))+geom_point()+theme_bw()+ggtitle("Correlation of R and Python PC2 values (Obs)")
+ggplot(data.frame(py = abs(py$pto[ix,3]), R = abs(predict(pca, X_obs)[ix,3])), aes(x=R, y=py))+geom_point()+theme_bw()+ggtitle("Correlation of R and Python PC3 values (Obs)")
 
+#these should not be correlated (Simulated data)
+ggplot(data.frame(py = abs(py$pts[ix,1]), R = abs(predict(pca, X_sim)[ix,1])), aes(x=R, y=py))+geom_point()+theme_bw()+ggtitle("Correlation of R and Python PC1 values (Sim)")
+ggplot(data.frame(py = abs(py$pts[ix,2]), R = abs(predict(pca, X_sim)[ix,2])), aes(x=R, y=py))+geom_point()+theme_bw()+ggtitle("Correlation of R and Python PC2 values (Sim)")
+ggplot(data.frame(py = abs(py$pts[ix,3]), R = abs(predict(pca, X_sim)[ix,3])), aes(x=R, y=py))+geom_point()+theme_bw()+ggtitle("Correlation of R and Python PC3 values (Sim)")
 ```
 
+## Step 4 calculate doublet scores
 
 ```{r}
 
 scr$pipeline_pca()
 scr$calculate_doublet_scores()
-scr$call_doublets()
-
 
 ```
 
@@ -420,10 +422,9 @@ scrub.calculate_doublet_scores(
             distance_metric=distance_metric,
             get_doublet_neighbor_parents=get_doublet_neighbor_parents
             )
-scrub.call_doublets(verbose=verbose)
 final_doublet = scrub.doublet_scores_obs_
-
 ```
+
 
 
 Interesting that the tumor shows less correlation across the two implementations than other celltypes
@@ -435,6 +436,82 @@ ggplot(data.frame(py = log(py$final_doublet), R = log(scr$doublet_scores_obs_), 
 
 ggplot(data.frame(py = log(py$final_doublet), R = log(scr$doublet_scores_obs_), genotype = seuP$geno), aes(x=R, y=py, color = genotype))+geom_point(size = 0.3, alpha = 0.3)+theme_bw()+ggtitle("Correlation of R and Python doublet scores (log transformed)")
 ```
+
+
+
+## Step 5 Classify doublets
+
+Not bad... 98.67% accurate...  This may be related to the differences in features but also the python implementation calls a lower number of doubles overall...
+```{python}
+scrub.call_doublets(verbose=verbose)
+pred_doublets = scrub.predicted_doublets_
+```
+
+```{r}
+scr$call_doublets()
+
+confusion_matrix(factor(scr$predicted_doublets), factor(py$pred_doublets))
+```
+
+
+## Level the playing field
+
+Let's rerun R scrublet using the python gene filter...
+
+```{python}
+gene_filter = scrub._gene_filter
+E_sim = scrub._E_sim
+doublet_parents = scrub.doublet_parents_
+tots_sim = scrub._total_counts_sim
+```
+
+```{r}
+#instantiate object
+scr<-ScrubletR$new(counts_matrix = counts_matrix)
+scr$pipeline_normalize()
+new_gene_filter<-py$gene_filter+1
+names(new_gene_filter)<-colnames(counts_matrix)[new_gene_filter]
+
+scr$E_obs <- scr$E_obs[, as.numeric(new_gene_filter)]
+scr$E_obs_norm <- scr$E_obs_norm[, as.numeric(new_gene_filter)]
+
+scr$simulate_doublets(sim_doublet_ratio=1, synthetic_doublet_umi_subsampling=1)
+scr$pipeline_normalize(postnorm_total=1e6)
+scr$pipeline_zscore()
+scr$pipeline_pca()
+scr$calculate_doublet_scores()
+scr$call_doublets()
+
+ggplot(data.frame(py = log(py$final_doublet), R = log(scr$doublet_scores_obs_), celltype = seuP$celltype), aes(x=R, y=py, color = celltype))+geom_point(size = 0.3)+theme_bw()+ggtitle("Correlation of R and Python doublet scores (log transformed) using same features set")+scale_color_manual(values = as.character(pals::polychrome()))
+
+confusion_matrix(factor(scr$predicted_doublets), factor(py$pred_doublets))
+```
+
+
+```{r}
+#instantiate object
+scr<-ScrubletR$new(counts_matrix = counts_matrix)
+scr$pipeline_normalize()
+new_gene_filter<-py$gene_filter+1
+names(new_gene_filter)<-colnames(counts_matrix)[new_gene_filter]
+
+scr$E_obs <- scr$E_obs[, as.numeric(new_gene_filter)]
+scr$E_obs_norm <- scr$E_obs_norm[, as.numeric(new_gene_filter)]
+
+dim(scr$E_obs)
+scr$total_counts_sim = py$tots_sim
+scr$E_sim <- py$E_sim
+scr$pipeline_normalize(postnorm_total=1e6)
+scr$pipeline_zscore()
+scr$pipeline_pca()
+scr$calculate_doublet_scores()
+scr$call_doublets()
+
+ggplot(data.frame(py = log(py$final_doublet), R = log(scr$doublet_scores_obs_), celltype = seuP$celltype), aes(x=R, y=py, color = celltype))+geom_point(size = 0.3)+theme_bw()+ggtitle("Correlation of R and Python doublet scores (log transformed) using same features and same simulated doublets")+scale_color_manual(values = as.character(pals::polychrome()))
+
+confusion_matrix(factor(scr$predicted_doublets), factor(py$pred_doublets))
+```
+
 
 ## Appendix
 ```{r Appendix}

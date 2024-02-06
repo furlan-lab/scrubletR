@@ -12,10 +12,12 @@ scrublet(
   min_cells = 3,
   min_gene_variability_pctl = 85,
   seed = 2024,
+  expected_doublet_rate = 0.1,
   n_prin_comps = 30,
   sim_doublet_ratio = 2,
   assay = "RNA",
-  cores = 1
+  cores = 1,
+  show_gene_filter_plot = F
 )
 }
 \arguments{
@@ -33,11 +35,15 @@ scrublet(
 
 \item{seed, }{seed aka random state}
 
+\item{expected_doublet_rate}{= float (default 0.1); doesn't affect doublet score calculation only prediction.}
+
 \item{n_prin_comps, }{int (optional, default=30), See scrublet reference  (Number of principal components to use)}
 
 \item{sim_doublet_ratio, }{int (optional, default=2),  the number of doublets to simulate, relative to the number of observed transcriptomes. This should be high enough that all doublet states are well-represented by simulated doublets. Setting it too high is computationally expensive. The default value is 2, though values as low as 0.5 give very similar results for the datasets that have been tested.}
 
 \item{cores}{Number of cores (only helps when splitting and object)}
+
+\item{show_gene_filter_plot, }{show the mean x FF plot with selected features}
 }
 \value{
 The input CellDataSet or Seurat object with an additional column added to pData with both the doublet_score output from scrublet,

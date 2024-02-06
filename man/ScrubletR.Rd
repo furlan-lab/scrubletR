@@ -112,7 +112,8 @@ The Scrublet R6 class represents a single-cell RNA-seq scrubbing tool.
   n_neighbors = NULL,
   expected_doublet_rate = 0.1,
   stdev_doublet_rate = 0.02,
-  random_state = 0
+  random_state = 0,
+  show_gene_filter_plot = TRUE
 )}\if{html}{\out{</div>}}
 }
 

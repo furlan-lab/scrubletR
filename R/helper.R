@@ -569,3 +569,74 @@ validate_image_histogram <- function(image, hist, nbins) {
 print_py<-function(values){
   paste0(paste0(head(values, n =3), collapse=", "), " ... ", paste0(tail(values, n = 3), collapse = " , "))
 }
+
+
+#' Find local maxima indices in a histogram
+#'
+#' This function finds local maxima indices in a histogram, as scipy's argrelmax
+#' fails on plateaus.
+#'
+#' @param hist Numeric vector representing the histogram
+#' @return A list containing indices of local maxima in the histogram
+#' @keywords internal
+find_local_maxima_idx <- function(hist) {
+  maximum_idxs <- list()
+  direction <- 1
+
+  for (i in 1:(length(hist) - 1)) {
+    if(is.na(hist[i]) | is.na(hist[i+1])){
+      next
+    }
+    if (direction > 0) {
+      if (hist[i + 1] < hist[i]) {
+        direction <- -1
+        maximum_idxs <- c(maximum_idxs, i)
+      }
+    } else {
+      if (hist[i + 1] > hist[i]) {
+        direction <- 1
+      }
+    }
+  }
+
+  return(maximum_idxs)
+}
+
+#' Find the threshold between two maxima in a smoothed histogram
+#'
+#' This function finds the threshold between two maxima in a smoothed histogram.
+#' It iteratively smooths the histogram and then identifies the maxima,
+#' breaking if fewer than three maxima are found.
+#'
+#' @param image Input image
+#' @param hist Numeric vector representing the histogram
+#' @param nbins Number of bins for histogram
+#' @param max_num_iter Maximum number of iterations for histogram smoothing
+#' @return The threshold between two maxima in the smoothed histogram
+#' @keywords internal
+find_threshold <- function(input, nbins=256, max_num_iter = 100) {
+  hist <- hist(input, breaks = nbins)
+  bin_centers <- hist$mids
+  counts <- hist$counts
+
+  smooth_hist <- as.numeric(counts)
+
+  for (counter in 1:max_num_iter) {
+    smooth_hist <- stats::filter(smooth_hist, rep(1/3, 3), sides = 2)
+    #smooth_hist <- smooth_hist[complete.cases(smooth_hist)]
+    maximum_idxs <- find_local_maxima_idx(smooth_hist)
+    if (length(maximum_idxs) < 3) {
+      break
+    }
+  }
+
+  if (length(maximum_idxs) != 2) {
+    stop("Unable to find two maxima in histogram")
+  } else if (counter == max_num_iter) {
+    stop("Maximum iteration reached for histogram smoothing")
+  }
+
+  threshold_idx <- which.min(smooth_hist[(maximum_idxs[1][[1]] + 1):(maximum_idxs[2][[1]] + 1)])
+
+  return(bin_centers[maximum_idxs[1][[1]] + threshold_idx])
+}

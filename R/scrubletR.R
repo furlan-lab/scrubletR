@@ -1,18 +1,23 @@
-#' @title Scrublet
-#' @description Wolock SL, Lopez R, Klein AM. Scrublet: Computational Identification of Cell Doublets in Single-Cell Transcriptomic Data. Cell Syst. 2019 Apr 24;8(4):281-291.e9. doi: 10.1016/j.cels.2018.11.005. Epub 2019 Apr 3. PMID: 30954476; PMCID: PMC6625319. https://www.sciencedirect.com/science/article/pii/S2405471218304745
-#' @param object the object upon which to perform Scrublet (monocle3 objects and seurat supported)
-#' @param split_by the column in the meta data to split the object by before running scrublet
-#' @param cores Number of cores (only helps when splitting and object)
-#' @param return_results_only bool (optional, default False)
-#' @param expected_doublet_rate = float (default 0.1); doesn't affect doublet score calculation only prediction.
-#' @param min_counts, int (optional, default=2), See scrublet reference
-#' @param min_cells, int (optional, default=3), See scrublet reference
-#' @param min_gene_variability_pctl, int (optional, default=85), See scrublet reference
-#' @param n_prin_comps, int (optional, default=30), See scrublet reference  (Number of principal components to use)
-#' @param sim_doublet_ratio, int (optional, default=2),  the number of doublets to simulate, relative to the number of observed transcriptomes. This should be high enough that all doublet states are well-represented by simulated doublets. Setting it too high is computationally expensive. The default value is 2, though values as low as 0.5 give very similar results for the datasets that have been tested.
-#' @param seed, seed aka random state
-#' @param show_gene_filter_plot, show the mean x FF plot with selected features
-#' @return The input CellDataSet or Seurat object with an additional column added to pData with both the doublet_score output from scrublet,
+#' Scrublet: Doublet Detection for Single-Cell RNA-Seq Data
+#'
+#' This function performs doublet detection using the Scrublet algorithm on single-cell RNA-Seq data.  It has been implemented natively in R.
+#' @description
+#' Wolock SL, Lopez R, Klein AM. Scrublet: Computational Identification of Cell Doublets in Single-Cell Transcriptomic Data. Cell Syst. 2019 Apr 24;8(4):281-291.e9. doi: 10.1016/j.cels.2018.11.005. Epub 2019 Apr 3. PMID: 30954476; PMCID: PMC6625319. https://www.sciencedirect.com/science/article/pii/S2405471218304745
+#'
+#' @param object A Seurat object or SingleCellExperiment (monocle3) containing single-cell RNA-Seq data.
+#' @param split_by (Optional) A column name in the metadata of the object to split the data into subsets for separate analysis.
+#' @param return_results_only Logical. If TRUE, only the doublet scores and predicted doublets are returned without modifying the input object. Default is FALSE.
+#' @param min_counts Minimum counts for a cell to be considered. Default is 3.
+#' @param min_cells Minimum number of cells expressing a gene for it to be considered. Default is 3.
+#' @param min_gene_variability_pctl Minimum percentile of gene variability for it to be considered. Default is 85.
+#' @param seed Random seed. Default is 2024.
+#' @param expected_doublet_rate Expected doublet rate. Default is 0.1.
+#' @param n_prin_comps Number of principal components to use for Scrublet. Default is 30.
+#' @param sim_doublet_ratio Ratio of doublets to singlets in the simulated doublets. Default is 2.
+#' @param assay Assay type to be used. Default is "RNA".
+#' @param cores Number of cores to use for parallel processing. Default is 1.
+#' @param show_gene_filter_plot Logical. If TRUE, shows gene filter plot. Default is FALSE.
+#' @return If return_results_only is TRUE, returns a data frame containing doublet scores and predicted doublets. Otherwise, modifies and returns the input object with additional metadata columns for doublet scores and predicted doublets.
 #' @importFrom pbmcapply pbmclapply
 #' @importFrom SummarizedExperiment colData
 #' @importFrom SummarizedExperiment colData<-
@@ -386,7 +391,7 @@ ScrubletR <- R6::R6Class("Scrublet",
       if (is.null(threshold)) {
         # Automatic threshold detection
         tryCatch({
-          threshold <- threshold_minimum(self$doublet_scores_sim_)
+          threshold <- find_threshold(self$doublet_scores_sim_)
           cat_optional(paste0("Automatically set threshold at doublet score =", threshold), verbose)
         }, error = function(e) {
           self$predicted_doublets <- rep("Error", length(doublet_scores_obs_))
