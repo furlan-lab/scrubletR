@@ -10,7 +10,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scrubletR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -76,10 +76,12 @@
 <span>  min_cells <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  min_gene_variability_pctl <span class="op">=</span> <span class="fl">85</span>,</span>
 <span>  seed <span class="op">=</span> <span class="fl">2024</span>,</span>
+<span>  expected_doublet_rate <span class="op">=</span> <span class="fl">0.1</span>,</span>
 <span>  n_prin_comps <span class="op">=</span> <span class="fl">30</span>,</span>
 <span>  sim_doublet_ratio <span class="op">=</span> <span class="fl">2</span>,</span>
 <span>  assay <span class="op">=</span> <span class="st">"RNA"</span>,</span>
-<span>  cores <span class="op">=</span> <span class="fl">1</span></span>
+<span>  cores <span class="op">=</span> <span class="fl">1</span>,</span>
+<span>  show_gene_filter_plot <span class="op">=</span> <span class="cn">F</span></span>
 <span><span class="op">)</span></span></code></pre></div>
     </div>
 
@@ -113,6 +115,10 @@
 <dd><p>seed aka random state</p></dd>
 
 
+<dt>expected_doublet_rate</dt>
+<dd><p>= float (default 0.1); doesn't affect doublet score calculation only prediction.</p></dd>
+
+
 <dt>n_prin_comps, </dt>
 <dd><p>int (optional, default=30), See scrublet reference  (Number of principal components to use)</p></dd>
 
@@ -123,6 +129,10 @@
 
 <dt>cores</dt>
 <dd><p>Number of cores (only helps when splitting and object)</p></dd>
+
+
+<dt>show_gene_filter_plot, </dt>
+<dd><p>show the mean x FF plot with selected features</p></dd>
 
 </dl></div>
     <div class="section level2">

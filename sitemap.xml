@@ -40,6 +40,12 @@
     <loc>https://furlan-lab.github.io/scrubletR/reference/filter_genes.html</loc>
   </url>
   <url>
+    <loc>https://furlan-lab.github.io/scrubletR/reference/find_local_maxima_idx.html</loc>
+  </url>
+  <url>
+    <loc>https://furlan-lab.github.io/scrubletR/reference/find_threshold.html</loc>
+  </url>
+  <url>
     <loc>https://furlan-lab.github.io/scrubletR/reference/get_knn_graph.html</loc>
   </url>
   <url>

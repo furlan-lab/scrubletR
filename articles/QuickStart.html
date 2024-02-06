@@ -30,7 +30,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scrubletR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -130,22 +130,21 @@
 objects)<a class="anchor" aria-label="anchor" href="#run-scrubletr-the-easy-way-compatible-with-seurat-and-monocle3-objects"></a>
 </h2>
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">seuP</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/scrublet.html">scrublet</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="va">seuP</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/scrublet.html">scrublet</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="https://samuel-marsh.github.io/scCustomize/reference/FeaturePlot_scCustom.html" class="external-link">FeaturePlot_scCustom</a></span><span class="op">(</span><span class="va">seuP</span>, features <span class="op">=</span> <span class="st">"doublet_scores"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="QuickStart_files/figure-html/unnamed-chunk-3-1.png" width="100%"></p>
 <div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://samuel-marsh.github.io/scCustomize/reference/FeaturePlot_scCustom.html" class="external-link">FeaturePlot_scCustom</a></span><span class="op">(</span><span class="va">seuP</span>, features <span class="op">=</span> <span class="st">"doublet_scores"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="QuickStart_files/figure-html/unnamed-chunk-3-2.png" width="100%"></p>
-<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seuP</span><span class="op">$</span><span class="va">doublets</span><span class="op">&lt;-</span><span class="va">seuP</span><span class="op">$</span><span class="va">doublet_scores</span> <span class="op">&gt;</span> <span class="fl">0.15</span>   <span class="co">#(You pick this)</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seuP</span>, group.by <span class="op">=</span> <span class="st">"doublets"</span>, cols<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"goldenrod"</span>, <span class="st">"navy"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="QuickStart_files/figure-html/unnamed-chunk-3-3.png" width="100%"></p>
+<p><img src="QuickStart_files/figure-html/unnamed-chunk-3-2.png" width="100%"></p>
 <p><strong>You can then remove them from your object and
 re-embed!</strong></p>
 </div>
 <div class="section level2">
 <h2 id="appendix">Appendix<a class="anchor" aria-label="anchor" href="#appendix"></a>
 </h2>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
 <span><span class="co">## Platform: x86_64-apple-darwin20 (64-bit)</span></span>
@@ -268,7 +267,7 @@ re-embed!</strong></p>
 <span><span class="co">## [193] beeswarm_0.4.0              IRanges_2.34.1             </span></span>
 <span><span class="co">## [195] cluster_2.1.6               timechange_0.3.0           </span></span>
 <span><span class="co">## [197] globals_0.16.2              caret_6.0-94</span></span></code></pre>
-<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "/Users/sfurlan/develop/scrubletR/vignettes"</span></span></code></pre>
 </div>

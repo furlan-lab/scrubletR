@@ -30,7 +30,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scrubletR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.1.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -131,6 +131,9 @@ this from R. If you are successful, you will get no output.</p>
 <p>Failure will look something like this</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rstudio.github.io/reticulate/reference/py_run.html" class="external-link">py_run_string</a></span><span class="op">(</span><span class="st">"import scrubletoops"</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">Error</span> in py_run_string_impl<span class="er">(</span><span class="ex">code,</span> local, convert<span class="kw">)</span> <span class="bu">:</span> </span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>  <span class="ex">ModuleNotFoundError:</span> No module named <span class="st">'scrubletoops'</span></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="ex">Run</span> <span class="kw">`</span><span class="fu">reticulate::py_last_error()</span><span class="kw">`</span> for details.</span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -141,14 +144,13 @@ differences. First let’s load data</p>
 <div class="section level4">
 <h4 id="load-data">Load data<a class="anchor" aria-label="anchor" href="#load-data"></a>
 </h4>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://furlan-lab.github.io/viewmastRust/" class="external-link">viewmastRust</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/samuel-marsh/scCustomize" class="external-link">scCustomize</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org" class="external-link">Matrix</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://ggplot2.tidyverse.org" class="external-link">ggplot2</a></span><span class="op">)</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://furlan-lab.github.io/scrubletR/">scrubletR</a></span><span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span>
 <span></span>
 <span><span class="kw">if</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/grep.html" class="external-link">grepl</a></span><span class="op">(</span><span class="st">"^gizmo"</span>, <span class="fu"><a href="https://rdrr.io/r/base/Sys.info.html" class="external-link">Sys.info</a></span><span class="op">(</span><span class="op">)</span><span class="op">[</span><span class="st">"nodename"</span><span class="op">]</span><span class="op">)</span><span class="op">)</span><span class="op">{</span></span>
@@ -160,8 +162,8 @@ differences. First let’s load data</p>
 <span><span class="co">#query dataset</span></span>
 <span><span class="va">seuP</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/readRDS.html" class="external-link">readRDS</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/file.path.html" class="external-link">file.path</a></span><span class="op">(</span><span class="va">ROOT_DIR2</span>, <span class="st">"220831_WC1.RDS"</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://samuel-marsh.github.io/scCustomize/reference/DimPlot_scCustom.html" class="external-link">DimPlot_scCustom</a></span><span class="op">(</span><span class="va">seuP</span>, label <span class="op">=</span> <span class="cn">F</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-7-1.png" width="100%"></p>
-<div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-8-1.png" width="100%"></p>
+<div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#counts_matrix&lt;-t(seuP@assays$RNA@counts[,1:2000])</span></span>
 <span><span class="va">counts_matrix</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">@</span><span class="va">assays</span><span class="op">$</span><span class="va">RNA</span><span class="op">@</span><span class="va">counts</span><span class="op">)</span></span></code></pre></div>
 </div>
@@ -173,45 +175,45 @@ normalization. Let’s see how the normalized counts compare across the
 two implementations. In the next block, I have run the scrublet pipeline
 through normalization and saved the counts in the R environment as
 “py_E_obs_norm”</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a></span>
-<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
-<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a><span class="im">import</span> scrublet <span class="im">as</span> scr</span>
-<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>scrub <span class="op">=</span> scr.Scrublet(r.counts_matrix)</span>
-<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a></span>
-<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">##set params</span></span>
-<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a>synthetic_doublet_umi_subsampling<span class="op">=</span><span class="fl">1.0</span></span>
-<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>use_approx_neighbors<span class="op">=</span><span class="va">True</span></span>
-<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>distance_metric<span class="op">=</span><span class="st">'euclidean'</span></span>
-<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>get_doublet_neighbor_parents<span class="op">=</span><span class="va">False</span></span>
-<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>min_counts<span class="op">=</span><span class="dv">3</span></span>
-<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a>min_cells<span class="op">=</span><span class="dv">3</span></span>
-<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a>min_gene_variability_pctl<span class="op">=</span><span class="dv">85</span></span>
-<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a>log_transform<span class="op">=</span><span class="va">False</span></span>
-<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a>mean_center<span class="op">=</span><span class="va">True</span>,</span>
-<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a>normalize_variance<span class="op">=</span><span class="va">True</span></span>
-<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a>n_prin_comps<span class="op">=</span><span class="dv">30</span></span>
-<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a>svd_solver<span class="op">=</span><span class="st">'arpack'</span></span>
-<span id="cb8-19"><a href="#cb8-19" tabindex="-1"></a>verbose<span class="op">=</span><span class="va">True</span></span>
-<span id="cb8-20"><a href="#cb8-20" tabindex="-1"></a>random_state <span class="op">=</span> <span class="dv">0</span></span>
-<span id="cb8-21"><a href="#cb8-21" tabindex="-1"></a></span>
-<span id="cb8-22"><a href="#cb8-22" tabindex="-1"></a><span class="co">#clear data in object</span></span>
-<span id="cb8-23"><a href="#cb8-23" tabindex="-1"></a>scrub._E_sim <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb8-24"><a href="#cb8-24" tabindex="-1"></a>scrub._E_obs_norm <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb8-25"><a href="#cb8-25" tabindex="-1"></a>scrub._E_sim_norm <span class="op">=</span> <span class="va">None</span></span>
-<span id="cb8-26"><a href="#cb8-26" tabindex="-1"></a>scrub._gene_filter <span class="op">=</span> np.arange(scrub._E_obs.shape[<span class="dv">1</span>])</span>
-<span id="cb8-27"><a href="#cb8-27" tabindex="-1"></a></span>
-<span id="cb8-28"><a href="#cb8-28" tabindex="-1"></a><span class="co">#run normalize</span></span>
-<span id="cb8-29"><a href="#cb8-29" tabindex="-1"></a>scr.pipeline_normalize(scrub)</span>
-<span id="cb8-30"><a href="#cb8-30" tabindex="-1"></a></span>
-<span id="cb8-31"><a href="#cb8-31" tabindex="-1"></a><span class="co">#capture size factor normalized counts</span></span>
-<span id="cb8-32"><a href="#cb8-32" tabindex="-1"></a>r.py_E_obs_norm <span class="op">=</span> scrub._E_obs_norm.data</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="im">import</span> scrublet <span class="im">as</span> scr</span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>scrub <span class="op">=</span> scr.Scrublet(r.counts_matrix)</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a><span class="co">##set params</span></span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>synthetic_doublet_umi_subsampling<span class="op">=</span><span class="fl">1.0</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>use_approx_neighbors<span class="op">=</span><span class="va">True</span></span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a>distance_metric<span class="op">=</span><span class="st">'euclidean'</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a>get_doublet_neighbor_parents<span class="op">=</span><span class="va">False</span></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a>min_counts<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a>min_cells<span class="op">=</span><span class="dv">3</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a>min_gene_variability_pctl<span class="op">=</span><span class="dv">85</span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a>log_transform<span class="op">=</span><span class="va">False</span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a>mean_center<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a>normalize_variance<span class="op">=</span><span class="va">True</span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a>n_prin_comps<span class="op">=</span><span class="dv">30</span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a>svd_solver<span class="op">=</span><span class="st">'arpack'</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a>verbose<span class="op">=</span><span class="va">True</span></span>
+<span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a>random_state <span class="op">=</span> <span class="dv">0</span></span>
+<span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#clear data in object</span></span>
+<span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a>scrub._E_sim <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a>scrub._E_obs_norm <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a>scrub._E_sim_norm <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb9-26"><a href="#cb9-26" tabindex="-1"></a>scrub._gene_filter <span class="op">=</span> np.arange(scrub._E_obs.shape[<span class="dv">1</span>])</span>
+<span id="cb9-27"><a href="#cb9-27" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" tabindex="-1"></a><span class="co">#run normalize</span></span>
+<span id="cb9-29"><a href="#cb9-29" tabindex="-1"></a>scr.pipeline_normalize(scrub)</span>
+<span id="cb9-30"><a href="#cb9-30" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" tabindex="-1"></a><span class="co">#capture size factor normalized counts</span></span>
+<span id="cb9-32"><a href="#cb9-32" tabindex="-1"></a>r.py_E_obs_norm <span class="op">=</span> scrub._E_obs_norm.data</span></code></pre></div>
 <div class="section level4">
 <h4 id="run-scrubletr-size-factor-normalization">Run scrubletR size factor normalization<a class="anchor" aria-label="anchor" href="#run-scrubletr-size-factor-normalization"></a>
 </h4>
 <p>To see how the sets of counts compare, we can similarly run scrubletR
 normalization and correlate a sample (n=5000) of the log transformed
 counts using ggplot. Unsurprisingly they are not different.</p>
-<div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#In R</span></span>
 <span><span class="co">#set params</span></span>
 <span><span class="va">synthetic_doublet_umi_subsampling</span> <span class="op">=</span> <span class="fl">1.0</span></span>
@@ -235,7 +237,7 @@ counts using ggplot. Unsurprisingly they are not different.</p>
 <span></span>
 <span><span class="va">ix</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">@</span><span class="va">x</span><span class="op">)</span>, <span class="fl">5000</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">@</span><span class="va">x</span><span class="op">[</span><span class="va">ix</span><span class="op">]</span><span class="op">)</span>, y <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py_E_obs_norm</span><span class="op">[</span><span class="va">ix</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>, y<span class="op">=</span><span class="va">y</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.01</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"scrubletR size-factor normalized counts"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"scrublet (python) size-factor normalized counts"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-9-1.png" width="100%"></p>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-10-1.png" width="100%"></p>
 </div>
 </div>
 <div class="section level3">
@@ -245,24 +247,20 @@ counts using ggplot. Unsurprisingly they are not different.</p>
 highest variable expression. The default is set to find the set of
 features that exhibit expression variance in the above the 85th
 percentile as measured using the v-statistic.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a>genefilter <span class="op">=</span> scr.filter_genes(scrub._E_obs_norm,</span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a>                                        min_counts<span class="op">=</span>min_counts,</span>
-<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>                                        min_cells<span class="op">=</span>min_cells,</span>
-<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>                                        min_vscore_pctl<span class="op">=</span>min_gene_variability_pctl, show_vscore_plot<span class="op">=</span><span class="va">False</span>)</span>
-<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>v_scores, CV_eff, CV_input, gene_ix, mu_gene, FF_gene, a, b <span class="op">=</span> scr.get_vscores(scrub._E_obs_norm)</span>
-<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>r.py_vscores <span class="op">=</span> v_scores</span>
-<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>min_vscore_pctl<span class="op">=</span>min_gene_variability_pctl</span>
-<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>ix2 <span class="op">=</span> v_scores<span class="op">&gt;</span><span class="dv">0</span></span>
-<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a>v_scores <span class="op">=</span> v_scores[ix2]</span>
-<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a>gene_ix <span class="op">=</span> gene_ix[ix2]</span>
-<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>mu_gene <span class="op">=</span> mu_gene[ix2]</span>
-<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>FF_gene <span class="op">=</span> FF_gene[ix2]</span>
-<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>min_vscore <span class="op">=</span> np.percentile(v_scores, min_vscore_pctl)</span>
-<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>final_ix <span class="op">=</span> (((scrub._E_obs_norm[:,gene_ix] <span class="op">&gt;=</span> min_counts).<span class="bu">sum</span>(<span class="dv">0</span>).A.squeeze() <span class="op">&gt;=</span> min_cells) <span class="op">&amp;</span> (v_scores <span class="op">&gt;=</span> min_vscore))</span>
-<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>    </span>
-<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a><span class="co">#import inspect</span></span>
-<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a><span class="co">#lines = inspect.getsource(scr.filter_genes)</span></span>
-<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a><span class="co">#print(lines)</span></span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a>genefilter <span class="op">=</span> scr.filter_genes(scrub._E_obs_norm,</span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>                                        min_counts<span class="op">=</span>min_counts,</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>                                        min_cells<span class="op">=</span>min_cells,</span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>                                        min_vscore_pctl<span class="op">=</span>min_gene_variability_pctl, show_vscore_plot<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>v_scores, CV_eff, CV_input, gene_ix, mu_gene, FF_gene, a, b <span class="op">=</span> scr.get_vscores(scrub._E_obs_norm)</span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>r.py_vscores <span class="op">=</span> v_scores</span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>min_vscore_pctl<span class="op">=</span>min_gene_variability_pctl</span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>ix2 <span class="op">=</span> v_scores<span class="op">&gt;</span><span class="dv">0</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>v_scores <span class="op">=</span> v_scores[ix2]</span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>gene_ix <span class="op">=</span> gene_ix[ix2]</span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>mu_gene <span class="op">=</span> mu_gene[ix2]</span>
+<span id="cb11-12"><a href="#cb11-12" tabindex="-1"></a>FF_gene <span class="op">=</span> FF_gene[ix2]</span>
+<span id="cb11-13"><a href="#cb11-13" tabindex="-1"></a>min_vscore <span class="op">=</span> np.percentile(v_scores, min_vscore_pctl)</span>
+<span id="cb11-14"><a href="#cb11-14" tabindex="-1"></a>final_ix <span class="op">=</span> (((scrub._E_obs_norm[:,gene_ix] <span class="op">&gt;=</span> min_counts).<span class="bu">sum</span>(<span class="dv">0</span>).A.squeeze() <span class="op">&gt;=</span> min_cells) <span class="op">&amp;</span> (v_scores <span class="op">&gt;=</span> min_vscore))</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="problem-1">Problem #1<a class="anchor" aria-label="anchor" href="#problem-1"></a>
@@ -270,20 +268,16 @@ percentile as measured using the v-statistic.</p>
 <p>V-scores are slightly different between R and python. The correlation
 is pretty good howewever and this likely won’t affect performance too
 much</p>
-<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co">#scr$pipeline_get_gene_filter()</span></span>
-<span></span>
-<span></span>
-<span><span class="va">vscores_result</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/get_vscores.html">get_vscores</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">)</span></span>
+<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">vscores_result</span><span class="op">&lt;-</span><span class="fu"><a href="../reference/get_vscores.html">get_vscores</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">)</span></span>
 <span><span class="va">Vscores</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">vscores_result</span><span class="op">$</span><span class="va">v_scores</span><span class="op">)</span></span>
-<span><span class="co"># ggplot(data.frame(x=log(Vscores), y = log(py_vscores)), aes(x=x, y=y))+geom_point(size = 0.01)+xlab("scrubletR vscores")+ylab("scrublet (python) vscores")+theme_bw()</span></span>
+<span></span>
 <span></span>
 <span><span class="va">df</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>vscore_R<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">Vscores</span><span class="op">)</span>, vscore_py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py_vscores</span><span class="op">)</span>, indices_py<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">Vscores</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">gene_ix</span><span class="op">+</span><span class="fl">1</span><span class="op">)</span>, indices_R<span class="op">=</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">Vscores</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="va">vscores_result</span><span class="op">$</span><span class="va">gene_ix</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">selected_cat</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">df</span>, <span class="fl">2</span><span class="op">*</span><span class="va">indices_py</span> <span class="op">+</span> <span class="va">indices_R</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">selected_cat</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"neither"</span>, <span class="st">"both"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co">#ggplot(df, aes(x=vscore_R, y=vscore_py, color = selected_cat))+geom_point(size = 0.01)+theme_bw()</span></span>
 <span></span>
 <span><span class="va">gene_ix</span> <span class="op">&lt;-</span> <span class="va">vscores_result</span><span class="op">$</span><span class="va">gene_ix</span></span>
 <span><span class="va">mu_gene</span> <span class="op">&lt;-</span> <span class="va">vscores_result</span><span class="op">$</span><span class="va">mu_gene</span></span>
@@ -300,15 +294,15 @@ much</p>
 <span><span class="va">min_vscore_pctl</span><span class="op">=</span><span class="va">min_gene_variability_pctl</span></span>
 <span><span class="va">min_vscore</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/stats/quantile.html" class="external-link">quantile</a></span><span class="op">(</span><span class="va">Vscores</span>, prob <span class="op">=</span> <span class="va">min_vscore_pctl</span> <span class="op">/</span> <span class="fl">100</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">ix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">[</span>, <span class="va">gene_ix</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="va">min_counts</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="va">min_cells</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">Vscores</span> <span class="op">&gt;=</span> <span class="va">min_vscore</span><span class="op">)</span><span class="op">)</span></span>
+<span><span class="va">ix</span> <span class="op">&lt;-</span> <span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">colSums</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">[</span>, <span class="va">gene_ix</span><span class="op">]</span> <span class="op">&gt;=</span> <span class="va">min_counts</span><span class="op">)</span> <span class="op">&gt;=</span> <span class="va">min_cells</span><span class="op">)</span> <span class="op">&amp;</span> <span class="op">(</span><span class="va">Vscores</span> <span class="op">&gt;=</span> <span class="va">min_vscore</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">selected_R</span><span class="op">&lt;-</span><span class="va">ix</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">selected_py</span><span class="op">&lt;-</span><span class="va">py</span><span class="op">$</span><span class="va">final_ix</span></span>
 <span><span class="va">df</span><span class="op">$</span><span class="va">selected_cat</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/with.html" class="external-link">with</a></span><span class="op">(</span><span class="va">df</span>, <span class="fl">2</span><span class="op">*</span><span class="va">selected_py</span> <span class="op">+</span> <span class="va">selected_R</span> <span class="op">+</span> <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/levels.html" class="external-link">levels</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">selected_cat</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"neither"</span>, <span class="st">"r_only"</span>, <span class="st">"py_only"</span>, <span class="st">"both"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="va">df</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">vscore_R</span>, y<span class="op">=</span><span class="va">vscore_py</span>, color <span class="op">=</span> <span class="va">selected_cat</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.2</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-11-1.png" width="100%"></p>
-<div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-12-1.png" width="100%"></p>
+<div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/table.html" class="external-link">table</a></span><span class="op">(</span><span class="va">df</span><span class="op">$</span><span class="va">selected_cat</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## </span></span>
 <span><span class="co">## neither  r_only py_only    both </span></span>
@@ -316,42 +310,40 @@ much</p>
 <div class="section level4">
 <h4 id="highly-variant-features-using-r-method">Highly variant features using R method<a class="anchor" aria-label="anchor" href="#highly-variant-features-using-r-method"></a>
 </h4>
-<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_get_gene_filter</span><span class="op">(</span>plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-12-1.png" width="100%"></p>
 <div class="sourceCode" id="cb15"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_get_gene_filter</span><span class="op">(</span>plot <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-13-1.png" width="100%"></p>
+<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_apply_gene_filter</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level4">
 <h4 id="simulating-doublets">Simulating doublets<a class="anchor" aria-label="anchor" href="#simulating-doublets"></a>
 </h4>
-<div class="sourceCode" id="cb16"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb17"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sim_doublet_ratio</span> <span class="op">=</span> <span class="fl">2.0</span></span>
 <span><span class="va">synthetic_doublet_umi_subsampling</span> <span class="op">=</span> <span class="fl">1.0</span></span>
 <span></span>
 <span><span class="va">scr</span><span class="op">$</span><span class="fu">simulate_doublets</span><span class="op">(</span>sim_doublet_ratio<span class="op">=</span><span class="va">sim_doublet_ratio</span>, synthetic_doublet_umi_subsampling<span class="op">=</span><span class="va">synthetic_doublet_umi_subsampling</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_normalize</span><span class="op">(</span>postnorm_total<span class="op">=</span><span class="fl">1e6</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb17"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>scr.pipeline_get_gene_filter(scrub)</span>
-<span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>scr.pipeline_apply_gene_filter(scrub)</span>
-<span id="cb17-3"><a href="#cb17-3" tabindex="-1"></a>scrub.simulate_doublets(sim_doublet_ratio<span class="op">=</span>scrub.sim_doublet_ratio, synthetic_doublet_umi_subsampling<span class="op">=</span>synthetic_doublet_umi_subsampling)</span>
-<span id="cb17-4"><a href="#cb17-4" tabindex="-1"></a>scr.pipeline_normalize(scrub, postnorm_total<span class="op">=</span><span class="fl">1e6</span>)</span>
-<span id="cb17-5"><a href="#cb17-5" tabindex="-1"></a>r.py_Esimnorm <span class="op">=</span> scrub._E_sim_norm</span>
-<span id="cb17-6"><a href="#cb17-6" tabindex="-1"></a>gene_filter <span class="op">=</span> scrub._gene_filter</span>
-<span id="cb17-7"><a href="#cb17-7" tabindex="-1"></a>r.py_E_obs_norm <span class="op">=</span> scrub._E_obs_norm</span>
-<span id="cb17-8"><a href="#cb17-8" tabindex="-1"></a><span class="im">import</span> copy</span>
-<span id="cb17-9"><a href="#cb17-9" tabindex="-1"></a></span>
-<span id="cb17-10"><a href="#cb17-10" tabindex="-1"></a>scrub_preZ <span class="op">=</span> copy.deepcopy(scrub)</span></code></pre></div>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>scr.pipeline_get_gene_filter(scrub)</span>
+<span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>scr.pipeline_apply_gene_filter(scrub)</span>
+<span id="cb18-3"><a href="#cb18-3" tabindex="-1"></a>scrub.simulate_doublets(sim_doublet_ratio<span class="op">=</span>scrub.sim_doublet_ratio, synthetic_doublet_umi_subsampling<span class="op">=</span>synthetic_doublet_umi_subsampling)</span>
+<span id="cb18-4"><a href="#cb18-4" tabindex="-1"></a>scr.pipeline_normalize(scrub, postnorm_total<span class="op">=</span><span class="fl">1e6</span>)</span>
+<span id="cb18-5"><a href="#cb18-5" tabindex="-1"></a>r.py_Esimnorm <span class="op">=</span> scrub._E_sim_norm</span>
+<span id="cb18-6"><a href="#cb18-6" tabindex="-1"></a>gene_filter <span class="op">=</span> scrub._gene_filter</span>
+<span id="cb18-7"><a href="#cb18-7" tabindex="-1"></a>r.py_E_obs_norm <span class="op">=</span> scrub._E_obs_norm</span>
+<span id="cb18-8"><a href="#cb18-8" tabindex="-1"></a><span class="im">import</span> copy</span>
+<span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a></span>
+<span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>scrub_preZ <span class="op">=</span> copy.deepcopy(scrub)</span></code></pre></div>
 </div>
-</div>
-</div>
-<div class="section level2">
-<h2 id="lets-umap">Let’s umap<a class="anchor" aria-label="anchor" href="#lets-umap"></a>
-</h2>
+<div class="section level4">
+<h4 id="lets-umap">Let’s umap<a class="anchor" aria-label="anchor" href="#lets-umap"></a>
+</h4>
 <p>Here we will brind the pseudo doublets with the original count matrix
 and visualize using UMAP across the two implemnetations. They look
 similar.</p>
-<div class="sourceCode" id="cb18"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://magrittr.tidyverse.org" class="external-link">magrittr</a></span><span class="op">)</span></span>
 <span><span class="va">rcounts</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span>, <span class="va">scr</span><span class="op">$</span><span class="va">E_sim_norm</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">rcounts</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">)</span><span class="op">[</span><span class="va">scr</span><span class="op">$</span><span class="va">gene_filter</span><span class="op">]</span></span>
@@ -359,8 +351,8 @@ similar.</p>
 <span><span class="va">seuR</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span><span class="va">rcounts</span>, meta.data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>celltype<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"pseudodoublet"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, row.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">rcounts</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">seuR</span> <span class="op">&lt;-</span><span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span><span class="va">seuR</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures</a></span><span class="op">(</span>nfeatures <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>npcs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/ElbowPlot.html" class="external-link">ElbowPlot</a></span><span class="op">(</span><span class="va">seuR</span>, <span class="fl">50</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-15-1.png" width="100%"></p>
-<div class="sourceCode" id="cb19"><pre class="downlit sourceCode r">
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-16-1.png" width="100%"></p>
+<div class="sourceCode" id="cb20"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seuR</span><span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindNeighbors.html" class="external-link">FindNeighbors</a></span><span class="op">(</span><span class="va">seuR</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindClusters.html" class="external-link">FindClusters</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">30</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck</span></span>
 <span><span class="co">## </span></span>
@@ -370,19 +362,19 @@ similar.</p>
 <span><span class="co">## Running Louvain algorithm...</span></span>
 <span><span class="co">## Maximum modularity in 10 random starts: 0.8846</span></span>
 <span><span class="co">## Number of communities: 27</span></span>
-<span><span class="co">## Elapsed time: 8 seconds</span></span></code></pre>
-<div class="sourceCode" id="cb21"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seuR</span>, group.by <span class="op">=</span> <span class="st">"celltype"</span>, cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">16</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"scrubletR"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-15-2.png" width="100%"></p>
+<span><span class="co">## Elapsed time: 9 seconds</span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seuR</span>, group.by <span class="op">=</span> <span class="st">"celltype"</span>, cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">16</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"scrubletR"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-16-2.png" width="100%"></p>
+<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">pycounts</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/cbind.html" class="external-link">rbind</a></span><span class="op">(</span><span class="va">py_E_obs_norm</span>, <span class="va">py_Esimnorm</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">pycounts</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">rownames</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">)</span><span class="op">[</span><span class="va">py</span><span class="op">$</span><span class="va">gene_filter</span><span class="op">]</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">pycounts</span><span class="op">)</span><span class="op">&lt;-</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">pycounts</span><span class="op">)</span><span class="op">[</span><span class="fl">2</span><span class="op">]</span></span>
 <span><span class="va">seuPy</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/pkg/SeuratObject/man/CreateSeuratObject.html" class="external-link">CreateSeuratObject</a></span><span class="op">(</span><span class="va">pycounts</span>, meta.data <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>celltype<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"pseudodoublet"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span><span class="op">*</span><span class="fl">2</span><span class="op">)</span><span class="op">)</span>, row.names <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">pycounts</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="va">seuPy</span> <span class="op">&lt;-</span><span class="fu"><a href="https://satijalab.org/seurat/reference/NormalizeData.html" class="external-link">NormalizeData</a></span><span class="op">(</span><span class="va">seuPy</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindVariableFeatures.html" class="external-link">FindVariableFeatures</a></span><span class="op">(</span>nfeatures <span class="op">=</span> <span class="fl">1000</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/ScaleData.html" class="external-link">ScaleData</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunPCA.html" class="external-link">RunPCA</a></span><span class="op">(</span>npcs <span class="op">=</span> <span class="fl">50</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://satijalab.org/seurat/reference/ElbowPlot.html" class="external-link">ElbowPlot</a></span><span class="op">(</span><span class="va">seuPy</span>, <span class="fl">50</span><span class="op">)</span> </span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-15-3.png" width="100%"></p>
-<div class="sourceCode" id="cb23"><pre class="downlit sourceCode r">
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-16-3.png" width="100%"></p>
+<div class="sourceCode" id="cb24"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">seuPy</span><span class="op">&lt;-</span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindNeighbors.html" class="external-link">FindNeighbors</a></span><span class="op">(</span><span class="va">seuPy</span>, dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">40</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/FindClusters.html" class="external-link">FindClusters</a></span><span class="op">(</span><span class="op">)</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://satijalab.org/seurat/reference/RunUMAP.html" class="external-link">RunUMAP</a></span><span class="op">(</span>dims <span class="op">=</span> <span class="fl">1</span><span class="op">:</span><span class="fl">40</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## Modularity Optimizer version 1.3.0 by Ludo Waltman and Nees Jan van Eck</span></span>
 <span><span class="co">## </span></span>
@@ -393,28 +385,29 @@ similar.</p>
 <span><span class="co">## Maximum modularity in 10 random starts: 0.8791</span></span>
 <span><span class="co">## Number of communities: 25</span></span>
 <span><span class="co">## Elapsed time: 8 seconds</span></span></code></pre>
-<div class="sourceCode" id="cb25"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seuPy</span>, group.by <span class="op">=</span> <span class="st">"celltype"</span>, cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">16</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Scrublet (python)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-15-4.png" width="100%"></p>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-16-4.png" width="100%"></p>
+</div>
+</div>
 <div class="section level3">
 <h3 id="z-scoring">Z-scoring<a class="anchor" aria-label="anchor" href="#z-scoring"></a>
 </h3>
 <p>The default scrublet pathway then performs a z-scaling procedure
 across the data</p>
-<div class="sourceCode" id="cb26"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>scrub_preZ._E_obs_norm.shape</span></code></pre></div>
-<pre><code><span><span class="co">## (13914, 2477)</span></span></code></pre>
-<div class="sourceCode" id="cb28"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>gene_means <span class="op">=</span> scrub._E_obs_norm.mean(<span class="dv">0</span>)</span>
-<span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>gene_stdevs <span class="op">=</span> np.sqrt(scr.sparse_var(scrub._E_obs_norm))</span>
-<span id="cb28-3"><a href="#cb28-3" tabindex="-1"></a></span>
-<span id="cb28-4"><a href="#cb28-4" tabindex="-1"></a>py_zscored <span class="op">=</span> scr.sparse_multiply((scrub._E_obs_norm <span class="op">-</span> gene_means).T, <span class="dv">1</span><span class="op">/</span>gene_stdevs).T</span></code></pre></div>
+<div class="sourceCode" id="cb27"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a>gene_means <span class="op">=</span> scrub._E_obs_norm.mean(<span class="dv">0</span>)</span>
+<span id="cb27-2"><a href="#cb27-2" tabindex="-1"></a>gene_stdevs <span class="op">=</span> np.sqrt(scr.sparse_var(scrub._E_obs_norm))</span>
+<span id="cb27-3"><a href="#cb27-3" tabindex="-1"></a></span>
+<span id="cb27-4"><a href="#cb27-4" tabindex="-1"></a>py_zscored <span class="op">=</span> scr.sparse_multiply((scrub._E_obs_norm <span class="op">-</span> gene_means).T, <span class="dv">1</span><span class="op">/</span>gene_stdevs).T</span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-by-step">step by step<a class="anchor" aria-label="anchor" href="#step-by-step"></a>
 </h3>
 <div class="section level5">
-<h5 id="step-1-calculate-gene-mean-and-stdev---look-pretty-similar">Step 1 calculate gene mean and stdev - look pretty similar<a class="anchor" aria-label="anchor" href="#step-1-calculate-gene-mean-and-stdev---look-pretty-similar"></a>
+<h5 id="step-1-calculate-gene-mean-and-stdev">Step 1 calculate gene mean and stdev<a class="anchor" aria-label="anchor" href="#step-1-calculate-gene-mean-and-stdev"></a>
 </h5>
-<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<p>These look pretty similar</p>
+<div class="sourceCode" id="cb28"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">gene_mean</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">)</span><span class="op">)</span> <span class="co">#######changed to column - IS CORRECT</span></span>
 <span><span class="va">gene_stdev</span> <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">sqrt</a></span><span class="op">(</span><span class="fu">scrubletR</span><span class="fu">:::</span><span class="fu"><a href="../reference/sparse_var.html">sparse_var</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span>, axis <span class="op">=</span> <span class="fl">2</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span>
 <span><span class="co"># print_py(gene_mean)</span></span>
@@ -422,208 +415,98 @@ across the data</p>
 <span><span class="co"># print_py(py$gene_means[1,])</span></span>
 <span><span class="co"># print_py(py$gene_stdevs)</span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gene_mean</span>, <span class="va">py</span><span class="op">$</span><span class="va">gene_means</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span>, stdev<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gene_stdev</span>, <span class="va">py</span><span class="op">$</span><span class="va">gene_stdevs</span><span class="op">)</span><span class="op">)</span>, impl<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gene_mean</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Py"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">gene_means</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mean</span>, fill<span class="op">=</span><span class="va">impl</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-17-1.png" width="100%"></p>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gene_mean</span>, <span class="va">py</span><span class="op">$</span><span class="va">gene_means</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span>, stdev<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gene_stdev</span>, <span class="va">py</span><span class="op">$</span><span class="va">gene_stdevs</span><span class="op">)</span><span class="op">)</span>, impl<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gene_mean</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Py"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">gene_means</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">mean</span>, fill<span class="op">=</span><span class="va">impl</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-18-1.png" width="100%"></p>
+<div class="sourceCode" id="cb29"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gene_mean</span>, <span class="va">py</span><span class="op">$</span><span class="va">gene_means</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span>, stdev<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gene_stdev</span>, <span class="va">py</span><span class="op">$</span><span class="va">gene_stdevs</span><span class="op">)</span><span class="op">)</span>, impl<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gene_mean</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Py"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">gene_means</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">stdev</span>, fill<span class="op">=</span><span class="va">impl</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-18-2.png" width="100%"></p>
 <div class="sourceCode" id="cb30"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>mean<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gene_mean</span>, <span class="va">py</span><span class="op">$</span><span class="va">gene_means</span><span class="op">[</span><span class="fl">1</span>,<span class="op">]</span><span class="op">)</span><span class="op">)</span>, stdev<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="va">gene_stdev</span>, <span class="va">py</span><span class="op">$</span><span class="va">gene_stdevs</span><span class="op">)</span><span class="op">)</span>, impl<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"R"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">gene_mean</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="st">"Py"</span>, <span class="fu"><a href="https://rdrr.io/r/base/length.html" class="external-link">length</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">gene_means</span><span class="op">)</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">stdev</span>, fill<span class="op">=</span><span class="va">impl</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_density.html" class="external-link">geom_density</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-17-2.png" width="100%"></p>
-<div class="sourceCode" id="cb31"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#(same as py)</span></span></code></pre></div>
 </div>
 <div class="section level5">
 <h5 id="step-2-subtract-gene-means">Step 2 subtract gene means<a class="anchor" aria-label="anchor" href="#step-2-subtract-gene-means"></a>
 </h5>
-<div class="sourceCode" id="cb32"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>preZ_Eobs_norm <span class="op">=</span> scrub_preZ._E_obs_norm</span>
-<span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>step2 <span class="op">=</span> preZ_Eobs_norm <span class="op">-</span> preZ_Eobs_norm.mean(<span class="dv">0</span>) <span class="co"># this step is easy in python</span></span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>preZ_Eobs_norm <span class="op">=</span> scrub_preZ._E_obs_norm</span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>step2 <span class="op">=</span> preZ_Eobs_norm <span class="op">-</span> preZ_Eobs_norm.mean(<span class="dv">0</span>) <span class="co"># this step is easy in python</span></span></code></pre></div>
 <p>Here’s what you get in R with similarly structured code</p>
-<div class="sourceCode" id="cb33"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb32"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">step2</span> <span class="op">=</span> <span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span> <span class="op">-</span> <span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">)</span> <span class="co"># this doesn't work as intended in R</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">step2</span><span class="op">)</span><span class="op">&lt;-</span><span class="cn">NULL</span></span>
 <span></span>
-<span><span class="va">step2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## 10 x 10 Matrix of class "dgeMatrix"</span></span>
-<span><span class="co">##              [,1]         [,2]        [,3]          [,4]         [,5]</span></span>
-<span><span class="co">##  [1,]  -1.0294501   -1.2815507  -6.4029111    -3.3582206   -2.5414889</span></span>
-<span><span class="co">##  [2,]  -0.1149148   -2.7254183 -47.6427631    98.4509273 -202.0442150</span></span>
-<span><span class="co">##  [3,]  -0.5069102  -26.1563220  -7.0442071    -4.8296559 -158.6784346</span></span>
-<span><span class="co">##  [4,] -47.4869206   -4.9858189  -0.4297543   -57.3229486   -0.5091509</span></span>
-<span><span class="co">##  [5,]  -2.7516240 -483.2102680 -76.2160384    -7.5710177   -3.4020053</span></span>
-<span><span class="co">##  [6,]  -2.8772205   -6.8049528 -12.9709248    -0.4681139   -0.4705826</span></span>
-<span><span class="co">##  [7,] -28.4278954 -292.2953822  -0.4011992 -2117.7123348   -0.5806434</span></span>
-<span><span class="co">##  [8,]  -0.4037443   -2.1122108  -0.3693642   -19.3384333   -0.5864083</span></span>
-<span><span class="co">##  [9,]  -1.5197192   -0.5371283  -0.5010018   -27.5754728   -1.9881826</span></span>
-<span><span class="co">## [10,]  -0.7596383   -1.8024743 -34.4138321    -0.3174581  -45.4030655</span></span>
-<span><span class="co">##                [,6]         [,7]         [,8]         [,9]        [,10]</span></span>
-<span><span class="co">##  [1,]   -0.66006144   -3.7521545   -3.5579435 -168.4110083  -12.7967736</span></span>
-<span><span class="co">##  [2,]   -0.51114543  -15.4614631  -68.8341475 -161.6263527   -2.8791465</span></span>
-<span><span class="co">##  [3,]   -1.48972359 -430.6828817   -9.0642243   -8.6457439 -171.5477283</span></span>
-<span><span class="co">##  [4,]   -0.52020704   -0.5181809 -335.3768468  -32.3952104   -1.3697266</span></span>
-<span><span class="co">##  [5,]   -0.17273834   -0.6467012   -4.0768245  -99.6551555  -19.9285008</span></span>
-<span><span class="co">##  [6,] -125.70835424   -2.4425953 -259.9421287   -9.7549442   -0.3627671</span></span>
-<span><span class="co">##  [7,]   -0.09408157  -10.9057669  -15.1845578   -0.7617508 -156.7997910</span></span>
-<span><span class="co">##  [8,]   -8.04110572  -41.6719108   -0.5136189  -17.0759625   -0.2073675</span></span>
-<span><span class="co">##  [9,]   -0.95256054  417.9444652  -39.4990708   -0.4441260   -1.8115952</span></span>
-<span><span class="co">## [10,] -206.12649988  128.0461667   -9.9702641 -224.8581777   -5.8393548</span></span></code></pre>
-<div class="sourceCode" id="cb35"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">py</span><span class="op">$</span><span class="va">step2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##           [,1]       [,2]       [,3]      [,4]      [,5]     [,6]     [,7]</span></span>
-<span><span class="co">##  [1,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [2,] -1.02945 -0.1149148 -0.5069102  52.62320 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [3,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [4,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [5,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [6,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [7,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [8,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [9,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 389.8072</span></span>
-<span><span class="co">## [10,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 115.0030</span></span>
-<span><span class="co">##             [,8]      [,9]      [,10]</span></span>
-<span><span class="co">##  [1,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [2,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [3,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [4,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [5,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [6,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [7,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [8,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [9,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">## [10,] -0.4037443 -1.519719 -0.7596383</span></span></code></pre>
+<span><span class="va">step2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## 5 x 5 Matrix of class "dgeMatrix"</span></span>
+<span><span class="co">##             [,1]        [,2]        [,3]       [,4]         [,5]</span></span>
+<span><span class="co">## [1,]  -1.0294501   -1.281551  -6.4029111  -3.358221   -2.5414889</span></span>
+<span><span class="co">## [2,]  -0.1149148   -2.725418 -47.6427631  98.450927 -202.0442150</span></span>
+<span><span class="co">## [3,]  -0.5069102  -26.156322  -7.0442071  -4.829656 -158.6784346</span></span>
+<span><span class="co">## [4,] -47.4869206   -4.985819  -0.4297543 -57.322949   -0.5091509</span></span>
+<span><span class="co">## [5,]  -2.7516240 -483.210268 -76.2160384  -7.571018   -3.4020053</span></span></code></pre>
+<div class="sourceCode" id="cb34"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">py</span><span class="op">$</span><span class="va">step2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##          [,1]       [,2]       [,3]      [,4]      [,5]</span></span>
+<span><span class="co">## [1,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [2,] -1.02945 -0.1149148 -0.5069102  52.62320 -2.751624</span></span>
+<span><span class="co">## [3,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [4,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [5,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span></code></pre>
 <p>Turns out R has some peculiarities and for subtracting a vector
 element-wise from the column values of matrix we must first create a
 matrix duplicating the desired subtracted values down all the rows.
 Simply subtracting the vector (in this case of gene means from each
 column (gene) of the matrix cannot be done using simply matrix - vector)
 In python, the subtraction using numpy is much easier…</p>
-<div class="sourceCode" id="cb37"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb36"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">sm</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">colMeans</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">)</span>, each <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span>, nrow<span class="op">=</span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">)</span><span class="op">[</span><span class="fl">1</span><span class="op">]</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">step2</span> <span class="op">=</span> <span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span> <span class="op">-</span> <span class="va">sm</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">step2</span><span class="op">)</span><span class="op">&lt;-</span><span class="cn">NULL</span></span>
 <span></span>
-<span><span class="va">step2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## 10 x 10 Matrix of class "dgeMatrix"</span></span>
-<span><span class="co">##           [,1]       [,2]       [,3]      [,4]      [,5]     [,6]     [,7]</span></span>
-<span><span class="co">##  [1,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [2,] -1.02945 -0.1149148 -0.5069102  52.62320 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [3,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [4,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [5,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [6,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [7,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [8,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [9,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 389.8072</span></span>
-<span><span class="co">## [10,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 115.0030</span></span>
-<span><span class="co">##             [,8]      [,9]      [,10]</span></span>
-<span><span class="co">##  [1,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [2,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [3,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [4,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [5,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [6,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [7,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [8,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [9,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">## [10,] -0.4037443 -1.519719 -0.7596383</span></span></code></pre>
-<div class="sourceCode" id="cb39"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">py</span><span class="op">$</span><span class="va">step2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##           [,1]       [,2]       [,3]      [,4]      [,5]     [,6]     [,7]</span></span>
-<span><span class="co">##  [1,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [2,] -1.02945 -0.1149148 -0.5069102  52.62320 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [3,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [4,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [5,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [6,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [7,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [8,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 -28.4279</span></span>
-<span><span class="co">##  [9,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 389.8072</span></span>
-<span><span class="co">## [10,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624 -2.87722 115.0030</span></span>
-<span><span class="co">##             [,8]      [,9]      [,10]</span></span>
-<span><span class="co">##  [1,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [2,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [3,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [4,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [5,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [6,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [7,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [8,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">##  [9,] -0.4037443 -1.519719 -0.7596383</span></span>
-<span><span class="co">## [10,] -0.4037443 -1.519719 -0.7596383</span></span></code></pre>
+<span><span class="va">step2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">## 5 x 5 Matrix of class "dgeMatrix"</span></span>
+<span><span class="co">##          [,1]       [,2]       [,3]      [,4]      [,5]</span></span>
+<span><span class="co">## [1,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [2,] -1.02945 -0.1149148 -0.5069102  52.62320 -2.751624</span></span>
+<span><span class="co">## [3,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [4,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [5,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span></code></pre>
+<div class="sourceCode" id="cb38"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">py</span><span class="op">$</span><span class="va">step2</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">5</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">5</span><span class="op">]</span></span></code></pre></div>
+<pre><code><span><span class="co">##          [,1]       [,2]       [,3]      [,4]      [,5]</span></span>
+<span><span class="co">## [1,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [2,] -1.02945 -0.1149148 -0.5069102  52.62320 -2.751624</span></span>
+<span><span class="co">## [3,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [4,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span>
+<span><span class="co">## [5,] -1.02945 -0.1149148 -0.5069102 -47.48692 -2.751624</span></span></code></pre>
 </div>
 </div>
 <div class="section level3">
 <h3 id="step-3-complete-zscoring">Step 3 complete zscoring<a class="anchor" aria-label="anchor" href="#step-3-complete-zscoring"></a>
 </h3>
 <p>Looks good</p>
-<div class="sourceCode" id="cb41"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb41-1"><a href="#cb41-1" tabindex="-1"></a>step3 <span class="op">=</span> scr.sparse_multiply((step2).T, <span class="dv">1</span><span class="op">/</span>gene_stdevs).T</span>
-<span id="cb41-2"><a href="#cb41-2" tabindex="-1"></a></span>
-<span id="cb41-3"><a href="#cb41-3" tabindex="-1"></a>scr.pipeline_zscore(scrub)</span></code></pre></div>
-<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="#cb40-1" tabindex="-1"></a>step3 <span class="op">=</span> scr.sparse_multiply((step2).T, <span class="dv">1</span><span class="op">/</span>gene_stdevs).T</span>
+<span id="cb40-2"><a href="#cb40-2" tabindex="-1"></a></span>
+<span id="cb40-3"><a href="#cb40-3" tabindex="-1"></a>scr.pipeline_zscore(scrub)</span></code></pre></div>
+<div class="sourceCode" id="cb41"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">step3</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="fu">scrubletR</span><span class="fu">:::</span><span class="fu"><a href="../reference/sparse_multiply.html">sparse_multiply</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/t.html" class="external-link">t</a></span><span class="op">(</span><span class="va">step2</span><span class="op">)</span>, <span class="fl">1</span> <span class="op">/</span> <span class="va">gene_stdev</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">step3</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">## 10 x 10 Matrix of class "dgeMatrix"</span></span>
-<span><span class="co">##             [,1]        [,2]        [,3]       [,4]        [,5]        [,6]</span></span>
-<span><span class="co">##  [1,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [2,] -0.0501001 -0.01529958 -0.03374151  0.3859579 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [3,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [4,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [5,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [6,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [7,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [8,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [9,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">## [10,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##             [,7]        [,8]        [,9]       [,10]</span></span>
-<span><span class="co">##  [1,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [2,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [3,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [4,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [5,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [6,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [7,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [8,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [9,]  3.5854137 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">## [10,]  1.0577878 -0.03381616 -0.07002316 -0.04718872</span></span></code></pre>
-<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">py</span><span class="op">$</span><span class="va">step3</span><span class="op">[</span><span class="fl">1</span><span class="op">:</span><span class="fl">10</span>,<span class="fl">1</span><span class="op">:</span><span class="fl">10</span><span class="op">]</span></span></code></pre></div>
-<pre><code><span><span class="co">##             [,1]        [,2]        [,3]       [,4]        [,5]        [,6]</span></span>
-<span><span class="co">##  [1,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [2,] -0.0501001 -0.01529958 -0.03374151  0.3859579 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [3,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [4,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [5,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [6,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [7,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [8,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##  [9,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">## [10,] -0.0501001 -0.01529958 -0.03374151 -0.3482865 -0.07549728 -0.07793504</span></span>
-<span><span class="co">##             [,7]        [,8]        [,9]       [,10]</span></span>
-<span><span class="co">##  [1,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [2,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [3,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [4,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [5,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [6,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [7,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [8,] -0.2614774 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">##  [9,]  3.5854137 -0.03381616 -0.07002316 -0.04718872</span></span>
-<span><span class="co">## [10,]  1.0577878 -0.03381616 -0.07002316 -0.04718872</span></span></code></pre>
-<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>x<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="va">step3</span><span class="op">)</span>, y<span class="op">=</span><span class="fu"><a href="https://rdrr.io/pkg/Matrix/man/colSums.html" class="external-link">rowMeans</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">step3</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">x</span>, y<span class="op">=</span><span class="va">y</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">xlab</a></span><span class="op">(</span><span class="st">"R rowMeans of Step3"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ylab</a></span><span class="op">(</span><span class="st">"Python rowMeans of Step3"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-23-1.png" width="100%"></p>
+<div class="sourceCode" id="cb42"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_zscore</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="step-4-pca">Step 4 PCA<a class="anchor" aria-label="anchor" href="#step-4-pca"></a>
 </h3>
-<div class="sourceCode" id="cb47"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb47-1"><a href="#cb47-1" tabindex="-1"></a><span class="im">import</span> scipy</span>
-<span id="cb47-2"><a href="#cb47-2" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
-<span id="cb47-3"><a href="#cb47-3" tabindex="-1"></a>X_obs <span class="op">=</span> scrub._E_obs_norm</span>
-<span id="cb47-4"><a href="#cb47-4" tabindex="-1"></a>X_sim <span class="op">=</span> scrub._E_sim_norm</span>
-<span id="cb47-5"><a href="#cb47-5" tabindex="-1"></a></span>
-<span id="cb47-6"><a href="#cb47-6" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span>n_prin_comps, random_state<span class="op">=</span>random_state, svd_solver<span class="op">=</span>svd_solver).fit(X_obs)</span>
-<span id="cb47-7"><a href="#cb47-7" tabindex="-1"></a></span>
-<span id="cb47-8"><a href="#cb47-8" tabindex="-1"></a>pto <span class="op">=</span> pca.transform(X_obs)</span>
-<span id="cb47-9"><a href="#cb47-9" tabindex="-1"></a>pts <span class="op">=</span> pca.transform(X_sim)</span></code></pre></div>
-<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb43"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a><span class="im">import</span> scipy</span>
+<span id="cb43-2"><a href="#cb43-2" tabindex="-1"></a><span class="im">from</span> sklearn.decomposition <span class="im">import</span> PCA</span>
+<span id="cb43-3"><a href="#cb43-3" tabindex="-1"></a>X_obs <span class="op">=</span> scrub._E_obs_norm</span>
+<span id="cb43-4"><a href="#cb43-4" tabindex="-1"></a>X_sim <span class="op">=</span> scrub._E_sim_norm</span>
+<span id="cb43-5"><a href="#cb43-5" tabindex="-1"></a></span>
+<span id="cb43-6"><a href="#cb43-6" tabindex="-1"></a>pca <span class="op">=</span> PCA(n_components<span class="op">=</span>n_prin_comps, random_state<span class="op">=</span>random_state, svd_solver<span class="op">=</span>svd_solver).fit(X_obs)</span>
+<span id="cb43-7"><a href="#cb43-7" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="#cb43-8" tabindex="-1"></a>pto <span class="op">=</span> pca.transform(X_obs)</span>
+<span id="cb43-9"><a href="#cb43-9" tabindex="-1"></a>pts <span class="op">=</span> pca.transform(X_sim)</span></code></pre></div>
+<div class="sourceCode" id="cb44"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">X_obs</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">)</span></span>
 <span><span class="va">X_sim</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/matrix.html" class="external-link">as.matrix</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_sim_norm</span><span class="op">)</span></span>
 <span><span class="va">pca</span> <span class="op">&lt;-</span> <span class="fu">irlba</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/irlba/man/prcomp_irlba.html" class="external-link">prcomp_irlba</a></span><span class="op">(</span><span class="va">X_obs</span>, n <span class="op">=</span> <span class="va">n_prin_comps</span>, center <span class="op">=</span> <span class="cn">TRUE</span>, scale. <span class="op">=</span> <span class="cn">FALSE</span><span class="op">)</span></span>
@@ -632,21 +515,56 @@ In python, the subtraction using numpy is much easier…</p>
 <span><span class="va">ix</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/sample.html" class="external-link">sample</a></span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html" class="external-link">nrow</a></span><span class="op">(</span><span class="va">X_obs</span><span class="op">)</span>, <span class="fl">2000</span><span class="op">)</span></span>
 <span></span>
 <span></span>
-<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pto</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">pca</span>, <span class="va">X_obs</span><span class="op">)</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python PC values"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-24-1.png" width="100%"></p>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pto</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">pca</span>, <span class="va">X_obs</span><span class="op">)</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python PC1 values (Obs)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-25-1.png" width="100%"></p>
+<div class="sourceCode" id="cb45"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pto</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">pca</span>, <span class="va">X_obs</span><span class="op">)</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python PC2 values (Obs)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-25-2.png" width="100%"></p>
+<div class="sourceCode" id="cb46"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pto</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">3</span><span class="op">]</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">pca</span>, <span class="va">X_obs</span><span class="op">)</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">3</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python PC3 values (Obs)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-25-3.png" width="100%"></p>
+<div class="sourceCode" id="cb47"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#these should not be correlated (Simulated data)</span></span>
+<span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pts</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">pca</span>, <span class="va">X_sim</span><span class="op">)</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">1</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python PC1 values (Sim)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-25-4.png" width="100%"></p>
+<div class="sourceCode" id="cb48"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pts</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">pca</span>, <span class="va">X_sim</span><span class="op">)</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">2</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python PC2 values (Sim)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-25-5.png" width="100%"></p>
 <div class="sourceCode" id="cb49"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pts</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">3</span><span class="op">]</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/MathFun.html" class="external-link">abs</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/stats/predict.html" class="external-link">predict</a></span><span class="op">(</span><span class="va">pca</span>, <span class="va">X_sim</span><span class="op">)</span><span class="op">[</span><span class="va">ix</span>,<span class="fl">3</span><span class="op">]</span><span class="op">)</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python PC3 values (Sim)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-25-6.png" width="100%"></p>
+</div>
+<div class="section level3">
+<h3 id="step-4-calculate-doublet-scores">Step 4 calculate doublet scores<a class="anchor" aria-label="anchor" href="#step-4-calculate-doublet-scores"></a>
+</h3>
+<div class="sourceCode" id="cb50"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_pca</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">scr</span><span class="op">$</span><span class="fu">calculate_doublet_scores</span><span class="op">(</span><span class="op">)</span></span>
-<span><span class="va">scr</span><span class="op">$</span><span class="fu">call_doublets</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb50"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" tabindex="-1"></a>scr.pipeline_pca(scrub)</span>
-<span id="cb50-2"><a href="#cb50-2" tabindex="-1"></a>scrub.calculate_doublet_scores(</span>
-<span id="cb50-3"><a href="#cb50-3" tabindex="-1"></a>            use_approx_neighbors<span class="op">=</span>use_approx_neighbors,</span>
-<span id="cb50-4"><a href="#cb50-4" tabindex="-1"></a>            distance_metric<span class="op">=</span>distance_metric,</span>
-<span id="cb50-5"><a href="#cb50-5" tabindex="-1"></a>            get_doublet_neighbor_parents<span class="op">=</span>get_doublet_neighbor_parents</span>
-<span id="cb50-6"><a href="#cb50-6" tabindex="-1"></a>            )</span></code></pre></div>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">calculate_doublet_scores</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="#cb51-1" tabindex="-1"></a>scr.pipeline_pca(scrub)</span>
+<span id="cb51-2"><a href="#cb51-2" tabindex="-1"></a>scrub.calculate_doublet_scores(</span>
+<span id="cb51-3"><a href="#cb51-3" tabindex="-1"></a>            use_approx_neighbors<span class="op">=</span>use_approx_neighbors,</span>
+<span id="cb51-4"><a href="#cb51-4" tabindex="-1"></a>            distance_metric<span class="op">=</span>distance_metric,</span>
+<span id="cb51-5"><a href="#cb51-5" tabindex="-1"></a>            get_doublet_neighbor_parents<span class="op">=</span>get_doublet_neighbor_parents</span>
+<span id="cb51-6"><a href="#cb51-6" tabindex="-1"></a>            )</span></code></pre></div>
 <pre><code><span><span class="co">## array([0.05319149, 0.0928    , 0.06432749, ..., 0.07152682, 0.11666667,</span></span>
 <span><span class="co">##        0.21625544])</span></span></code></pre>
-<div class="sourceCode" id="cb52"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" tabindex="-1"></a>scrub.call_doublets(verbose<span class="op">=</span>verbose)</span></code></pre></div>
+<div class="sourceCode" id="cb53"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb53-1"><a href="#cb53-1" tabindex="-1"></a>final_doublet <span class="op">=</span> scrub.doublet_scores_obs_</span></code></pre></div>
+<p>Interesting that the tumor shows less correlation across the two
+implementations than other celltypes</p>
+<div class="sourceCode" id="cb54"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">final_doublet</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">doublet_scores_obs_</span><span class="op">)</span>, celltype <span class="op">=</span> <span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span>, color <span class="op">=</span> <span class="va">celltype</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python doublet scores (log transformed)"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-28-1.png" width="100%"></p>
+<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">final_doublet</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">doublet_scores_obs_</span><span class="op">)</span>, genotype <span class="op">=</span> <span class="va">seuP</span><span class="op">$</span><span class="va">geno</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span>, color <span class="op">=</span> <span class="va">genotype</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.3</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python doublet scores (log transformed)"</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-28-2.png" width="100%"></p>
+</div>
+<div class="section level3">
+<h3 id="step-5-classify-doublets">Step 5 Classify doublets<a class="anchor" aria-label="anchor" href="#step-5-classify-doublets"></a>
+</h3>
+<p>Not bad… 98.67% accurate… This may be related to the differences in
+features but also the python implementation calls a lower number of
+doubles overall…</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a>scrub.call_doublets(verbose<span class="op">=</span>verbose)</span></code></pre></div>
 <pre><code><span><span class="co">## Automatically set threshold at doublet score = 0.68</span></span>
 <span><span class="co">## Detected doublet rate = 0.0%</span></span>
 <span><span class="co">## Estimated detectable doublet fraction = 14.2%</span></span>
@@ -654,20 +572,77 @@ In python, the subtraction using numpy is much easier…</p>
 <span><span class="co">##  Expected   = 10.0%</span></span>
 <span><span class="co">##  Estimated  = 0.3%</span></span>
 <span><span class="co">## array([False, False, False, ..., False, False, False])</span></span></code></pre>
-<div class="sourceCode" id="cb54"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" tabindex="-1"></a>final_doublet <span class="op">=</span> scrub.doublet_scores_obs_</span></code></pre></div>
-<p>Interesting that the tumor shows less correlation across the two
-implementations than other celltypes</p>
-<div class="sourceCode" id="cb55"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">final_doublet</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">doublet_scores_obs_</span><span class="op">)</span>, celltype <span class="op">=</span> <span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span>, color <span class="op">=</span> <span class="va">celltype</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python doublet scores (log transformed)"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-27-1.png" width="100%"></p>
-<div class="sourceCode" id="cb56"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">final_doublet</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">doublet_scores_obs_</span><span class="op">)</span>, genotype <span class="op">=</span> <span class="va">seuP</span><span class="op">$</span><span class="va">geno</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span>, color <span class="op">=</span> <span class="va">genotype</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.3</span>, alpha <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python doublet scores (log transformed)"</span><span class="op">)</span></span></code></pre></div>
-<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-27-2.png" width="100%"></p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a>pred_doublets <span class="op">=</span> scrub.predicted_doublets_</span></code></pre></div>
+<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scr</span><span class="op">$</span><span class="fu">call_doublets</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-30-1.png" width="100%"></p>
+<div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastRust/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-30-2.png" width="100%"></p>
+</div>
+<div class="section level3">
+<h3 id="level-the-playing-field">Level the playing field<a class="anchor" aria-label="anchor" href="#level-the-playing-field"></a>
+</h3>
+<p>Let’s rerun R scrublet using the python gene filter…</p>
+<div class="sourceCode" id="cb61"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a>gene_filter <span class="op">=</span> scrub._gene_filter</span>
+<span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a>E_sim <span class="op">=</span> scrub._E_sim</span>
+<span id="cb61-3"><a href="#cb61-3" tabindex="-1"></a>doublet_parents <span class="op">=</span> scrub.doublet_parents_</span>
+<span id="cb61-4"><a href="#cb61-4" tabindex="-1"></a>tots_sim <span class="op">=</span> scrub._total_counts_sim</span></code></pre></div>
+<div class="sourceCode" id="cb62"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#instantiate object</span></span>
+<span><span class="va">scr</span><span class="op">&lt;-</span><span class="va"><a href="../reference/ScrubletR.html">ScrubletR</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>counts_matrix <span class="op">=</span> <span class="va">counts_matrix</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_normalize</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">new_gene_filter</span><span class="op">&lt;-</span><span class="va">py</span><span class="op">$</span><span class="va">gene_filter</span><span class="op">+</span><span class="fl">1</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">new_gene_filter</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">counts_matrix</span><span class="op">)</span><span class="op">[</span><span class="va">new_gene_filter</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs</span> <span class="op">&lt;-</span> <span class="va">scr</span><span class="op">$</span><span class="va">E_obs</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">new_gene_filter</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span> <span class="op">&lt;-</span> <span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">new_gene_filter</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">simulate_doublets</span><span class="op">(</span>sim_doublet_ratio<span class="op">=</span><span class="fl">1</span>, synthetic_doublet_umi_subsampling<span class="op">=</span><span class="fl">1</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_normalize</span><span class="op">(</span>postnorm_total<span class="op">=</span><span class="fl">1e6</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_zscore</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_pca</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">calculate_doublet_scores</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">call_doublets</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-32-1.png" width="100%"></p>
+<div class="sourceCode" id="cb63"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">final_doublet</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">doublet_scores_obs_</span><span class="op">)</span>, celltype <span class="op">=</span> <span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span>, color <span class="op">=</span> <span class="va">celltype</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python doublet scores (log transformed) using same features set"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-32-2.png" width="100%"></p>
+<div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastRust/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-32-3.png" width="100%"></p>
+<div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co">#instantiate object</span></span>
+<span><span class="va">scr</span><span class="op">&lt;-</span><span class="va"><a href="../reference/ScrubletR.html">ScrubletR</a></span><span class="op">$</span><span class="fu">new</span><span class="op">(</span>counts_matrix <span class="op">=</span> <span class="va">counts_matrix</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_normalize</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">new_gene_filter</span><span class="op">&lt;-</span><span class="va">py</span><span class="op">$</span><span class="va">gene_filter</span><span class="op">+</span><span class="fl">1</span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/names.html" class="external-link">names</a></span><span class="op">(</span><span class="va">new_gene_filter</span><span class="op">)</span><span class="op">&lt;-</span><span class="fu"><a href="https://rdrr.io/r/base/colnames.html" class="external-link">colnames</a></span><span class="op">(</span><span class="va">counts_matrix</span><span class="op">)</span><span class="op">[</span><span class="va">new_gene_filter</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs</span> <span class="op">&lt;-</span> <span class="va">scr</span><span class="op">$</span><span class="va">E_obs</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">new_gene_filter</span><span class="op">)</span><span class="op">]</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span> <span class="op">&lt;-</span> <span class="va">scr</span><span class="op">$</span><span class="va">E_obs_norm</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/numeric.html" class="external-link">as.numeric</a></span><span class="op">(</span><span class="va">new_gene_filter</span><span class="op">)</span><span class="op">]</span></span>
+<span></span>
+<span><span class="fu"><a href="https://rdrr.io/r/base/dim.html" class="external-link">dim</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">E_obs</span><span class="op">)</span></span></code></pre></div>
+<pre><code><span><span class="co">## [1] 13914  2477</span></span></code></pre>
+<div class="sourceCode" id="cb67"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="va">scr</span><span class="op">$</span><span class="va">total_counts_sim</span> <span class="op">=</span> <span class="va">py</span><span class="op">$</span><span class="va">tots_sim</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="va">E_sim</span> <span class="op">&lt;-</span> <span class="va">py</span><span class="op">$</span><span class="va">E_sim</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_normalize</span><span class="op">(</span>postnorm_total<span class="op">=</span><span class="fl">1e6</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_zscore</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">pipeline_pca</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">calculate_doublet_scores</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="va">scr</span><span class="op">$</span><span class="fu">call_doublets</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-33-1.png" width="100%"></p>
+<div class="sourceCode" id="cb68"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">final_doublet</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">doublet_scores_obs_</span><span class="op">)</span>, celltype <span class="op">=</span> <span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span>, color <span class="op">=</span> <span class="va">celltype</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python doublet scores (log transformed) using same features and same simulated doublets"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-33-2.png" width="100%"></p>
+<div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastRust/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-33-3.png" width="100%"></p>
 </div>
 <div class="section level3">
 <h3 id="appendix">Appendix<a class="anchor" aria-label="anchor" href="#appendix"></a>
 </h3>
-<div class="sourceCode" id="cb57"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb70"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/sessionInfo.html" class="external-link">sessionInfo</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## R version 4.3.1 (2023-06-16)</span></span>
 <span><span class="co">## Platform: x86_64-apple-darwin20 (64-bit)</span></span>
@@ -704,95 +679,97 @@ implementations than other celltypes</p>
 <span><span class="co">##  [17] withr_3.0.0                 gridExtra_2.3              </span></span>
 <span><span class="co">##  [19] progressr_0.14.0            cli_3.6.2                  </span></span>
 <span><span class="co">##  [21] Biobase_2.60.0              textshaping_0.3.7          </span></span>
-<span><span class="co">##  [23] spatstat.explore_3.2-6      fastDummies_1.7.3          </span></span>
-<span><span class="co">##  [25] labeling_0.4.3              prismatic_1.1.1            </span></span>
-<span><span class="co">##  [27] sass_0.4.8                  spatstat.data_3.0-4        </span></span>
-<span><span class="co">##  [29] ggridges_0.5.6              pbapply_1.7-2              </span></span>
-<span><span class="co">##  [31] pkgdown_2.0.7               systemfonts_1.0.5          </span></span>
-<span><span class="co">##  [33] foreign_0.8-86              dichromat_2.0-0.1          </span></span>
-<span><span class="co">##  [35] parallelly_1.36.0           maps_3.4.2                 </span></span>
-<span><span class="co">##  [37] pals_1.8                    rstudioapi_0.15.0          </span></span>
-<span><span class="co">##  [39] generics_0.1.3              shape_1.4.6                </span></span>
-<span><span class="co">##  [41] ica_1.0-3                   spatstat.random_3.2-2      </span></span>
-<span><span class="co">##  [43] dplyr_1.1.4                 ggbeeswarm_0.7.2           </span></span>
-<span><span class="co">##  [45] fansi_1.0.6                 S4Vectors_0.38.2           </span></span>
-<span><span class="co">##  [47] abind_1.4-5                 lifecycle_1.0.4            </span></span>
-<span><span class="co">##  [49] yaml_2.3.8                  snakecase_0.11.1           </span></span>
-<span><span class="co">##  [51] SummarizedExperiment_1.30.2 recipes_1.0.9              </span></span>
-<span><span class="co">##  [53] Rtsne_0.17                  paletteer_1.6.0            </span></span>
-<span><span class="co">##  [55] grid_4.3.1                  promises_1.2.1             </span></span>
-<span><span class="co">##  [57] crayon_1.5.2                miniUI_0.1.1.1             </span></span>
-<span><span class="co">##  [59] lattice_0.22-5              cowplot_1.1.3              </span></span>
-<span><span class="co">##  [61] mapproj_1.2.11              pillar_1.9.0               </span></span>
-<span><span class="co">##  [63] knitr_1.45                  ComplexHeatmap_2.16.0      </span></span>
-<span><span class="co">##  [65] GenomicRanges_1.52.1        rjson_0.2.21               </span></span>
-<span><span class="co">##  [67] boot_1.3-28.1               future.apply_1.11.1        </span></span>
-<span><span class="co">##  [69] codetools_0.2-19            leiden_0.4.3.1             </span></span>
-<span><span class="co">##  [71] glue_1.7.0                  MatrixExtra_0.1.15         </span></span>
-<span><span class="co">##  [73] data.table_1.15.0           float_0.3-2                </span></span>
-<span><span class="co">##  [75] vctrs_0.6.5                 png_0.1-8                  </span></span>
-<span><span class="co">##  [77] spam_2.10-0                 gtable_0.3.4               </span></span>
-<span><span class="co">##  [79] rematch2_2.1.2              assertthat_0.2.1           </span></span>
-<span><span class="co">##  [81] cachem_1.0.8                gower_1.0.1                </span></span>
-<span><span class="co">##  [83] xfun_0.41                   S4Arrays_1.2.0             </span></span>
-<span><span class="co">##  [85] mime_0.12                   prodlim_2023.08.28         </span></span>
-<span><span class="co">##  [87] survival_3.5-7              timeDate_4032.109          </span></span>
-<span><span class="co">##  [89] SingleCellExperiment_1.22.0 iterators_1.0.14           </span></span>
-<span><span class="co">##  [91] pbmcapply_1.5.1             hardhat_1.3.0              </span></span>
-<span><span class="co">##  [93] lava_1.7.3                  ellipsis_0.3.2             </span></span>
-<span><span class="co">##  [95] fitdistrplus_1.1-11         ROCR_1.0-11                </span></span>
-<span><span class="co">##  [97] ipred_0.9-14                nlme_3.1-164               </span></span>
-<span><span class="co">##  [99] RcppAnnoy_0.0.22            GenomeInfoDb_1.36.4        </span></span>
-<span><span class="co">## [101] bslib_0.6.1                 irlba_2.3.5.1              </span></span>
-<span><span class="co">## [103] vipor_0.4.7                 KernSmooth_2.23-22         </span></span>
-<span><span class="co">## [105] rpart_4.1.23                colorspace_2.1-0           </span></span>
-<span><span class="co">## [107] BiocGenerics_0.46.0         Hmisc_5.1-1                </span></span>
-<span><span class="co">## [109] nnet_7.3-19                 ggrastr_1.0.2              </span></span>
-<span><span class="co">## [111] tidyselect_1.2.0            compiler_4.3.1             </span></span>
-<span><span class="co">## [113] htmlTable_2.4.2             desc_1.4.3                 </span></span>
-<span><span class="co">## [115] DelayedArray_0.26.7         plotly_4.10.4              </span></span>
-<span><span class="co">## [117] checkmate_2.3.1             scales_1.3.0               </span></span>
-<span><span class="co">## [119] lmtest_0.9-40               stringr_1.5.1              </span></span>
-<span><span class="co">## [121] digest_0.6.34               goftest_1.2-3              </span></span>
-<span><span class="co">## [123] spatstat.utils_3.0-4        minqa_1.2.6                </span></span>
-<span><span class="co">## [125] rmarkdown_2.25              XVector_0.40.0             </span></span>
-<span><span class="co">## [127] RhpcBLASctl_0.23-42         htmltools_0.5.7            </span></span>
-<span><span class="co">## [129] pkgconfig_2.0.3             base64enc_0.1-3            </span></span>
-<span><span class="co">## [131] lme4_1.1-35.1               sparseMatrixStats_1.12.2   </span></span>
-<span><span class="co">## [133] MatrixGenerics_1.12.3       highr_0.10                 </span></span>
-<span><span class="co">## [135] fastmap_1.1.1               rlang_1.1.3                </span></span>
-<span><span class="co">## [137] GlobalOptions_0.1.2         htmlwidgets_1.6.4          </span></span>
-<span><span class="co">## [139] shiny_1.8.0                 DelayedMatrixStats_1.22.6  </span></span>
-<span><span class="co">## [141] farver_2.1.1                jquerylib_0.1.4            </span></span>
-<span><span class="co">## [143] zoo_1.8-12                  jsonlite_1.8.8             </span></span>
-<span><span class="co">## [145] ModelMetrics_1.2.2.2        RCurl_1.98-1.14            </span></span>
-<span><span class="co">## [147] Formula_1.2-5               GenomeInfoDbData_1.2.10    </span></span>
-<span><span class="co">## [149] dotCall64_1.1-1             patchwork_1.2.0            </span></span>
-<span><span class="co">## [151] munsell_0.5.0               Rcpp_1.0.12                </span></span>
-<span><span class="co">## [153] stringi_1.8.3               pROC_1.18.5                </span></span>
-<span><span class="co">## [155] zlibbioc_1.46.0             MASS_7.3-60.0.1            </span></span>
-<span><span class="co">## [157] plyr_1.8.9                  parallel_4.3.1             </span></span>
-<span><span class="co">## [159] listenv_0.9.1               ggrepel_0.9.5              </span></span>
-<span><span class="co">## [161] forcats_1.0.0               deldir_2.0-2               </span></span>
-<span><span class="co">## [163] splines_4.3.1               tensor_1.5                 </span></span>
-<span><span class="co">## [165] circlize_0.4.15             igraph_2.0.1.1             </span></span>
-<span><span class="co">## [167] spatstat.geom_3.2-8         RcppHNSW_0.6.0             </span></span>
-<span><span class="co">## [169] reshape2_1.4.4              stats4_4.3.1               </span></span>
-<span><span class="co">## [171] evaluate_0.23               ggprism_1.0.4              </span></span>
-<span><span class="co">## [173] nloptr_2.0.3                foreach_1.5.2              </span></span>
-<span><span class="co">## [175] httpuv_1.6.14               RANN_2.6.1                 </span></span>
-<span><span class="co">## [177] tidyr_1.3.1                 purrr_1.0.2                </span></span>
-<span><span class="co">## [179] polyclip_1.10-6             future_1.33.1              </span></span>
-<span><span class="co">## [181] clue_0.3-65                 scattermore_1.2            </span></span>
-<span><span class="co">## [183] janitor_2.2.0               xtable_1.8-4               </span></span>
-<span><span class="co">## [185] monocle3_1.4.3              RSpectra_0.16-1            </span></span>
-<span><span class="co">## [187] later_1.3.2                 viridisLite_0.4.2          </span></span>
-<span><span class="co">## [189] class_7.3-22                ragg_1.2.7                 </span></span>
-<span><span class="co">## [191] tibble_3.2.1                beeswarm_0.4.0             </span></span>
-<span><span class="co">## [193] memoise_2.0.1               IRanges_2.34.1             </span></span>
-<span><span class="co">## [195] cluster_2.1.6               timechange_0.3.0           </span></span>
-<span><span class="co">## [197] globals_0.16.2              caret_6.0-94</span></span></code></pre>
-<div class="sourceCode" id="cb59"><pre class="downlit sourceCode r">
+<span><span class="co">##  [23] Cairo_1.6-2                 spatstat.explore_3.2-6     </span></span>
+<span><span class="co">##  [25] fastDummies_1.7.3           labeling_0.4.3             </span></span>
+<span><span class="co">##  [27] prismatic_1.1.1             sass_0.4.8                 </span></span>
+<span><span class="co">##  [29] spatstat.data_3.0-4         proxy_0.4-27               </span></span>
+<span><span class="co">##  [31] ggridges_0.5.6              pbapply_1.7-2              </span></span>
+<span><span class="co">##  [33] pkgdown_2.0.7               systemfonts_1.0.5          </span></span>
+<span><span class="co">##  [35] foreign_0.8-86              dichromat_2.0-0.1          </span></span>
+<span><span class="co">##  [37] parallelly_1.36.0           maps_3.4.2                 </span></span>
+<span><span class="co">##  [39] pals_1.8                    rstudioapi_0.15.0          </span></span>
+<span><span class="co">##  [41] generics_0.1.3              shape_1.4.6                </span></span>
+<span><span class="co">##  [43] ica_1.0-3                   spatstat.random_3.2-2      </span></span>
+<span><span class="co">##  [45] dplyr_1.1.4                 ggbeeswarm_0.7.2           </span></span>
+<span><span class="co">##  [47] fansi_1.0.6                 S4Vectors_0.38.2           </span></span>
+<span><span class="co">##  [49] abind_1.4-5                 lifecycle_1.0.4            </span></span>
+<span><span class="co">##  [51] yaml_2.3.8                  snakecase_0.11.1           </span></span>
+<span><span class="co">##  [53] SummarizedExperiment_1.30.2 recipes_1.0.9              </span></span>
+<span><span class="co">##  [55] Rtsne_0.17                  paletteer_1.6.0            </span></span>
+<span><span class="co">##  [57] grid_4.3.1                  promises_1.2.1             </span></span>
+<span><span class="co">##  [59] crayon_1.5.2                miniUI_0.1.1.1             </span></span>
+<span><span class="co">##  [61] lattice_0.22-5              cowplot_1.1.3              </span></span>
+<span><span class="co">##  [63] mapproj_1.2.11              pillar_1.9.0               </span></span>
+<span><span class="co">##  [65] knitr_1.45                  ComplexHeatmap_2.16.0      </span></span>
+<span><span class="co">##  [67] GenomicRanges_1.52.1        rjson_0.2.21               </span></span>
+<span><span class="co">##  [69] boot_1.3-28.1               future.apply_1.11.1        </span></span>
+<span><span class="co">##  [71] codetools_0.2-19            leiden_0.4.3.1             </span></span>
+<span><span class="co">##  [73] glue_1.7.0                  MatrixExtra_0.1.15         </span></span>
+<span><span class="co">##  [75] data.table_1.15.0           float_0.3-2                </span></span>
+<span><span class="co">##  [77] vctrs_0.6.5                 png_0.1-8                  </span></span>
+<span><span class="co">##  [79] spam_2.10-0                 gtable_0.3.4               </span></span>
+<span><span class="co">##  [81] rematch2_2.1.2              assertthat_0.2.1           </span></span>
+<span><span class="co">##  [83] cachem_1.0.8                gower_1.0.1                </span></span>
+<span><span class="co">##  [85] xfun_0.41                   S4Arrays_1.2.0             </span></span>
+<span><span class="co">##  [87] mime_0.12                   prodlim_2023.08.28         </span></span>
+<span><span class="co">##  [89] survival_3.5-7              timeDate_4032.109          </span></span>
+<span><span class="co">##  [91] SingleCellExperiment_1.22.0 iterators_1.0.14           </span></span>
+<span><span class="co">##  [93] pbmcapply_1.5.1             hardhat_1.3.0              </span></span>
+<span><span class="co">##  [95] lava_1.7.3                  ellipsis_0.3.2             </span></span>
+<span><span class="co">##  [97] fitdistrplus_1.1-11         ROCR_1.0-11                </span></span>
+<span><span class="co">##  [99] ipred_0.9-14                nlme_3.1-164               </span></span>
+<span><span class="co">## [101] RcppAnnoy_0.0.22            GenomeInfoDb_1.36.4        </span></span>
+<span><span class="co">## [103] bslib_0.6.1                 irlba_2.3.5.1              </span></span>
+<span><span class="co">## [105] vipor_0.4.7                 KernSmooth_2.23-22         </span></span>
+<span><span class="co">## [107] rpart_4.1.23                colorspace_2.1-0           </span></span>
+<span><span class="co">## [109] BiocGenerics_0.46.0         Hmisc_5.1-1                </span></span>
+<span><span class="co">## [111] nnet_7.3-19                 ggrastr_1.0.2              </span></span>
+<span><span class="co">## [113] tidyselect_1.2.0            compiler_4.3.1             </span></span>
+<span><span class="co">## [115] htmlTable_2.4.2             desc_1.4.3                 </span></span>
+<span><span class="co">## [117] DelayedArray_0.26.7         plotly_4.10.4              </span></span>
+<span><span class="co">## [119] checkmate_2.3.1             scales_1.3.0               </span></span>
+<span><span class="co">## [121] lmtest_0.9-40               stringr_1.5.1              </span></span>
+<span><span class="co">## [123] digest_0.6.34               goftest_1.2-3              </span></span>
+<span><span class="co">## [125] spatstat.utils_3.0-4        minqa_1.2.6                </span></span>
+<span><span class="co">## [127] rmarkdown_2.25              XVector_0.40.0             </span></span>
+<span><span class="co">## [129] RhpcBLASctl_0.23-42         htmltools_0.5.7            </span></span>
+<span><span class="co">## [131] pkgconfig_2.0.3             base64enc_0.1-3            </span></span>
+<span><span class="co">## [133] lme4_1.1-35.1               sparseMatrixStats_1.12.2   </span></span>
+<span><span class="co">## [135] MatrixGenerics_1.12.3       highr_0.10                 </span></span>
+<span><span class="co">## [137] fastmap_1.1.1               rlang_1.1.3                </span></span>
+<span><span class="co">## [139] GlobalOptions_0.1.2         htmlwidgets_1.6.4          </span></span>
+<span><span class="co">## [141] shiny_1.8.0                 DelayedMatrixStats_1.22.6  </span></span>
+<span><span class="co">## [143] farver_2.1.1                jquerylib_0.1.4            </span></span>
+<span><span class="co">## [145] zoo_1.8-12                  jsonlite_1.8.8             </span></span>
+<span><span class="co">## [147] ModelMetrics_1.2.2.2        RCurl_1.98-1.14            </span></span>
+<span><span class="co">## [149] Formula_1.2-5               GenomeInfoDbData_1.2.10    </span></span>
+<span><span class="co">## [151] dotCall64_1.1-1             patchwork_1.2.0            </span></span>
+<span><span class="co">## [153] munsell_0.5.0               Rcpp_1.0.12                </span></span>
+<span><span class="co">## [155] stringi_1.8.3               pROC_1.18.5                </span></span>
+<span><span class="co">## [157] zlibbioc_1.46.0             MASS_7.3-60.0.1            </span></span>
+<span><span class="co">## [159] plyr_1.8.9                  parallel_4.3.1             </span></span>
+<span><span class="co">## [161] listenv_0.9.1               ggrepel_0.9.5              </span></span>
+<span><span class="co">## [163] forcats_1.0.0               deldir_2.0-2               </span></span>
+<span><span class="co">## [165] splines_4.3.1               tensor_1.5                 </span></span>
+<span><span class="co">## [167] circlize_0.4.15             igraph_2.0.1.1             </span></span>
+<span><span class="co">## [169] spatstat.geom_3.2-8         RcppHNSW_0.6.0             </span></span>
+<span><span class="co">## [171] reshape2_1.4.4              stats4_4.3.1               </span></span>
+<span><span class="co">## [173] evaluate_0.23               ggprism_1.0.4              </span></span>
+<span><span class="co">## [175] nloptr_2.0.3                foreach_1.5.2              </span></span>
+<span><span class="co">## [177] httpuv_1.6.14               RANN_2.6.1                 </span></span>
+<span><span class="co">## [179] tidyr_1.3.1                 purrr_1.0.2                </span></span>
+<span><span class="co">## [181] polyclip_1.10-6             future_1.33.1              </span></span>
+<span><span class="co">## [183] clue_0.3-65                 scattermore_1.2            </span></span>
+<span><span class="co">## [185] janitor_2.2.0               xtable_1.8-4               </span></span>
+<span><span class="co">## [187] monocle3_1.4.3              e1071_1.7-14               </span></span>
+<span><span class="co">## [189] RSpectra_0.16-1             later_1.3.2                </span></span>
+<span><span class="co">## [191] viridisLite_0.4.2           class_7.3-22               </span></span>
+<span><span class="co">## [193] ragg_1.2.7                  tibble_3.2.1               </span></span>
+<span><span class="co">## [195] beeswarm_0.4.0              memoise_2.0.1              </span></span>
+<span><span class="co">## [197] IRanges_2.34.1              cluster_2.1.6              </span></span>
+<span><span class="co">## [199] timechange_0.3.0            globals_0.16.2             </span></span>
+<span><span class="co">## [201] caret_6.0-94</span></span></code></pre>
+<div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "/Users/sfurlan/develop/scrubletR/vignettes"</span></span></code></pre>
 </div>
