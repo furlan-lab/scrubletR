@@ -1,0 +1,151 @@
+---
+title: "In-depth use of ScrubletR"
+output: html_document
+date: "2024-02-02"
+always_allow_html: true
+editor_options: 
+  
+  chunk_output_type: console
+---
+
+## Installing scrubletR
+
+You will need to have the devtools package installed...
+
+```{r, eval=F}
+devtools::install_github("furlan-lab/scrubletR")
+```
+
+
+## Load data
+
+Let's read in a 10X dataset where T cells from two donors were combined before capture.  We then use souporcell to detect genetic demultiplets.  Clustering in higher dimension actually works better for visualizing the SNP clustering...  First we read in the pca-transformed probability scores from souporcell algorithm which enables us to visualize the two expected genotypes but having set k=3 enables 3 dimensions of data from the algorithm (the first dimension is 'cell size' aka UMI count per cell).  Therefore we visualize the embedding using the 2nd and 3rd PCs, but label the cells according to their label setting k=2.  The following code loads the 10X data, the souporcell data and makes the plot.
+
+```{r, dpi=300, fig.height=4, fig.width = 6, warning=F, message=F}
+rm(list = ls())
+suppressPackageStartupMessages({
+  library(viewmastRust)
+  library(Seurat)
+  library(scCustomize)
+  library(scrubletR)
+  library(ggplot2)
+  library(magrittr)
+})
+
+if(grepl("^gizmo", Sys.info()["nodename"])){
+  ROOT_DIR2<-"/fh/fast/furlan_s/grp/data/experiments/MM_CarT_5p_vdjt/data/SNF"
+} else {
+  ROOT_DIR2<-"/Users/sfurlan/Library/CloudStorage/OneDrive-SharedLibraries-FredHutchinsonCancerCenter/Furlan_Lab - General/experiments/MM_CART/SNF"
+}
+counts<-Read10X_h5(file.path(ROOT_DIR2, "sample_filtered_feature_bc_matrix.h5"))
+colnames(counts$`Gene Expression`)<-paste0("JP_709_707_IP_", colnames(counts$`Gene Expression`))
+seu<-CreateSeuratObject(counts$`Gene Expression`)
+
+scdata<-data.table::fread(file.path(ROOT_DIR2, "clusters_3.tsv"))
+seu<-seu[,Cells(seu) %in% scdata$barcode]
+seu<-add_souporcell_seurat(seu, file.path(ROOT_DIR2, "clusters_3.tsv"))
+scdata<-data.table::fread(file.path(ROOT_DIR2, "clusters_2.tsv"))
+seu$geno_from2<-scdata$assignment[match(Cells(seu), scdata$barcode)]
+seu$geno_from2[grepl("\\/", seu$geno_from2)]<-"Multiplet"
+DimPlot(seu, group.by = "geno_from2", dims = c(2,3), cols = c("black", "grey", "red"))+ggtitle("Souporcell data (overclustered)")
+
+```
+
+
+## Calculate doublet rate
+```{r}
+table(seu$geno_from2)/dim(seu)[2]
+```
+
+**Looks to be 6.6%.**  This is what we would expect from a 10X capture of this size.
+
+## Run scrublet
+
+```{r}
+seu<-scrublet(seu)
+seu$log_ds<-log(seu$doublet_scores)
+
+VlnPlot_scCustom(seu, features = "log_ds", group.by = "geno_from2", pt.size = 0)
+```
+
+This looks okay.  The genetic multiplets have ~ 2 fold increase in scrublet doublet score than cells from each genotype.  This is of course not the whole story as we would expect that more than one cell from the same donor could end up in the same droplet.  Therefore > 6 percent of the cells in '0' and '1' genotypes above will also be multiplets.  Let's set a threshold and see how the percents fall out.
+
+```{r}
+thresh<-(-1.6)
+seu$SFdoublet<-seu$log_ds>(thresh)
+table(seu$SFdoublet, seu$geno_from2)
+
+VlnPlot_scCustom(seu, features = "log_ds", group.by = "geno_from2", pt.size = 0)+geom_hline(yintercept = thresh)
+```
+
+```{r}
+DimPlot(seu, group.by = "SFdoublet", dims = c(2,3), pt.size = 0.4)
+```
+
+
+## Visualize
+
+Let's visualize, subset, and re-embed.  But first we need to remove the geno assay (seurat 5 is broken)
+```{r}
+DefaultAssay(seu)<-"RNA"
+seu <-NormalizeData(seu) %>% FindVariableFeatures(nfeatures = 3000) %>% ScaleData() %>% RunPCA(npcs = 50)
+#ElbowPlot(seu, 50) 
+seu<- invisible(FindNeighbors(seu, dims = 1:30) %>% FindClusters() %>% RunUMAP(dims = 1:30))
+DimPlot(seu)
+FeaturePlot_scCustom(seu, features = "CD4")
+FeaturePlot_scCustom(seu, features = "CD8A")
+DimPlot(seu, group.by = "SFdoublet")
+DimPlot(seu, group.by = "geno_from2")
+
+seu$cell_bool<-!seu$SFdoublet & seu$geno_from2 != "Multiplet"
+table(seu$cell_bool)
+
+DimPlot(seu, group.by = "cell_bool")
+
+subset_cells_seurat<-function(seu, cell_bool){
+  if(!length(cell_bool)==length(Cells(seu))){stop("cell_bool argument length does not match the number of cells in Seurat object")}
+  assays<-Assays(seu)
+  suppressWarnings(layers<-lapply(assays, function(assay) {
+    subset(GetAssay(seu, assay = assay), Cells(seu)[cell_bool]) 
+  }))
+  newseu<-CreateSeuratObject(layers[[1]], meta.data = seu@meta.data[cell_bool,])
+  for(i in 2:length(assays)){
+    newseu[[assays[i]]]<-layers[[i]]
+  }
+  newseu
+}
+
+seu<-subset_cells_seurat(seu, seu$cell_bool)
+
+
+seu <-NormalizeData(seu) %>% FindVariableFeatures(nfeatures = 3000) %>% ScaleData() %>% RunPCA(npcs = 50)
+#ElbowPlot(seu, 50) 
+seu<- invisible(FindNeighbors(seu, dims = 1:30) %>% FindClusters() %>% RunUMAP(dims = 1:30))
+DimPlot(seu)
+FeaturePlot_scCustom(seu, features = "doublet_scores")
+
+```
+
+
+## Rerun scrublet
+
+
+```{r}
+seu<-scrublet(seu)
+FeaturePlot_scCustom(seu, features = "doublet_scores")
+DimPlot(seu)
+FeaturePlot_scCustom(seu, features = "CD4")
+FeaturePlot_scCustom(seu, features = "CD8A")
+
+
+cm<-GetAssayData(seu, assay = "RNA")
+
+
+```
+
+**Much better**. We see the data is more simple and we have more readily distinguishable clusters.
+## Appendix
+```{r Appendix}
+sessionInfo()
+getwd()
+```
