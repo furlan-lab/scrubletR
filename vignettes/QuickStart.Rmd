@@ -22,7 +22,7 @@ devtools::install_github("furlan-lab/scrubletR")
 ```{r, dpi=300, fig.height=4, fig.width = 6, warning=F, message=F}
 
 suppressPackageStartupMessages({
-  library(viewmastRust)
+  library(viewmastR)
   library(Seurat)
   library(scCustomize)
   library(scrubletR)

@@ -60,12 +60,12 @@ scrublet<-function (object, split_by=NULL,
     })
   }
 
-  if(cores>1 & n==1){
-    warning("More than 1 core specified but not splitting object.  Scrublet leverages parallel processing for each split of the object.  Running with 1 core")
-    cores<-1
+  if(cores>n){
+    warning(paste0("Scrublet leverages parallel processing for each split of the object.  Running with ", n, " core(s)"))
+    cores<-n
   }
 
-  if(cores==1){
+  if(cores==1 && n==1){
     scr<-ScrubletR$new(counts_matrix = dat[[1]]$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed, show_gene_filter_plot = show_gene_filter_plot)
     scrublet_res<-scr$scrub_doublets(
       min_counts = min_counts,
@@ -74,7 +74,8 @@ scrublet<-function (object, split_by=NULL,
       n_prin_comps = n_prin_comps)
     final_res<-data.frame(doublet_scores=scrublet_res$doublet_scores, predicted_doublets=scrublet_res$predicted_doublets)
 
-  } else {
+  }
+  if (cores >1 && n>1) {
     fdata<-pbmclapply(dat, FUN = function(data){
       scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
       scrublet_res<-scr$scrub_doublets(
@@ -84,6 +85,22 @@ scrublet<-function (object, split_by=NULL,
                       n_prin_comps = n_prin_comps)
       list(res=scrublet_res, data$ind)
     }, mc.cores=cores)
+    res<-lapply(fdata, "[[", 1)
+    ind<-unlist(sapply(fdata, "[[", 2))
+    ds<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "doublet_scores"))[order(ind)]
+    pd<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "predicted_doublets"))[order(ind)]
+    final_res<-data.frame(doublet_scores=ds, predicted_doublets=pd)
+  }
+  if (cores ==1 && n>1) {
+    fdata<-lapply(dat, FUN = function(data){
+      scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
+      scrublet_res<-scr$scrub_doublets(
+        min_counts = min_counts,
+        min_cells = min_cells,
+        min_gene_variability_pctl = min_gene_variability_pctl,
+        n_prin_comps = n_prin_comps)
+      list(res=scrublet_res, data$ind)
+    })
     res<-lapply(fdata, "[[", 1)
     ind<-unlist(sapply(fdata, "[[", 2))
     ds<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "doublet_scores"))[order(ind)]
