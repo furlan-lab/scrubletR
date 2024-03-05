@@ -30,7 +30,7 @@
     
     <a class="navbar-brand me-2" href="../index.html">scrubletR</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.2.1</small>
 
     
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -146,7 +146,7 @@ differences. First let’s load data</p>
 </h4>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/message.html" class="external-link">suppressPackageStartupMessages</a></span><span class="op">(</span><span class="op">{</span></span>
-<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://furlan-lab.github.io/viewmastRust/" class="external-link">viewmastRust</a></span><span class="op">)</span></span>
+<span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://furlan-lab.github.io/viewmastR/" class="external-link">viewmastR</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://satijalab.org/seurat" class="external-link">Seurat</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/samuel-marsh/scCustomize" class="external-link">scCustomize</a></span><span class="op">)</span></span>
 <span>  <span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://Matrix.R-forge.R-project.org" class="external-link">Matrix</a></span><span class="op">)</span></span>
@@ -337,9 +337,11 @@ much</p>
 <span id="cb18-9"><a href="#cb18-9" tabindex="-1"></a></span>
 <span id="cb18-10"><a href="#cb18-10" tabindex="-1"></a>scrub_preZ <span class="op">=</span> copy.deepcopy(scrub)</span></code></pre></div>
 </div>
-<div class="section level4">
-<h4 id="lets-umap">Let’s umap<a class="anchor" aria-label="anchor" href="#lets-umap"></a>
-</h4>
+</div>
+</div>
+<div class="section level2">
+<h2 id="lets-umap">Let’s umap<a class="anchor" aria-label="anchor" href="#lets-umap"></a>
+</h2>
 <p>Here we will brind the pseudo doublets with the original count matrix
 and visualize using UMAP across the two implemnetations. They look
 similar.</p>
@@ -362,7 +364,7 @@ similar.</p>
 <span><span class="co">## Running Louvain algorithm...</span></span>
 <span><span class="co">## Maximum modularity in 10 random starts: 0.8846</span></span>
 <span><span class="co">## Number of communities: 27</span></span>
-<span><span class="co">## Elapsed time: 9 seconds</span></span></code></pre>
+<span><span class="co">## Elapsed time: 8 seconds</span></span></code></pre>
 <div class="sourceCode" id="cb22"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seuR</span>, group.by <span class="op">=</span> <span class="st">"celltype"</span>, cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">16</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"scrubletR"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-16-2.png" width="100%"></p>
@@ -388,8 +390,6 @@ similar.</p>
 <div class="sourceCode" id="cb26"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://satijalab.org/seurat/reference/DimPlot.html" class="external-link">DimPlot</a></span><span class="op">(</span><span class="va">seuPy</span>, group.by <span class="op">=</span> <span class="st">"celltype"</span>, cols <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="fl">20</span><span class="op">)</span><span class="op">)</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>,<span class="fl">3</span><span class="op">:</span><span class="fl">16</span>,<span class="fl">2</span><span class="op">)</span><span class="op">]</span>, alpha <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Scrublet (python)"</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-16-4.png" width="100%"></p>
-</div>
-</div>
 <div class="section level3">
 <h3 id="z-scoring">Z-scoring<a class="anchor" aria-label="anchor" href="#z-scoring"></a>
 </h3>
@@ -577,7 +577,7 @@ doubles overall…</p>
 <code class="sourceCode R"><span><span class="va">scr</span><span class="op">$</span><span class="fu">call_doublets</span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-30-1.png" width="100%"></p>
 <div class="sourceCode" id="cb60"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastRust/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastR/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-30-2.png" width="100%"></p>
 </div>
 <div class="section level3">
@@ -609,7 +609,7 @@ doubles overall…</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">final_doublet</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">doublet_scores_obs_</span><span class="op">)</span>, celltype <span class="op">=</span> <span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span>, color <span class="op">=</span> <span class="va">celltype</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python doublet scores (log transformed) using same features set"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-32-2.png" width="100%"></p>
 <div class="sourceCode" id="cb64"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastRust/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastR/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-32-3.png" width="100%"></p>
 <div class="sourceCode" id="cb65"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co">#instantiate object</span></span>
@@ -636,7 +636,7 @@ doubles overall…</p>
 <code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html" class="external-link">ggplot</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/data.frame.html" class="external-link">data.frame</a></span><span class="op">(</span>py <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">final_doublet</span><span class="op">)</span>, R <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/Log.html" class="external-link">log</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">doublet_scores_obs_</span><span class="op">)</span>, celltype <span class="op">=</span> <span class="va">seuP</span><span class="op">$</span><span class="va">celltype</span><span class="op">)</span>, <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html" class="external-link">aes</a></span><span class="op">(</span>x<span class="op">=</span><span class="va">R</span>, y<span class="op">=</span><span class="va">py</span>, color <span class="op">=</span> <span class="va">celltype</span><span class="op">)</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html" class="external-link">geom_point</a></span><span class="op">(</span>size <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html" class="external-link">theme_bw</a></span><span class="op">(</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html" class="external-link">ggtitle</a></span><span class="op">(</span><span class="st">"Correlation of R and Python doublet scores (log transformed) using same features and same simulated doublets"</span><span class="op">)</span><span class="op">+</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_manual.html" class="external-link">scale_color_manual</a></span><span class="op">(</span>values <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/character.html" class="external-link">as.character</a></span><span class="op">(</span><span class="fu">pals</span><span class="fu">::</span><span class="fu"><a href="https://kwstat.github.io/pals/reference/discrete.html" class="external-link">polychrome</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-33-2.png" width="100%"></p>
 <div class="sourceCode" id="cb69"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastRust/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://furlan-lab.github.io/viewmastR/reference/confusion_matrix.html" class="external-link">confusion_matrix</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">scr</span><span class="op">$</span><span class="va">predicted_doublets</span><span class="op">)</span>, <span class="fu"><a href="https://rdrr.io/r/base/factor.html" class="external-link">factor</a></span><span class="op">(</span><span class="va">py</span><span class="op">$</span><span class="va">pred_doublets</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 <p><img src="ImplementationHassles_files/figure-html/unnamed-chunk-33-3.png" width="100%"></p>
 </div>
 <div class="section level3">
@@ -662,113 +662,111 @@ doubles overall…</p>
 <span><span class="co">## [1] stats     graphics  grDevices utils     datasets  methods   base     </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## other attached packages:</span></span>
-<span><span class="co">##  [1] magrittr_2.0.3       ggplot2_3.4.4        Matrix_1.6-5        </span></span>
-<span><span class="co">##  [4] scCustomize_2.0.1    Seurat_5.0.1.9004    SeuratObject_5.0.1  </span></span>
-<span><span class="co">##  [7] sp_2.1-3             viewmastRust_0.1.5.1 scrubletR_0.1.1     </span></span>
-<span><span class="co">## [10] reticulate_1.35.0   </span></span>
+<span><span class="co">##  [1] magrittr_2.0.3     ggplot2_3.4.4      Matrix_1.6-5       scCustomize_2.0.1 </span></span>
+<span><span class="co">##  [5] Seurat_5.0.1.9004  SeuratObject_5.0.1 sp_2.1-3           viewmastR_0.2.1   </span></span>
+<span><span class="co">##  [9] scrubletR_0.2.0    reticulate_1.35.0 </span></span>
 <span><span class="co">## </span></span>
 <span><span class="co">## loaded via a namespace (and not attached):</span></span>
 <span><span class="co">##   [1] fs_1.6.3                    matrixStats_1.2.0          </span></span>
 <span><span class="co">##   [3] spatstat.sparse_3.0-3       bitops_1.0-7               </span></span>
-<span><span class="co">##   [5] lubridate_1.9.3             httr_1.4.7                 </span></span>
-<span><span class="co">##   [7] RColorBrewer_1.1-3          doParallel_1.0.17          </span></span>
-<span><span class="co">##   [9] tools_4.3.1                 sctransform_0.4.1          </span></span>
-<span><span class="co">##  [11] backports_1.4.1             utf8_1.2.4                 </span></span>
-<span><span class="co">##  [13] R6_2.5.1                    lazyeval_0.2.2             </span></span>
-<span><span class="co">##  [15] uwot_0.1.16                 GetoptLong_1.0.5           </span></span>
-<span><span class="co">##  [17] withr_3.0.0                 gridExtra_2.3              </span></span>
-<span><span class="co">##  [19] progressr_0.14.0            cli_3.6.2                  </span></span>
-<span><span class="co">##  [21] Biobase_2.60.0              textshaping_0.3.7          </span></span>
-<span><span class="co">##  [23] Cairo_1.6-2                 spatstat.explore_3.2-6     </span></span>
-<span><span class="co">##  [25] fastDummies_1.7.3           labeling_0.4.3             </span></span>
-<span><span class="co">##  [27] prismatic_1.1.1             sass_0.4.8                 </span></span>
-<span><span class="co">##  [29] spatstat.data_3.0-4         proxy_0.4-27               </span></span>
-<span><span class="co">##  [31] ggridges_0.5.6              pbapply_1.7-2              </span></span>
-<span><span class="co">##  [33] pkgdown_2.0.7               systemfonts_1.0.5          </span></span>
-<span><span class="co">##  [35] foreign_0.8-86              dichromat_2.0-0.1          </span></span>
-<span><span class="co">##  [37] parallelly_1.36.0           maps_3.4.2                 </span></span>
-<span><span class="co">##  [39] pals_1.8                    rstudioapi_0.15.0          </span></span>
-<span><span class="co">##  [41] generics_0.1.3              shape_1.4.6                </span></span>
-<span><span class="co">##  [43] ica_1.0-3                   spatstat.random_3.2-2      </span></span>
-<span><span class="co">##  [45] dplyr_1.1.4                 ggbeeswarm_0.7.2           </span></span>
-<span><span class="co">##  [47] fansi_1.0.6                 S4Vectors_0.38.2           </span></span>
-<span><span class="co">##  [49] abind_1.4-5                 lifecycle_1.0.4            </span></span>
-<span><span class="co">##  [51] yaml_2.3.8                  snakecase_0.11.1           </span></span>
-<span><span class="co">##  [53] SummarizedExperiment_1.30.2 recipes_1.0.9              </span></span>
-<span><span class="co">##  [55] Rtsne_0.17                  paletteer_1.6.0            </span></span>
-<span><span class="co">##  [57] grid_4.3.1                  promises_1.2.1             </span></span>
-<span><span class="co">##  [59] crayon_1.5.2                miniUI_0.1.1.1             </span></span>
-<span><span class="co">##  [61] lattice_0.22-5              cowplot_1.1.3              </span></span>
-<span><span class="co">##  [63] mapproj_1.2.11              pillar_1.9.0               </span></span>
-<span><span class="co">##  [65] knitr_1.45                  ComplexHeatmap_2.16.0      </span></span>
-<span><span class="co">##  [67] GenomicRanges_1.52.1        rjson_0.2.21               </span></span>
-<span><span class="co">##  [69] boot_1.3-28.1               future.apply_1.11.1        </span></span>
-<span><span class="co">##  [71] codetools_0.2-19            leiden_0.4.3.1             </span></span>
-<span><span class="co">##  [73] glue_1.7.0                  MatrixExtra_0.1.15         </span></span>
-<span><span class="co">##  [75] data.table_1.15.0           float_0.3-2                </span></span>
-<span><span class="co">##  [77] vctrs_0.6.5                 png_0.1-8                  </span></span>
-<span><span class="co">##  [79] spam_2.10-0                 gtable_0.3.4               </span></span>
-<span><span class="co">##  [81] rematch2_2.1.2              assertthat_0.2.1           </span></span>
-<span><span class="co">##  [83] cachem_1.0.8                gower_1.0.1                </span></span>
-<span><span class="co">##  [85] xfun_0.41                   S4Arrays_1.2.0             </span></span>
-<span><span class="co">##  [87] mime_0.12                   prodlim_2023.08.28         </span></span>
-<span><span class="co">##  [89] survival_3.5-7              timeDate_4032.109          </span></span>
-<span><span class="co">##  [91] SingleCellExperiment_1.22.0 iterators_1.0.14           </span></span>
-<span><span class="co">##  [93] pbmcapply_1.5.1             hardhat_1.3.0              </span></span>
-<span><span class="co">##  [95] lava_1.7.3                  ellipsis_0.3.2             </span></span>
-<span><span class="co">##  [97] fitdistrplus_1.1-11         ROCR_1.0-11                </span></span>
-<span><span class="co">##  [99] ipred_0.9-14                nlme_3.1-164               </span></span>
-<span><span class="co">## [101] RcppAnnoy_0.0.22            GenomeInfoDb_1.36.4        </span></span>
-<span><span class="co">## [103] bslib_0.6.1                 irlba_2.3.5.1              </span></span>
-<span><span class="co">## [105] vipor_0.4.7                 KernSmooth_2.23-22         </span></span>
-<span><span class="co">## [107] rpart_4.1.23                colorspace_2.1-0           </span></span>
-<span><span class="co">## [109] BiocGenerics_0.46.0         Hmisc_5.1-1                </span></span>
-<span><span class="co">## [111] nnet_7.3-19                 ggrastr_1.0.2              </span></span>
-<span><span class="co">## [113] tidyselect_1.2.0            compiler_4.3.1             </span></span>
-<span><span class="co">## [115] htmlTable_2.4.2             desc_1.4.3                 </span></span>
-<span><span class="co">## [117] DelayedArray_0.26.7         plotly_4.10.4              </span></span>
-<span><span class="co">## [119] checkmate_2.3.1             scales_1.3.0               </span></span>
-<span><span class="co">## [121] lmtest_0.9-40               stringr_1.5.1              </span></span>
-<span><span class="co">## [123] digest_0.6.34               goftest_1.2-3              </span></span>
-<span><span class="co">## [125] spatstat.utils_3.0-4        minqa_1.2.6                </span></span>
-<span><span class="co">## [127] rmarkdown_2.25              XVector_0.40.0             </span></span>
-<span><span class="co">## [129] RhpcBLASctl_0.23-42         htmltools_0.5.7            </span></span>
-<span><span class="co">## [131] pkgconfig_2.0.3             base64enc_0.1-3            </span></span>
-<span><span class="co">## [133] lme4_1.1-35.1               sparseMatrixStats_1.12.2   </span></span>
-<span><span class="co">## [135] MatrixGenerics_1.12.3       highr_0.10                 </span></span>
-<span><span class="co">## [137] fastmap_1.1.1               rlang_1.1.3                </span></span>
-<span><span class="co">## [139] GlobalOptions_0.1.2         htmlwidgets_1.6.4          </span></span>
-<span><span class="co">## [141] shiny_1.8.0                 DelayedMatrixStats_1.22.6  </span></span>
-<span><span class="co">## [143] farver_2.1.1                jquerylib_0.1.4            </span></span>
-<span><span class="co">## [145] zoo_1.8-12                  jsonlite_1.8.8             </span></span>
-<span><span class="co">## [147] ModelMetrics_1.2.2.2        RCurl_1.98-1.14            </span></span>
-<span><span class="co">## [149] Formula_1.2-5               GenomeInfoDbData_1.2.10    </span></span>
-<span><span class="co">## [151] dotCall64_1.1-1             patchwork_1.2.0            </span></span>
-<span><span class="co">## [153] munsell_0.5.0               Rcpp_1.0.12                </span></span>
-<span><span class="co">## [155] stringi_1.8.3               pROC_1.18.5                </span></span>
-<span><span class="co">## [157] zlibbioc_1.46.0             MASS_7.3-60.0.1            </span></span>
-<span><span class="co">## [159] plyr_1.8.9                  parallel_4.3.1             </span></span>
-<span><span class="co">## [161] listenv_0.9.1               ggrepel_0.9.5              </span></span>
-<span><span class="co">## [163] forcats_1.0.0               deldir_2.0-2               </span></span>
-<span><span class="co">## [165] splines_4.3.1               tensor_1.5                 </span></span>
-<span><span class="co">## [167] circlize_0.4.15             igraph_2.0.1.1             </span></span>
-<span><span class="co">## [169] spatstat.geom_3.2-8         RcppHNSW_0.6.0             </span></span>
-<span><span class="co">## [171] reshape2_1.4.4              stats4_4.3.1               </span></span>
-<span><span class="co">## [173] evaluate_0.23               ggprism_1.0.4              </span></span>
-<span><span class="co">## [175] nloptr_2.0.3                foreach_1.5.2              </span></span>
-<span><span class="co">## [177] httpuv_1.6.14               RANN_2.6.1                 </span></span>
-<span><span class="co">## [179] tidyr_1.3.1                 purrr_1.0.2                </span></span>
-<span><span class="co">## [181] polyclip_1.10-6             future_1.33.1              </span></span>
-<span><span class="co">## [183] clue_0.3-65                 scattermore_1.2            </span></span>
-<span><span class="co">## [185] janitor_2.2.0               xtable_1.8-4               </span></span>
-<span><span class="co">## [187] monocle3_1.4.3              e1071_1.7-14               </span></span>
-<span><span class="co">## [189] RSpectra_0.16-1             later_1.3.2                </span></span>
-<span><span class="co">## [191] viridisLite_0.4.2           class_7.3-22               </span></span>
-<span><span class="co">## [193] ragg_1.2.7                  tibble_3.2.1               </span></span>
-<span><span class="co">## [195] beeswarm_0.4.0              memoise_2.0.1              </span></span>
-<span><span class="co">## [197] IRanges_2.34.1              cluster_2.1.6              </span></span>
-<span><span class="co">## [199] timechange_0.3.0            globals_0.16.2             </span></span>
-<span><span class="co">## [201] caret_6.0-94</span></span></code></pre>
+<span><span class="co">##   [5] RcppMsgPack_0.2.3           lubridate_1.9.3            </span></span>
+<span><span class="co">##   [7] httr_1.4.7                  RColorBrewer_1.1-3         </span></span>
+<span><span class="co">##   [9] doParallel_1.0.17           tools_4.3.1                </span></span>
+<span><span class="co">##  [11] sctransform_0.4.1           backports_1.4.1            </span></span>
+<span><span class="co">##  [13] utf8_1.2.4                  R6_2.5.1                   </span></span>
+<span><span class="co">##  [15] lazyeval_0.2.2              uwot_0.1.16                </span></span>
+<span><span class="co">##  [17] GetoptLong_1.0.5            withr_3.0.0                </span></span>
+<span><span class="co">##  [19] gridExtra_2.3               progressr_0.14.0           </span></span>
+<span><span class="co">##  [21] cli_3.6.2                   Biobase_2.60.0             </span></span>
+<span><span class="co">##  [23] textshaping_0.3.7           Cairo_1.6-2                </span></span>
+<span><span class="co">##  [25] spatstat.explore_3.2-6      fastDummies_1.7.3          </span></span>
+<span><span class="co">##  [27] labeling_0.4.3              prismatic_1.1.1            </span></span>
+<span><span class="co">##  [29] sass_0.4.8                  spatstat.data_3.0-4        </span></span>
+<span><span class="co">##  [31] proxy_0.4-27                ggridges_0.5.6             </span></span>
+<span><span class="co">##  [33] pbapply_1.7-2               pkgdown_2.0.7              </span></span>
+<span><span class="co">##  [35] systemfonts_1.0.5           foreign_0.8-86             </span></span>
+<span><span class="co">##  [37] dichromat_2.0-0.1           parallelly_1.36.0          </span></span>
+<span><span class="co">##  [39] maps_3.4.2                  pals_1.8                   </span></span>
+<span><span class="co">##  [41] rstudioapi_0.15.0           generics_0.1.3             </span></span>
+<span><span class="co">##  [43] shape_1.4.6                 ica_1.0-3                  </span></span>
+<span><span class="co">##  [45] spatstat.random_3.2-2       dplyr_1.1.4                </span></span>
+<span><span class="co">##  [47] ggbeeswarm_0.7.2            fansi_1.0.6                </span></span>
+<span><span class="co">##  [49] S4Vectors_0.38.2            abind_1.4-5                </span></span>
+<span><span class="co">##  [51] lifecycle_1.0.4             yaml_2.3.8                 </span></span>
+<span><span class="co">##  [53] snakecase_0.11.1            SummarizedExperiment_1.30.2</span></span>
+<span><span class="co">##  [55] recipes_1.0.9               Rtsne_0.17                 </span></span>
+<span><span class="co">##  [57] paletteer_1.6.0             grid_4.3.1                 </span></span>
+<span><span class="co">##  [59] promises_1.2.1              crayon_1.5.2               </span></span>
+<span><span class="co">##  [61] miniUI_0.1.1.1              lattice_0.22-5             </span></span>
+<span><span class="co">##  [63] cowplot_1.1.3               mapproj_1.2.11             </span></span>
+<span><span class="co">##  [65] pillar_1.9.0                knitr_1.45                 </span></span>
+<span><span class="co">##  [67] ComplexHeatmap_2.16.0       GenomicRanges_1.52.1       </span></span>
+<span><span class="co">##  [69] rjson_0.2.21                boot_1.3-28.1              </span></span>
+<span><span class="co">##  [71] future.apply_1.11.1         codetools_0.2-19           </span></span>
+<span><span class="co">##  [73] leiden_0.4.3.1              glue_1.7.0                 </span></span>
+<span><span class="co">##  [75] data.table_1.15.0           vctrs_0.6.5                </span></span>
+<span><span class="co">##  [77] png_0.1-8                   spam_2.10-0                </span></span>
+<span><span class="co">##  [79] gtable_0.3.4                rematch2_2.1.2             </span></span>
+<span><span class="co">##  [81] assertthat_0.2.1            cachem_1.0.8               </span></span>
+<span><span class="co">##  [83] gower_1.0.1                 xfun_0.41                  </span></span>
+<span><span class="co">##  [85] S4Arrays_1.2.0              mime_0.12                  </span></span>
+<span><span class="co">##  [87] prodlim_2023.08.28          survival_3.5-7             </span></span>
+<span><span class="co">##  [89] timeDate_4032.109           SingleCellExperiment_1.22.0</span></span>
+<span><span class="co">##  [91] iterators_1.0.14            pbmcapply_1.5.1            </span></span>
+<span><span class="co">##  [93] hardhat_1.3.0               lava_1.7.3                 </span></span>
+<span><span class="co">##  [95] ellipsis_0.3.2              fitdistrplus_1.1-11        </span></span>
+<span><span class="co">##  [97] ROCR_1.0-11                 ipred_0.9-14               </span></span>
+<span><span class="co">##  [99] nlme_3.1-164                RcppAnnoy_0.0.22           </span></span>
+<span><span class="co">## [101] GenomeInfoDb_1.36.4         bslib_0.6.1                </span></span>
+<span><span class="co">## [103] irlba_2.3.5.1               vipor_0.4.7                </span></span>
+<span><span class="co">## [105] KernSmooth_2.23-22          rpart_4.1.23               </span></span>
+<span><span class="co">## [107] colorspace_2.1-0            BiocGenerics_0.46.0        </span></span>
+<span><span class="co">## [109] Hmisc_5.1-1                 nnet_7.3-19                </span></span>
+<span><span class="co">## [111] ggrastr_1.0.2               tidyselect_1.2.0           </span></span>
+<span><span class="co">## [113] compiler_4.3.1              htmlTable_2.4.2            </span></span>
+<span><span class="co">## [115] desc_1.4.3                  DelayedArray_0.26.7        </span></span>
+<span><span class="co">## [117] plotly_4.10.4               checkmate_2.3.1            </span></span>
+<span><span class="co">## [119] scales_1.3.0                lmtest_0.9-40              </span></span>
+<span><span class="co">## [121] stringr_1.5.1               digest_0.6.34              </span></span>
+<span><span class="co">## [123] goftest_1.2-3               spatstat.utils_3.0-4       </span></span>
+<span><span class="co">## [125] minqa_1.2.6                 rmarkdown_2.25             </span></span>
+<span><span class="co">## [127] XVector_0.40.0              htmltools_0.5.7            </span></span>
+<span><span class="co">## [129] pkgconfig_2.0.3             base64enc_0.1-3            </span></span>
+<span><span class="co">## [131] lme4_1.1-35.1               sparseMatrixStats_1.12.2   </span></span>
+<span><span class="co">## [133] MatrixGenerics_1.12.3       highr_0.10                 </span></span>
+<span><span class="co">## [135] fastmap_1.1.1               rlang_1.1.3                </span></span>
+<span><span class="co">## [137] GlobalOptions_0.1.2         htmlwidgets_1.6.4          </span></span>
+<span><span class="co">## [139] shiny_1.8.0                 DelayedMatrixStats_1.22.6  </span></span>
+<span><span class="co">## [141] farver_2.1.1                jquerylib_0.1.4            </span></span>
+<span><span class="co">## [143] zoo_1.8-12                  jsonlite_1.8.8             </span></span>
+<span><span class="co">## [145] ModelMetrics_1.2.2.2        RCurl_1.98-1.14            </span></span>
+<span><span class="co">## [147] Formula_1.2-5               GenomeInfoDbData_1.2.10    </span></span>
+<span><span class="co">## [149] dotCall64_1.1-1             patchwork_1.2.0            </span></span>
+<span><span class="co">## [151] munsell_0.5.0               Rcpp_1.0.12                </span></span>
+<span><span class="co">## [153] stringi_1.8.3               pROC_1.18.5                </span></span>
+<span><span class="co">## [155] zlibbioc_1.46.0             MASS_7.3-60.0.1            </span></span>
+<span><span class="co">## [157] plyr_1.8.9                  parallel_4.3.1             </span></span>
+<span><span class="co">## [159] listenv_0.9.1               ggrepel_0.9.5              </span></span>
+<span><span class="co">## [161] forcats_1.0.0               deldir_2.0-2               </span></span>
+<span><span class="co">## [163] splines_4.3.1               tensor_1.5                 </span></span>
+<span><span class="co">## [165] circlize_0.4.15             igraph_2.0.1.1             </span></span>
+<span><span class="co">## [167] spatstat.geom_3.2-8         RcppHNSW_0.6.0             </span></span>
+<span><span class="co">## [169] reshape2_1.4.4              stats4_4.3.1               </span></span>
+<span><span class="co">## [171] evaluate_0.23               ggprism_1.0.4              </span></span>
+<span><span class="co">## [173] nloptr_2.0.3                foreach_1.5.2              </span></span>
+<span><span class="co">## [175] httpuv_1.6.14               RANN_2.6.1                 </span></span>
+<span><span class="co">## [177] tidyr_1.3.1                 purrr_1.0.2                </span></span>
+<span><span class="co">## [179] polyclip_1.10-6             future_1.33.1              </span></span>
+<span><span class="co">## [181] clue_0.3-65                 scattermore_1.2            </span></span>
+<span><span class="co">## [183] janitor_2.2.0               xtable_1.8-4               </span></span>
+<span><span class="co">## [185] monocle3_1.4.3              e1071_1.7-14               </span></span>
+<span><span class="co">## [187] RSpectra_0.16-1             later_1.3.2                </span></span>
+<span><span class="co">## [189] viridisLite_0.4.2           class_7.3-22               </span></span>
+<span><span class="co">## [191] ragg_1.2.7                  tibble_3.2.1               </span></span>
+<span><span class="co">## [193] memoise_2.0.1               beeswarm_0.4.0             </span></span>
+<span><span class="co">## [195] IRanges_2.34.1              cluster_2.1.6              </span></span>
+<span><span class="co">## [197] timechange_0.3.0            globals_0.16.2             </span></span>
+<span><span class="co">## [199] caret_6.0-94</span></span></code></pre>
 <div class="sourceCode" id="cb72"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/base/getwd.html" class="external-link">getwd</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div>
 <pre><code><span><span class="co">## [1] "/Users/sfurlan/develop/scrubletR/vignettes"</span></span></code></pre>
