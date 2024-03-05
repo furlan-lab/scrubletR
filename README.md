@@ -4,7 +4,7 @@
 
 
 
-*version 0.2.0*
+*version 0.2.1*
 
 
 **scrubletR** is a native R implementation of the original.  We feel that the R implentation provides sufficiently similar results to the Python but there are small differences.  Please read [this](https://furlan-lab.github.io/scrubletR/articles/ImplementationHassles.html) to learn more.  To read more about the original work, please read the paper: 

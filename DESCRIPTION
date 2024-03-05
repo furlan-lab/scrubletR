@@ -1,7 +1,7 @@
 Package: scrubletR
 Type: Package
 Title: Native R implementatioin of the popular python Scrublet package for multiplet removal in single cell genomic data
-Version: 0.2.0
+Version: 0.2.1
 Authors@R: 
     c(person(
       "Original", "Authors of Scrublet and Publication",
