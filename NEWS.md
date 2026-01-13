@@ -1,3 +1,7 @@
+# scrubletR v0.3.0
+
+* made compatibile with bpcells
+
 # scrubletR v0.2.1
 
 * fixed bug in running multiple splits with one core

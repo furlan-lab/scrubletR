@@ -24,106 +24,223 @@
 #' @importFrom methods as
 #' @importFrom Seurat GetAssayData
 #' @export
-scrublet<-function (object, split_by=NULL,
-                    return_results_only = FALSE, min_counts = 3, min_cells = 3,
-                    min_gene_variability_pctl = 85, seed = 2024, expected_doublet_rate = 0.1,
-                    n_prin_comps = 30, sim_doublet_ratio = 2, assay="RNA", cores=1, show_gene_filter_plot=F)
+#' 
+scrublet <- function (object, split_by = NULL, return_results_only = FALSE, 
+                                min_counts = 3, min_cells = 3, min_gene_variability_pctl = 85, 
+                                seed = 2024, expected_doublet_rate = 0.1, n_prin_comps = 30, 
+                                sim_doublet_ratio = 2, assay = "RNA", cores = 1, show_gene_filter_plot = F) 
 {
-  if(class(object)=="Seurat"){
+  # --- 1. Setup Metadata & Split Vector ---
+  if (inherits(object, "Seurat")) {
     meta <- object@meta.data
-  }else{
-    meta <- colData(object)
+  } else {
+    meta <- SingleCellExperiment::colData(object)
   }
-  if(is.null(split_by)){
-    n=1
-    splitvec<-factor(rep("nosplit", nrow(meta)))
-  }else{
-    n = length(levels(factor(meta[[split_by]])))
-    splitvec<-factor(meta[[split_by]])
+  
+  if (is.null(split_by)) {
+    n = 1
+    splitvec <- factor(rep("nosplit", nrow(meta)))
+  } else {
+    if(!split_by %in% colnames(meta)) stop(paste("split_by column", split_by, "not found"))
+    splitvec <- factor(meta[[split_by]])
+    n = length(levels(splitvec))
   }
-  if(n>1){
+  
+  if (n > 1) {
     message("Splitting object into ", n, " smaller objects prior to performing scrublet")
   }
-  indices<-vector()
-  if(class(object)=="Seurat"){
-    dat<-lapply(levels(splitvec), function(split) {
-      splitind<-which(splitvec %in% split)
-      Xsub <- as(t(GetAssayData(object = object, assay = assay, layer = "counts")[,splitind]), "CsparseMatrix")
-      list(ind=splitind, X=Xsub)
+  
+# --- 2. Get Matrix Handle (Robust Fix) ---
+  if (inherits(object, "Seurat")) {
+    # We use tryCatch to handle different Seurat versions (v4 vs v5) without checking versions explicitly
+    counts_obj <- tryCatch({
+       # Try Seurat v5 syntax (supports BPCells / Layers)
+       # This might fail on v4 because 'layer' is not a valid argument
+       Seurat::GetAssayData(object, assay = assay, layer = "counts")
+    }, error = function(e) {
+       # Fallback to Seurat v4 syntax (Slots)
+       # This pulls standard sparse matrices from RAM
+       Seurat::GetAssayData(object, assay = assay, slot = "counts")
     })
-    #
-  }else{
-    dat<-lapply(levels(splitvec), function(split) {
-      splitind<-which( splitvec %in% split)
-      Xsub <- as(t(exprs(object)[,splitind]), "TsparseMatrix")
-      list(ind=splitind, X=Xsub)
-    })
+  } else {
+    counts_obj <- SingleCellExperiment::counts(object)
   }
 
-  if(cores>n){
-    warning(paste0("Scrublet leverages parallel processing for each split of the object.  Running with ", n, " core(s)"))
-    cores<-n
+  
+  # --- 3. Define Worker Function ---
+  run_chunk <- function(indices) {
+    # This works for both BPCells (Lazy) and Standard Matrix (Instant)
+    sub_mat <- counts_obj[, indices, drop=FALSE]
+    
+    # Force into RAM as dgCMatrix
+    # If already dgCMatrix, this is instant. If BPCells, this triggers the read.
+    mat_in_mem <- as(sub_mat, "dgCMatrix")
+    
+    # Transpose for Scrublet (requires Cells x Genes)
+    mat_in_mem <- Matrix::t(mat_in_mem)
+    
+    scr <- ScrubletR$new(counts_matrix = mat_in_mem, 
+                         sim_doublet_ratio = sim_doublet_ratio, 
+                         random_state = seed, 
+                         show_gene_filter_plot = show_gene_filter_plot)
+    
+    res <- scr$scrub_doublets(min_counts = min_counts, 
+                              min_cells = min_cells, 
+                              min_gene_variability_pctl = min_gene_variability_pctl, 
+                              n_prin_comps = n_prin_comps)
+    
+    return(list(res = res, ind = indices))
   }
-
-  if(cores==1 && n==1){
-    scr<-ScrubletR$new(counts_matrix = dat[[1]]$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed, show_gene_filter_plot = show_gene_filter_plot)
-    scrublet_res<-scr$scrub_doublets(
-      min_counts = min_counts,
-      min_cells = min_cells,
-      min_gene_variability_pctl = min_gene_variability_pctl,
-      n_prin_comps = n_prin_comps)
-    final_res<-data.frame(doublet_scores=scrublet_res$doublet_scores, predicted_doublets=scrublet_res$predicted_doublets)
-
+  
+  # --- 4. Prepare Chunks ---
+  chunk_indices <- split(seq_len(ncol(object)), splitvec)
+  
+  if (cores > n) cores <- n
+  
+  # --- 5. Execution ---
+  if (cores > 1 && n > 1) {
+    # Parallel
+    if (!requireNamespace("pbmcapply", quietly = TRUE)) {
+      message("pbmcapply not found, falling back to mclapply")
+      runner <- parallel::mclapply
+    } else {
+      runner <- pbmcapply::pbmclapply
+    }
+    fdata <- runner(chunk_indices, FUN = run_chunk, mc.cores = cores)
+  } else {
+    # Sequential
+    if(n > 1) message("Running sequentially...")
+    fdata <- lapply(chunk_indices, FUN = run_chunk)
   }
-  if (cores >1 && n>1) {
-    fdata<-pbmclapply(dat, FUN = function(data){
-      scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
-      scrublet_res<-scr$scrub_doublets(
-                      min_counts = min_counts,
-                      min_cells = min_cells,
-                      min_gene_variability_pctl = min_gene_variability_pctl,
-                      n_prin_comps = n_prin_comps)
-      list(res=scrublet_res, data$ind)
-    }, mc.cores=cores)
-    res<-lapply(fdata, "[[", 1)
-    ind<-unlist(sapply(fdata, "[[", 2))
-    ds<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "doublet_scores"))[order(ind)]
-    pd<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "predicted_doublets"))[order(ind)]
-    final_res<-data.frame(doublet_scores=ds, predicted_doublets=pd)
-  }
-  if (cores ==1 && n>1) {
-    fdata<-lapply(dat, FUN = function(data){
-      scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
-      scrublet_res<-scr$scrub_doublets(
-        min_counts = min_counts,
-        min_cells = min_cells,
-        min_gene_variability_pctl = min_gene_variability_pctl,
-        n_prin_comps = n_prin_comps)
-      list(res=scrublet_res, data$ind)
-    })
-    res<-lapply(fdata, "[[", 1)
-    ind<-unlist(sapply(fdata, "[[", 2))
-    ds<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "doublet_scores"))[order(ind)]
-    pd<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "predicted_doublets"))[order(ind)]
-    final_res<-data.frame(doublet_scores=ds, predicted_doublets=pd)
-  }
+  
+  # --- 6. Aggregate ---
+  if(any(sapply(fdata, inherits, "try-error"))) stop("One or more workers failed.")
 
-
+  ind_all <- unlist(lapply(fdata, function(x) x$ind))
+  ds_all <- unlist(lapply(fdata, function(x) x$res$doublet_scores))
+  pd_all <- unlist(lapply(fdata, function(x) x$res$predicted_doublets))
+  
+  reorder_idx <- order(ind_all)
+  
+  final_res <- data.frame(
+    doublet_scores = ds_all[reorder_idx], 
+    predicted_doublets = pd_all[reorder_idx]
+  )
+  
+  # --- 7. Return ---
   if (return_results_only) {
     return(final_res)
-  }
-  else {
-    if(class(object)=="Seurat"){
-      object@meta.data[["doublet_scores"]] <- final_res$doublet_scores
-      object@meta.data[["predicted_doublets"]] <- final_res$predicted_doublets
-      object
-    }else{
-      colData(object)[["doublet_scores"]] <- final_res$doublet_scores
-      colData(object)[["predicted_doublets"]] <- final_res$predicted_doublets
-      object
+  } else {
+    if (inherits(object, "Seurat")) {
+      object <- Seurat::AddMetaData(object, final_res)
+    } else {
+      SingleCellExperiment::colData(object)[["doublet_scores"]] <- final_res$doublet_scores
+      SingleCellExperiment::colData(object)[["predicted_doublets"]] <- final_res$predicted_doublets
     }
+    return(object)
   }
 }
+
+# scrublet<-function (object, split_by=NULL,
+#                     return_results_only = FALSE, min_counts = 3, min_cells = 3,
+#                     min_gene_variability_pctl = 85, seed = 2024, expected_doublet_rate = 0.1,
+#                     n_prin_comps = 30, sim_doublet_ratio = 2, assay="RNA", cores=1, show_gene_filter_plot=F)
+# {
+#   if(class(object)=="Seurat"){
+#     meta <- object@meta.data
+#   }else{
+#     meta <- colData(object)
+#   }
+#   if(is.null(split_by)){
+#     n=1
+#     splitvec<-factor(rep("nosplit", nrow(meta)))
+#   }else{
+#     n = length(levels(factor(meta[[split_by]])))
+#     splitvec<-factor(meta[[split_by]])
+#   }
+#   if(n>1){
+#     message("Splitting object into ", n, " smaller objects prior to performing scrublet")
+#   }
+#   indices<-vector()
+#   if(class(object)=="Seurat"){
+#     dat<-lapply(levels(splitvec), function(split) {
+#       splitind<-which(splitvec %in% split)
+#       Xsub <- as(t(GetAssayData(object = object, assay = assay, layer = "counts")[,splitind]), "CsparseMatrix")
+#       list(ind=splitind, X=Xsub)
+#     })
+#     #
+#   }else{
+#     dat<-lapply(levels(splitvec), function(split) {
+#       splitind<-which( splitvec %in% split)
+#       Xsub <- as(t(exprs(object)[,splitind]), "TsparseMatrix")
+#       list(ind=splitind, X=Xsub)
+#     })
+#   }
+
+#   if(cores>n){
+#     warning(paste0("Scrublet leverages parallel processing for each split of the object.  Running with ", n, " core(s)"))
+#     cores<-n
+#   }
+
+#   if(cores==1 && n==1){
+#     scr<-ScrubletR$new(counts_matrix = dat[[1]]$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed, show_gene_filter_plot = show_gene_filter_plot)
+#     scrublet_res<-scr$scrub_doublets(
+#       min_counts = min_counts,
+#       min_cells = min_cells,
+#       min_gene_variability_pctl = min_gene_variability_pctl,
+#       n_prin_comps = n_prin_comps)
+#     final_res<-data.frame(doublet_scores=scrublet_res$doublet_scores, predicted_doublets=scrublet_res$predicted_doublets)
+
+#   }
+#   if (cores >1 && n>1) {
+#     fdata<-pbmclapply(dat, FUN = function(data){
+#       scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
+#       scrublet_res<-scr$scrub_doublets(
+#                       min_counts = min_counts,
+#                       min_cells = min_cells,
+#                       min_gene_variability_pctl = min_gene_variability_pctl,
+#                       n_prin_comps = n_prin_comps)
+#       list(res=scrublet_res, data$ind)
+#     }, mc.cores=cores)
+#     res<-lapply(fdata, "[[", 1)
+#     ind<-unlist(sapply(fdata, "[[", 2))
+#     ds<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "doublet_scores"))[order(ind)]
+#     pd<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "predicted_doublets"))[order(ind)]
+#     final_res<-data.frame(doublet_scores=ds, predicted_doublets=pd)
+#   }
+#   if (cores ==1 && n>1) {
+#     fdata<-lapply(dat, FUN = function(data){
+#       scr<-ScrubletR$new(counts_matrix = data$X, sim_doublet_ratio = sim_doublet_ratio, random_state = seed)
+#       scrublet_res<-scr$scrub_doublets(
+#         min_counts = min_counts,
+#         min_cells = min_cells,
+#         min_gene_variability_pctl = min_gene_variability_pctl,
+#         n_prin_comps = n_prin_comps)
+#       list(res=scrublet_res, data$ind)
+#     })
+#     res<-lapply(fdata, "[[", 1)
+#     ind<-unlist(sapply(fdata, "[[", 2))
+#     ds<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "doublet_scores"))[order(ind)]
+#     pd<-unlist(sapply(lapply(fdata, "[[", 1), "[[", "predicted_doublets"))[order(ind)]
+#     final_res<-data.frame(doublet_scores=ds, predicted_doublets=pd)
+#   }
+
+
+#   if (return_results_only) {
+#     return(final_res)
+#   }
+#   else {
+#     if(class(object)=="Seurat"){
+#       object@meta.data[["doublet_scores"]] <- final_res$doublet_scores
+#       object@meta.data[["predicted_doublets"]] <- final_res$predicted_doublets
+#       object
+#     }else{
+#       colData(object)[["doublet_scores"]] <- final_res$doublet_scores
+#       colData(object)[["predicted_doublets"]] <- final_res$predicted_doublets
+#       object
+#     }
+#   }
+# }
 
 #' @title Scrublet R6 Class
 #'
