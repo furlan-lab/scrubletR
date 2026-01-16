@@ -1,0 +1,62 @@
+------------------------------------------------------------------------
+
+![](reference/figures/hex.png)
+
+------------------------------------------------------------------------
+
+*version 0.3.0*
+
+**scrubletR** is a native R implementation of the original. We feel that
+the R implentation provides sufficiently similar results to the Python
+but there are small differences. Please read
+[this](https://furlan-lab.github.io/scrubletR/articles/ImplementationHassles.html)
+to learn more. To read more about the original work, please read the
+paper:
+
+*Wolock SL, Lopez R, Klein AM. Scrublet: Computational Identification of
+Cell Doublets in Single-Cell Transcriptomic Data. Cell Syst. 2019 Apr
+24;8(4):281-291.e9. doi: 10.1016/j.cels.2018.11.005. Epub 2019 Apr 3.
+PMID: 30954476; PMCID: PMC6625319. [linked
+here](https://www.sciencedirect.com/science/article/pii/S2405471218304745)*
+
+**Visit
+[HowTo](https://furlan-lab.github.io/scrubletR/articles/QuickStart.html)
+for quick start**
+
+## Acknowledgements
+
+Written by Scott Furlan.
+
+![](reference/figures/furlan_lab_logo.png)
+
+------------------------------------------------------------------------
+
+# Package index
+
+## wrapper function
+
+scrublet for Seurat and monocle3
+
+- [`scrublet()`](https://furlan-lab.github.io/scrubletR/reference/Scrublet.md)
+  : Scrublet
+
+## scrubletR innards
+
+R6 ScrubletR Class
+
+- [`ScrubletR`](https://furlan-lab.github.io/scrubletR/reference/ScrubletR.md)
+  : Scrublet R6 Class
+
+# Articles
+
+### Get Started
+
+- [Quick Start to
+  ScrubletR](https://furlan-lab.github.io/scrubletR/articles/QuickStart.md):
+
+### Advanced
+
+- [In-depth use of
+  ScrubletR](https://furlan-lab.github.io/scrubletR/articles/InDepth.md):
+- [Implementing Scrublet in
+  R](https://furlan-lab.github.io/scrubletR/articles/ImplementationHassles.md):
