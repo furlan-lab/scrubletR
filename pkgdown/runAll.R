@@ -43,3 +43,28 @@ pkgdown::deploy_to_branch(lazy = TRUE, clean = FALSE)
 # in a terminal in the root of the project run
 # git fetch origin
 # git worktree add docs gh-pages
+#This will now update the files inside 'docs/'
+# It will skip articles because it sees the existing HTML files
+pkgdown::build_site(lazy = TRUE)
+
+deploy_lazy <- function(message = "Update site") {
+  # Check if docs folder exists
+  if (!dir.exists("docs")) stop("The 'docs' folder is missing. Did you set up the git worktree?")
+  
+  message("Building site (Lazy)...")
+  pkgdown::build_site(lazy = TRUE)
+  
+  message("Deploying to gh-pages...")
+  # The -C flag runs the git command inside the 'docs' directory
+  system("git -C docs add .")
+  
+  # We suppress warnings here in case there is 'nothing to commit'
+  suppressWarnings(
+    system(sprintf('git -C docs commit -m "%s"', message))
+  )
+  
+  system("git -C docs push origin gh-pages")
+  message("Deployment Complete!")
+}
+
+deploy_lazy()
