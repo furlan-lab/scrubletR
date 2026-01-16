@@ -33,5 +33,13 @@ pkgdown::preview_site(path = "/articles")
 # build -------------------------------------------------------------------
 pkgdown::build_site(install=F)
 
-pkgdown::deploy_to_branch()
+pkgdown::deploy_to_branch(lazy = TRUE, clean = FALSE)
 
+
+
+
+##### NEW PKGDOWN WORKFLOW FOR DEPLOYING WITHOUT REBUILDING ARTICLES LOCALLY ####
+
+# in a terminal in the root of the project run
+# git fetch origin
+# git worktree add docs gh-pages
